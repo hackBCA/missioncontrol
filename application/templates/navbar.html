@@ -1,0 +1,16 @@
+<header class="navbar">
+  <nav class="nav-collapse">
+    <ul>
+      {% for href, caption, active in nav_bar %}
+        <li class="menu-item {% if active %}active{% endif
+        %}"><a class="scroll-link" href="{{ href|e }}" data-scroll><p>{{ caption|e }}</p></a></li>
+      {% endfor %}
+      {% if current_user.is_authenticated %}
+        <li class="account-item"><a href="/logout"><p>Logout</p></a></li>
+        <li class="account-item"><a href="/account"><p>Account <span>({{ current_user.full_name() }})</span></p></a></li>
+      {% else %}
+        <li class="account-item"><a href="/login"><p>Login</p></a></li>
+      {% endif %}
+    </ul>
+  </nav>
+</header>
