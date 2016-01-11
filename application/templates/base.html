@@ -1,0 +1,30 @@
+{% macro render_flash_messages() %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul class="flashes">
+        {% for category, message in messages %}
+          <li class="{{ category }}"><p>{% if category != "neutral" %}{{ category.capitalize()+": " }}{% endif %}{{ message }}</p><div class="close"><div class="icon-container"><i class="close-icon fa fa-times" onclick="var f = document.getElementsByClassName('flashes')[0]; f.classList.add('fade-out')"></i></div></div></li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+{% endmacro %}
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <!--[if IE]>
+      <link rel="shortcut icon" href="/static/favicon.ico">
+    <![endif]-->
+    <title>hackBCA III - Staff Panel</title>
+    <link rel="icon" href="/static/favicon.png">
+    
+    {% block header %}{% endblock %}
+  </head>
+  <body>
+    {{ render_flash_messages() }}
+    {% block content %}{% endblock %}
+  </body>
+  {% block scripts %}{% endblock %}
+</html>
