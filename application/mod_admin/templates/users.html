@@ -1,0 +1,29 @@
+{% extends "user.base.html" %}
+
+{% set nav_bar = [
+  ("/#home", "Home", False),
+  ("/account/settings", "Settings", True)
+] -%}
+
+{% block content %}
+{% with nav_bar = nav_bar %}
+  {% include "navbar.html" %}
+{% endwith %}
+
+<div class="page-container">
+  <div class="page-section" id="settings">
+    <div class="container">
+      <div class="header">
+        <div class="head-cover">
+          <h2>User Management</h2>
+        </div>
+      <div class="info">
+        
+   
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

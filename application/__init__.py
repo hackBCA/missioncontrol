@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect
 from mongoengine import register_connection
 import jinja2
 
@@ -55,3 +55,11 @@ from application.mod_web import web_module
 app.register_blueprint(web_module)
 from application.mod_user import user_module
 app.register_blueprint(user_module)
+from application.mod_admin import admin_module
+app.register_blueprint(admin_module)
+from application.mod_stats import stats_module
+app.register_blueprint(stats_module)
+
+@app.errorhandler(401)
+def error(e):
+    return redirect("/login")
