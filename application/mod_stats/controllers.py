@@ -24,12 +24,27 @@ def get_application_stats():
   stats.append('%d%% Applications have status \"In Progress\" (%d)' % (percent_accounts_in_progress, num_accounts_in_progress))
   stats.append('%d%% Applications have status \"Submitted\" (%d)' % (percent_accounts_submitted, num_accounts_submitted))
 
+  num_mentors = UserEntry.objects(confirmed=True, type_account="mentor").count()
+
+  stats.append('%d total mentors signed up.' % (num_mentors) )
+
   return stats
 
 #Only for submitted
 def get_applicant_stats():
   stats = []
   num_submitted = UserEntry.objects(status = "Submitted").count()
+  num_accounts_submitted = UserEntry.objects(confirmed = True, status = "Submitted").count()
+
+  num_beginners = UserEntry.objects(confirmed=True, beginner="yes", status="Submitted").count()
+  num_males = UserEntry.objects(confirmed=True, gender="male", status="Submitted").count()
+  num_females = UserEntry.objects(confirmed=True, gender="female", status="Submitted").count()
+  num_rathernotsay = UserEntry.objects(confirmed=True, gender="rns", status="Submitted").count()
+
+  stats.append('%d%% beginners (%d)' % (100.0 * num_beginners / num_accounts_submitted, num_beginners))
+  stats.append('%d%% female (%d)' % (100.0 * num_females / num_accounts_submitted, num_females))
+  stats.append('%d%% male (%d)' % (100.0 * num_males / num_accounts_submitted, num_males))
+  stats.append('%d%% rather not say (%d)' % (100.0 * num_rathernotsay / num_accounts_submitted, num_rathernotsay))
 
   return stats
 
