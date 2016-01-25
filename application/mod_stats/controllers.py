@@ -46,10 +46,10 @@ def get_applicant_stats():
   percent_accounts_male = 100.0 * num_males / num_hackers_accounts_submitted
   percent_accounts_rns = 100.0 * num_rathernotsay / num_hackers_accounts_submitted
 
-  stats.append('%d%% beginners (%d)' % (percent_accounts_beginners, num_beginners))
-  stats.append('%d%% female (%d)' % (percent_accounts_female, num_females))
-  stats.append('%d%% male (%d)' % (percent_accounts_male, num_males))
-  stats.append('%d%% rather not say (%d)' % (percent_accounts_rns, num_rathernotsay))
+  stats.append('%d%% Beginners (%d)' % (percent_accounts_beginners, num_beginners))
+  stats.append('%d%% Female (%d)' % (percent_accounts_female, num_females))
+  stats.append('%d%% Male (%d)' % (percent_accounts_male, num_males))
+  stats.append('%d%% Rather Not Say (%d)' % (percent_accounts_rns, num_rathernotsay))
 
   return stats
 

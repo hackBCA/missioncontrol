@@ -1,4 +1,4 @@
-from flask import Flask, redirect
+from flask import Flask, redirect, flash
 from mongoengine import register_connection
 import jinja2
 
@@ -63,3 +63,7 @@ app.register_blueprint(stats_module)
 @app.errorhandler(401)
 def error(e):
     return redirect("/login")
+@app.errorhandler(403)
+def error(e):
+    flash("You do not have permission to view that page.", "error")
+    return redirect("/")

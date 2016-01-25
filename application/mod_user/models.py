@@ -9,6 +9,8 @@ class StaffUserEntry(Document):
   firstname = StringField(required = True)
   lastname = StringField(required = True) 
 
+  roles = ListField(required = False)
+
 class User(UserMixin):
   def __init__(self, uid, email, firstname, lastname):
 

@@ -1,6 +1,8 @@
 from application import CONFIG, app
 from .models import *
-from flask.ext.login import login_user, logout_user
+from flask import current_app, session
+from flask.ext.login import login_user, logout_user, current_user
+from flask.ext.principal import Principal, Identity, AnonymousIdentity, identity_changed, identity_loaded
 import bcrypt
 import re
 import sendgrid
@@ -14,6 +16,8 @@ UserDoesNotExistError = Exception("UserDoesNotExistError", "Account with given e
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+principals = Principal(app)
+
 sg = sendgrid.SendGridClient(CONFIG["SENDGRID_API_KEY"])
 ts = URLSafeTimedSerializer(CONFIG["SECRET_KEY"])
 
@@ -25,6 +29,14 @@ def load_user(user_id):
   currUser = user_entries[0]
   user = User(currUser.id, currUser.email, currUser.firstname, currUser.lastname) 
   return user
+
+@identity_loaded.connect_via(app)
+def on_identity_loaded(sender, identity):
+  identity.user = current_user
+
+  if hasattr(current_user, 'roles'):
+    for role in current_user.roles:
+      identity.provides.add(RoleNeed(role))
 
 def get_user(email):
   entries = StaffUserEntry.objects(email = email)
@@ -51,11 +63,17 @@ def login(email):
 
   if user != None:
     login_user(user)
+    identity_changed.send(current_app._get_current_object(), identity = Identity(user.uid))
   else:
     raise UserDoesNotExistError
 
 def logout():
   logout_user()
+  
+  for key in ('identity.name', 'identity.auth_type'):
+    session.pop(key, None)
+
+  identity_changed.send(current_app._get_current_object(), identity = AnonymousIdentity())
 
 def add_user(email, firstname, lastname, password):
   existingUser = get_user(email)
