@@ -1,8 +1,8 @@
 {% extends "user.base.html" %}
 
 {% set nav_bar = [
-  ("/#home", "Home"),
-  ("/forgot", "Forgot Password")
+  ("/", "Home", False),
+  ("/forgot", "Forgot Password", True)
 ] -%}
 
 {% block content %}

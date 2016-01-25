@@ -1,12 +1,19 @@
 from flask import render_template, redirect, request, flash, session
 from flask.ext.login import login_required, current_user
+from flask.ext.principal import Principal, Permission, RoleNeed
 from . import user_module as mod_user
 from . import controllers as controller
 from .forms import *
 from application import CONFIG
 
+admin_permission = Permission(RoleNeed("admin"))
+test_permission = Permission(RoleNeed("test"))
+
 @mod_user.route("/login", methods=["GET", "POST"])
 def login():
+  if current_user.is_authenticated:
+    return redirect("/")
+
   form = LoginForm(request.form)
   if request.method == "POST" and form.validate():
     try:
@@ -20,6 +27,7 @@ def login():
         raise e
       else:
         flash("Something went wrong.", "error")
+
   return render_template("user.login.html", form = form)
 
 @mod_user.route("/logout", methods=["GET", "POST"])
@@ -28,6 +36,7 @@ def logout():
   return redirect("/")
 
 @mod_user.route("/forgot", methods = ["GET", "POST"])
+@test_permission.require(http_exception = 403)
 def recover():
   form = EmailForm(request.form)
   if request.method == "POST" and form.validate():

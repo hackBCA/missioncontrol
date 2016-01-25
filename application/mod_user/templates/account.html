@@ -1,5 +1,10 @@
 {% extends "user.base.html" %}
 
+{% set nav_bar = [
+  ("/", "Home", False),
+  ("/account/settings", "Settings", False)
+] -%}
+
 {% block content %}
 {% include "navbar.html" %}
 <div class="page-container">

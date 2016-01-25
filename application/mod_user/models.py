@@ -14,6 +14,8 @@ class StaffUserEntry(Document):
   def full_name(self):
     return self.firstname + " " + self.lastname
 
+  roles = ListField(required = False)
+
 class User(UserMixin):
   def __init__(self, uid, email, firstname, lastname):
 

@@ -1,5 +1,10 @@
 {% extends "user.base.html" %}
 
+{% set nav_bar = [
+  ("/", "Home", False),
+  ("/forgot", "Forgot Password", False)
+] -%}
+
 {% block content %}
 <div class="page-container">
   <div class="page-section" id="recover">
