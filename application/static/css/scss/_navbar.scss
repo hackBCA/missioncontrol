@@ -4,6 +4,10 @@
   background-color: #222322;
   height: 100vh;
   overflow-y: auto;
+  top: 0;
+  left: 0;
+  -webkit-overflow-scrolling: touch;
+  @include transition(all 0.2s ease-out);
 
   .pure-menu-item {
     .pure-menu-link {
@@ -16,6 +20,47 @@
       p {
         margin: 0;
       }
+    }
+  }
+}
+
+.menu-link {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: none;
+  z-index: 10;
+  font-size: 10px;
+  background-color: #a8a8a8;
+  padding: 1em 1.3em;
+  color: #fff;
+
+  &:hover {
+    background-color: #fff;
+
+    color: #a8a8a8;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  #menu {
+    left: -200px;
+
+    &.active {
+      left: 0;
+    }
+  }
+
+  .menu-link {
+    display: block;
+    @include transition(all 0.2s ease-out);
+
+    &.active {
+      left: 200px;
+    }
+
+    span {
+      display: block;
     }
   }
 }

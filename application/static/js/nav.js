@@ -1,7 +1,8 @@
 (function (window, document) {
 
-    var layout   = document.getElementById('layout'),
-        menu     = document.getElementById('menu'),
+    var layout = document.querySelector('.page-container'),
+        full_layout = document.querySelector('.full-page-container'),
+        menu = document.getElementById('menu'),
         menuLink = document.getElementById('menuLink');
 
     function toggleClass(element, className) {
@@ -26,7 +27,11 @@
         var active = 'active';
 
         e.preventDefault();
-        toggleClass(layout, active);
+        if (layout) {
+            toggleClass(layout, active);
+        } else if (full_layout) {
+            toggleClass(full_layout, active);
+        }
         toggleClass(menu, active);
         toggleClass(menuLink, active);
     };

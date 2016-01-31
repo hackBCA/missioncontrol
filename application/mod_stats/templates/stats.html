@@ -1,41 +1,25 @@
-{% extends "user.base.html" %}
-
-{% set nav_bar = [
-  ("/#home", "Home", False),
-  ("/account/settings", "Settings", True)
-] -%}
+{% extends "stats.base.html" %}
 
 {% block content %}
-{% with nav_bar = nav_bar %}
-  {% include "navbar.html" %}
-{% endwith %}
-
+{% include "navbar.html" %}
 <div class="page-container">
   <div class="page-section" id="settings">
     <div class="container">
-      <div class="header">
-        <div class="head-cover">
-          <h2>Statistics</h2>
-          <h4>Hey, {{ current_user.firstname }}!</h4>
-        </div>
-      <div class="info">
-        <div class="application">
-          <h5>Application Stats</h5>
-          {% for field in application_stats %}
-            <p>{{field}}</p>
-          {% endfor %}
-        </div>
-        <div class="applicants">
-          <h5>Applicant Stats (Submitted Applications)</h5>
-          {% for field in applicant_stats %}
-            <p>{{field}}</p>
-          {% endfor %}
-        </div>
+      <h2>Statistics</h2>
+      <h4>Hey, {{ current_user.firstname }}!</h4>
+      <div class="application">
+        <h5>Application Stats</h5>
+        {% for field in application_stats %}
+          <p>{{field}}</p>
+        {% endfor %}
+      </div>
+      <div class="applicants">
+        <h5>Applicant Stats (Submitted Applications)</h5>
+        {% for field in applicant_stats %}
+          <p>{{field}}</p>
+        {% endfor %}
       </div>
     </div>
   </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
 {% endblock %}
