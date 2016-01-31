@@ -1,0 +1,21 @@
+#menu {
+  position: fixed;
+  width: 200px;
+  background-color: #222322;
+  height: 100vh;
+  overflow-y: auto;
+
+  .pure-menu-item {
+    .pure-menu-link {
+      color: #fff;
+
+      &:hover {
+        color: #000;
+      }
+
+      p {
+        margin: 0;
+      }
+    }
+  }
+}
