@@ -106,5 +106,5 @@ def account():
   user = controller.get_user(current_user.email)
   name_form = ChangeNameForm(obj = user)
 
-  return render_template("user.settings.html", name_form = name_form, password_form = password_form)
+  return render_template("user.account.html", name_form = name_form, password_form = password_form)
 
