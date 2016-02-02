@@ -1,0 +1,17 @@
+{% extends "admin.base.html" %}
+
+{% block content %}
+
+<h1>New Member</h1>
+
+<form method="POST" action="">
+{% for field in form %}
+	{{ render_field(field) }}
+{% endfor %}
+
+<div class="buttons">
+	<button class="btn" type="submit">Add</button>
+</div>
+</form>
+
+{% endblock %}
