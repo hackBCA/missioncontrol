@@ -1,0 +1,36 @@
+{% extends "admin.base.html" %}
+
+{% block content %}
+<h2>I am a hacker.</h2>
+
+<table>
+{% for one in stuff %}
+<tr>
+	<td onclick="postIt('{{ one.email }}')">
+		{{ one.full_name() }}
+	</td>
+</tr>
+{% endfor %}
+</table>
+
+<button class="btn" onclick="window.location='/admin/new'">New Member</button>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+	function postIt(email) {
+		form = document.createElement("form");
+		form.method = "post";
+		form.action = "";
+		input = document.createElement("input");
+		input.type = "hidden";
+		input.name = "email";
+		input.value = email;
+		form.appendChild(input);
+		form.submit();
+	}
+</script>
+{% endblock %}
+

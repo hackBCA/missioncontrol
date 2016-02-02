@@ -7,3 +7,4 @@ from application import CONFIG
 @mod_web.route("/")
 def foo():
   return render_template("web.index.html")
+
