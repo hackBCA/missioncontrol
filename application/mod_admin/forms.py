@@ -22,7 +22,7 @@ class StaffForm(Form):
 	confirm_password = PasswordField("Confirm Password", description = "Confirm Password")
 
 	roles = TextField("Role", [
-		validators.Required(message = "Enter what role you are.")
+		validators.Required(message = "Enter the roles of the account.")
 	], description = "Roles")
 
 	def validate_confirm_password(form, field):

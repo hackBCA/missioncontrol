@@ -1,5 +1,6 @@
 from application import CONFIG, app
-from .models import *
+from application.mod_user.models import *
+from application.mod_user.controllers import get_user, add_user
 import re
 import sendgrid
 import bcrypt
@@ -12,25 +13,6 @@ sg = sendgrid.SendGridClient(CONFIG["SENDGRID_API_KEY"])
 def get_users():
 	entries = StaffUserEntry.objects()
 	return entries
-
-def get_user(email):
-	entries = StaffUserEntry.objects(email = email.lower())
-
-	if entries.count() == 1:
-		return entries[0]
-	return None
-
-def add_user(firstname, lastname, email, password, roles):
-	existingUser = get_user(email)
-	if existingUser is not None:
-		raise UserExistsError
-
-	hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
-	new_entry = StaffUserEntry(email = email.lower(), hashed = hashed, firstname = firstname, lastname = lastname, roles = [x.strip() for x in roles.split(',')])
-	new_entry.save()
-
-	#implement later
-	#validate_email(email)
 
 def edit_user(firstname, lastname, email, roles):
 	existingUser = get_user(email)

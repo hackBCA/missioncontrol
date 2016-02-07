@@ -52,7 +52,7 @@ register_connection(
     port = CONFIG["DB_PORT"]
 )
 
-# Cache
+#Cache
 cache = Cache(app, config={"CACHE_TYPE": "simple", "CACHE_DEFAULT_TIMEOUT": 60 * 60 * 24 * 7})
 
 from application.mod_web import web_module

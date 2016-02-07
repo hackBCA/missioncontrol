@@ -6,8 +6,13 @@ class StaffUserEntry(Document):
   email = StringField(required = True)
   hashed = StringField(required = True)
 
+  roles = ListField(required = True)
+
   firstname = StringField(required = True)
-  lastname = StringField(required = True) 
+  lastname = StringField(required = True)
+
+  def full_name(self):
+    return self.firstname + " " + self.lastname
 
 class User(UserMixin):
   def __init__(self, uid, email, firstname, lastname):

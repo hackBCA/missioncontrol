@@ -57,13 +57,13 @@ def login(email):
 def logout():
   logout_user()
 
-def add_user(email, firstname, lastname, password):
+def add_user(email, firstname, lastname, password, roles=""):
   existingUser = get_user(email)
   if existingUser is not None:
     raise UserExistsError
   
   hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
-  new_entry = StaffUserEntry(email = email, hashed = hashed, firstname = firstname, lastname = lastname)
+  new_entry = StaffUserEntry(email = email, hashed = hashed, firstname = firstname, lastname = lastname, roles = [x.strip() for x in roles.split(',')])
   new_entry.save()
 
 def tokenize_email(email):

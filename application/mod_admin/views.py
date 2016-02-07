@@ -24,8 +24,9 @@ def add_member():
 	if request.method == "POST" and form.validate():
 		try:
 			#controller validation
-			controller.add_user(request.form["first_name"], request.form["last_name"], request.form["email"], request.form["password"], request.form["roles"])
+			controller.add_user(request.form["email"].lower(), request.form["first_name"], request.form["last_name"], request.form["password"], request.form["roles"])
 			#redirect to main admin page
+			flash("User Added", "success")
 			return redirect("/admin")
 		except Exception as e:
 			exceptionType = e.args[0]
@@ -47,6 +48,7 @@ def edit_member():
 		try:
 			#EDIT the staff member
 			controller.edit_user(request.form["first_name"], request.form["last_name"], request.form["email"], request.form["roles"])
+			flash("Changes Applied", "success")
 			return redirect("/admin")
 		except Exception as e:
 			if CONFIG["DEBUG"]:
@@ -57,11 +59,7 @@ def edit_member():
 	form.first_name.data = user.firstname
 	form.last_name.data = user.lastname
 	form.email.data = user.email
-	form.roles.data = ""
-	if len(user.roles) >= 1:
-		form.roles.data = user.roles[0]
-		for i in range(1, len(user.roles)):
-			form.roles.data += ", " + user.roles[i]
+	form.roles.data = ",".join(user.roles)
 	return render_template("admin.edit_user.html", user = user, form = form)
 
 @cache.cached()
@@ -69,5 +67,5 @@ def edit_member():
 def delete_member():
 	if request.method == "POST":
 		controller.delete_user(request.form["email"])
-		flash("User Deleted")
+		flash("User Deleted", "success")
 	return redirect("/admin")
