@@ -8,3 +8,4 @@ from application import CONFIG
 @login_required
 def foo():
   return render_template("web.index.html")
+
