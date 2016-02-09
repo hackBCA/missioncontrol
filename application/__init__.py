@@ -1,4 +1,4 @@
-safrom flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect
 from mongoengine import register_connection
 import jinja2
 from flask.ext.cache import Cache
