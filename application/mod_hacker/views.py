@@ -8,3 +8,7 @@ from application import CONFIG
 def send_mass_email():
   controller.send_in_progress_email()
   return render_template("hacker.email.html")
+
+@mod_hacker.route("/search")
+def search():
+  return render_template("hacker.search.html")

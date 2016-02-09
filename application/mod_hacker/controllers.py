@@ -18,7 +18,7 @@ def send_unconfirmed_email():
    
     message = sendgrid.Mail()
     message.add_to(email)
-    message.set_from("noreply@hackbca.com")
+    message.set_from("contact@hackbca.com")
     message.set_subject("hackBCA III - Confirm your account!")
     message.set_html("<p></p>")
 
@@ -36,7 +36,7 @@ def send_not_started_email():
     
     message = sendgrid.Mail()
     message.add_to(email)
-    message.set_from("noreply@hackbca.com")
+    message.set_from("contact@hackbca.com")
     message.set_subject("hackBCA III - Start your application!")
     message.set_html("<p></p>")
 
@@ -50,10 +50,12 @@ def send_in_progress_email():
   users = UserEntry.objects(status = "In Progress")
   for u in users:
     email = u.email
- 
+    if email != 'jack@hackbca.com':
+        continue
+    print(email)
     message = sendgrid.Mail()
     message.add_to(email)
-    message.set_from("noreply@hackbca.com")
+    message.set_from("contact@hackbca.com")
     message.set_subject("hackBCA III - Finish your application!")
     message.set_html("<p></p>")
 
