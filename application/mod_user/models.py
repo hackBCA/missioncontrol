@@ -16,8 +16,6 @@ class StaffUserEntry(Document):
 
   roles = ListField(required = False)
 
-  roles = ListField(required = False)
-
 class User(UserMixin):
   def __init__(self, uid, email, firstname, lastname):
 
