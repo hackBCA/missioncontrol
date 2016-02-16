@@ -12,8 +12,8 @@ def foo():
 	if request.method == "POST":
 		user = request.form["email"]
 		return redirect(url_for('.edit_member', user = user))
-	stuff = controller.get_users()
-	return render_template("admin.index.html", stuff = stuff)
+	users = controller.get_users()
+	return render_template("admin.index.html", users = users)
 
 
 @cache.cached()
@@ -46,7 +46,7 @@ def edit_member():
 
 	if request.method == "POST" and form.validate():
 		try:
-			#EDIT the staff member
+			#Edit the staff member
 			controller.edit_user(request.form["first_name"], request.form["last_name"], request.form["email"], request.form["roles"])
 			flash("Changes Applied", "success")
 			return redirect("/admin")
@@ -60,7 +60,7 @@ def edit_member():
 	form.last_name.data = user.lastname
 	form.email.data = user.email
 	form.roles.data = ",".join(user.roles)
-	return render_template("admin.edit_user.html", user = user, form = form)
+	return render_template("admin.edit.html", user = user, form = form)
 
 @cache.cached()
 @mod_admin.route("/admin/delete", methods = ["GET", "POST"])

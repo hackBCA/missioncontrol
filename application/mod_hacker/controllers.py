@@ -25,7 +25,7 @@ def send_unconfirmed_email():
     message.add_filter("templates", "enable", "1")
     message.add_filter("templates", "template_id", CONFIG["SENDGRID_ACCOUNT_NOT_YET_CONFIRMED_TEMPLATE"])
     message.add_substitution("token", token)  
-
+    
     #status, msg = sg.send(message)
     print(email, status, msg)
 
@@ -42,17 +42,15 @@ def send_not_started_email():
 
     message.add_filter("templates", "enable", "1")
     message.add_filter("templates", "template_id", CONFIG["SENDGRID_APPLICATION_NOT_STARTED_TEMPLATE"])
-
+    
     #status, msg = sg.send(message)
-    print(email, status, msg)
+    #print(email, status, msg)
 
 def send_in_progress_email():
   users = UserEntry.objects(status = "In Progress")
   for u in users:
     email = u.email
-    if email != 'jack@hackbca.com':
-        continue
-    print(email)
+
     message = sendgrid.Mail()
     message.add_to(email)
     message.set_from("contact@hackbca.com")
@@ -61,6 +59,5 @@ def send_in_progress_email():
 
     message.add_filter("templates", "enable", "1")
     message.add_filter("templates", "template_id", CONFIG["SENDGRID_APPLICATION_IN_PROGRESS_TEMPLATE"])
-
     #status, msg = sg.send(message)
-    print(email, status, msg)
+    #print(email, status, msg)

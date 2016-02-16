@@ -28,6 +28,14 @@ class UserEntry(Document):
   site_link = StringField()
   other_link = StringField()
 
+  intended_major = StringField()
+  other_intended_major = StringField()
+
+  reduced_lunch = StringField()
+
+  hear_about_us = StringField()
+  other_hear_about_us = StringField()
+
   free_response1 = StringField() #Mentor: Phone Number
   free_response2 = StringField() #Mentor: Skills
   free_response3 = StringField() #Mentor: Workshop  

@@ -5,17 +5,20 @@
 <div class="page-container">
   <div class="page-section" id="settings">
     <div class="container">
-			<table>
-			{% for user in users %}
-			<tr>
-				<td onclick="postIt('{{ user.email }}')">
-					{{ user.full_name() }}
-				</td>
-			</tr>
-			{% endfor %}
-			</table>
+			<h2> {{ user.full_name() }} </h2>
 
-			<a href="/admin/new"><button class="btn">Add User</button></a>
+			<form method="POST" action="">
+			{% for field in form %}
+				{{ render_field(field) }}
+			{% endfor %}
+
+			<div class="buttons">
+				<button class="btn" type="submit">Save</button>
+				<a href="/admin"><button class="btn" type="button">Cancel</button></a>
+			</div>
+			</form>
+	
+			<button class="btn" type="button" onclick="deleteUser('{{ user.email }}')">Delete User</button>
     </div>
   </div>
 </div>
@@ -23,10 +26,10 @@
 
 {% block scripts %}
 <script type="text/javascript">
-	function postIt(email) {
+	function deleteUser(email) {
 		form = document.createElement("form");
 		form.method = "post";
-		form.action = "";
+		form.action = "/admin/delete";
 		input = document.createElement("input");
 		input.type = "hidden";
 		input.name = "email";

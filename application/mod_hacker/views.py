@@ -6,7 +6,7 @@ from application import CONFIG
 
 @mod_hacker.route("/email")
 def send_mass_email():
-  controller.send_in_progress_email()
+  controller.send_unconfirmed_email()
   return render_template("hacker.email.html")
 
 @mod_hacker.route("/search")
