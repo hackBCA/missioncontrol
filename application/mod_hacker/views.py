@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, flash, session
+from flask import render_template, redirect, request, flash, session, abort
 from flask.ext.login import login_required, current_user
 from . import hacker_module as mod_hacker
 from . import controllers as controller
@@ -25,3 +25,10 @@ def search():
     for person in participants
   ]
   return render_template("hacker.search.html", participants = json.dumps(participants))
+
+@mod_hacker.route("/applicant/<uid>")
+def applicant_view(uid):
+  applicant = controller.get_applicant_by_id(uid)
+  if applicant is None:
+    abort(404)
+  return render_template("hacker.applicant.html", applicant = applicant)

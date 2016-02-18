@@ -18,6 +18,12 @@ def get_participants(page_num = 0, page_size = 50):
 sg = sendgrid.SendGridClient(CONFIG["SENDGRID_API_KEY"])
 ts = URLSafeTimedSerializer(CONFIG["SECRET_KEY"])
 
+def get_applicant_by_id(uid):
+  applicant_entries = UserEntry.objects(id = uid)
+  if applicant_entries.count() != 1:
+    return None
+  return applicant_entries[0]
+
 def tokenize_email(email):
   return ts.dumps(email, salt = CONFIG["EMAIL_TOKENIZER_SALT"])
 

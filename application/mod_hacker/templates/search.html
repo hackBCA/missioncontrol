@@ -1,11 +1,26 @@
 {% extends "hacker.base.html" %}
 
+<<<<<<< HEAD
 {% block content %}
 {% include "navbar.html" %}
+=======
+{% set nav_bar = [
+  ("/", "Home"),
+  ("/search", "Search"),
+  ("/stats", "Statistics"),
+  ("/account", "Settings")
+] -%}
+
+{% block content %}
+{% with nav_bar = nav_bar %}
+  {% include "navbar.html" %}
+{% endwith %}
+>>>>>>> applicant-view
 
 <div class="page-container">
   <div class="page-section" id="settings">
     <div class="container">
+<<<<<<< HEAD
       <h2>Search</h2>
         
       <table id="participant-table">
@@ -38,12 +53,21 @@
           </th>
         </tr>
       </table>
+=======
+      <div class="header">
+        <div class="head-cover">
+          <h2>Search</h2>
+        </div>
+
+      </div>
+>>>>>>> applicant-view
     </div>
   </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
+<<<<<<< HEAD
 <script type="text/javascript">
   var participants = {{ participants|safe }};
   
@@ -104,4 +128,6 @@
     }
   }
 </script>
+=======
+>>>>>>> applicant-view
 {% endblock %}
