@@ -4,6 +4,17 @@ import sendgrid
 import time
 from itsdangerous import URLSafeTimedSerializer
 
+def get_participants(page_num = 0, page_size = 50):
+    users = UserEntry.objects(confirmed = True)
+
+    startPos = page_num * page_size
+    if startPos >= len(users):
+        return []
+    endPos = (page_num + 1) * page_size
+    if endPos > len(users):
+        return users[startPos:]
+    return users[startPos:endPos]
+
 sg = sendgrid.SendGridClient(CONFIG["SENDGRID_API_KEY"])
 ts = URLSafeTimedSerializer(CONFIG["SECRET_KEY"])
 
