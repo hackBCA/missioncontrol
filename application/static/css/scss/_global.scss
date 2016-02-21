@@ -453,6 +453,13 @@ select {
     font-family: "Proxima Nova Light", Helvetica, sans-serif;
   }
 }
+
+.pure-table {
+  width: auto;
+  input {
+    width: auto;
+  }
+}
 .page-container {
   margin-left: 200px;
   position: relative;

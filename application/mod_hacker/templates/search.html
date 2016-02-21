@@ -1,9 +1,5 @@
 {% extends "hacker.base.html" %}
 
-<<<<<<< HEAD
-{% block content %}
-{% include "navbar.html" %}
-=======
 {% set nav_bar = [
   ("/", "Home"),
   ("/search", "Search"),
@@ -15,22 +11,19 @@
 {% with nav_bar = nav_bar %}
   {% include "navbar.html" %}
 {% endwith %}
->>>>>>> applicant-view
-
 <div class="page-container">
   <div class="page-section" id="settings">
     <div class="container">
-<<<<<<< HEAD
       <h2>Search</h2>
         
-      <table id="participant-table">
+      <table id="participant-table" class="pure-table pure-table-bordered">
         <tr>
           <th>First Name</th>
           <th>Last Name</th>
           <th>Email</th> 
+          <th>School</th>
           <th>Account Type</th>
           <th>Account Status</th>
-          <th>School</th>
         </tr>
         <tr>
           <th>
@@ -43,31 +36,29 @@
             <input type="text" class="filter-field" id="filter-email"/>
           </th>
           <th>
+            <input type="text" class="filter-field" id="filter-school"/>
+          </th>
+          <th>
             <input type="text" class="filter-field" id="filter-type_account"/>
           </th>
           <th>
             <input type="text" class="filter-field" id="filter-status"/>
           </th>
-          <th>
-            <input type="text" class="filter-field" id="filter-school"/>
-          </th>
         </tr>
+        {% for participant in participants %}
+          <tr id="{{ participant.id }}">
+          {% for field in ["firstname", "lastname", "email", "school", "type_account", "status"] %}
+            <td class="user-{{ field }}">{{ participant[field] }}</td>
+          {% endfor %}
+          </tr>
+        {% endfor %}
       </table>
-=======
-      <div class="header">
-        <div class="head-cover">
-          <h2>Search</h2>
-        </div>
-
-      </div>
->>>>>>> applicant-view
     </div>
   </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
-<<<<<<< HEAD
 <script type="text/javascript">
   var participants = {{ participants|safe }};
   
@@ -75,19 +66,6 @@
   var pageSize = 50;
 
   var participantFields = ["firstname", "lastname", "email", "type_account", "status", "school"];
-
-  for(var i = 0; i < participants.length; i++){
-    var tableEntry = document.createElement("tr");
-    tableEntry.id = participants[i].id;
-
-    for(var j = 0; j < participantFields.length; j++){
-      var column = document.createElement("td");
-      column.appendChild(document.createTextNode(participants[i][participantFields[j]]));
-      column.classList.add("user-" + participantFields[j]);
-      tableEntry.appendChild(column);
-    }
-    participantTable.getElementsByTagName("tbody")[0].appendChild(tableEntry);
-  }
 
   filter = function(filterVals){
     for(var i = 0; i < participants.length; i++){
@@ -128,6 +106,4 @@
     }
   }
 </script>
-=======
->>>>>>> applicant-view
 {% endblock %}

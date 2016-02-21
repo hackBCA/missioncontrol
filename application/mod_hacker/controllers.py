@@ -22,7 +22,14 @@ def get_applicant_by_id(uid):
   applicant_entries = UserEntry.objects(id = uid)
   if applicant_entries.count() != 1:
     return None
-  return applicant_entries[0]
+  applicant = applicant_entries[0]
+  return applicant
+
+def get_applicant_dict(uid):
+  applicant = get_applicant_by_id(uid)
+  applicant = {k: applicant[k] for k, _ in applicant._fields.items()}
+  applicant.pop("hashed", None)
+  return applicant
 
 def tokenize_email(email):
   return ts.dumps(email, salt = CONFIG["EMAIL_TOKENIZER_SALT"])
