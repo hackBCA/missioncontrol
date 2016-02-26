@@ -15,6 +15,19 @@ def get_participants(page_num = 0, page_size = 50):
         return users[startPos:]
     return users[startPos:endPos]
 
+def get_participant(email):
+    user = UserEntry.objects(email = email.lower())
+
+    if entries.count() == 1:
+        return entries[0]
+    return None
+
+def check_in(email):
+    user = get_participant(email)
+
+    #user.checked_in = True
+    #user.save()
+
 sg = sendgrid.SendGridClient(CONFIG["SENDGRID_API_KEY"])
 ts = URLSafeTimedSerializer(CONFIG["SECRET_KEY"])
 
