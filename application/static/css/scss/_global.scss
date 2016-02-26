@@ -455,9 +455,13 @@ select {
 }
 
 .pure-table {
-  width: auto;
-  input {
-    width: auto;
+  margin: 0 auto;
+  width: 90%;
+  
+  input, select {
+    padding: 5px 10px;
+    margin: 0;
+    background-image: none;
   }
 }
 .page-container {
