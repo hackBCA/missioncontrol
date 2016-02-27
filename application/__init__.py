@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, redirect, flash, render_template
 from mongoengine import register_connection
 import jinja2
 from flask.ext.cache import Cache
@@ -73,3 +73,6 @@ def error(e):
 def error(e):
     flash("You do not have permission to view that page.", "error")
     return redirect("/")
+@app.errorhandler(404)
+def error(e):
+    return render_template("404.html"), 404

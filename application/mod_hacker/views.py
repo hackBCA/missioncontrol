@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 from flask import render_template, redirect, request, flash, session, jsonify
+=======
+from flask import render_template, redirect, request, flash, session, abort
+>>>>>>> c26e3c166608f508c005a26bfaa66713eaa18632
 from flask.ext.login import login_required, current_user
 from . import hacker_module as mod_hacker
 from . import controllers as controller
@@ -27,3 +31,11 @@ def api_get_participants():
   participants = controller.summarize_participants(participants)
 
   return json.dumps(participants)
+
+@mod_hacker.route("/applicant/<uid>")
+def applicant_view(uid):
+  applicant = controller.get_applicant_dict(uid)
+  if applicant is None:
+    abort(404)
+  return render_template("hacker.applicant.html", applicant = applicant)
+
