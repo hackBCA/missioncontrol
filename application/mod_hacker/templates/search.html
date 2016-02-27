@@ -1,9 +1,5 @@
 {% extends "hacker.base.html" %}
 
-<<<<<<< HEAD
-{% block content %}
-{% include "navbar.html" %}
-=======
 {% set nav_bar = [
   ("/", "Home"),
   ("/search", "Search"),
@@ -15,22 +11,19 @@
 {% with nav_bar = nav_bar %}
   {% include "navbar.html" %}
 {% endwith %}
->>>>>>> applicant-view
-
 <div class="page-container">
   <div class="page-section" id="settings">
     <div class="container">
-<<<<<<< HEAD
       <h2>Search</h2>
         
-      <table id="participant-table">
+      <table id="participant-table" class="pure-table pure-table-horizontal">
         <tr>
           <th>First Name</th>
           <th>Last Name</th>
           <th>Email</th> 
+          <th>School</th>
           <th>Account Type</th>
           <th>Account Status</th>
-          <th>School</th>
         </tr>
         <tr>
           <th>
@@ -43,41 +36,39 @@
             <input type="text" class="filter-field" id="filter-email"/>
           </th>
           <th>
+            <input type="text" class="filter-field" id="filter-school"/>
+          </th>
+          <th>
             <select class="filter-field" id="filter-type_account">
-              <option></option>
-              <option value="hacker">Hacker</option>
-              <option value="mentor">Mentor</option>
-              <option value="scholarship">Scholarship</option>
+              <option value=""></option>
+              <option value="H">H</option>
+              <option value="M">M</option>
+              <option value="S">S</option>
             </select>
           </th>
           <th>
             <select class="filter-field" id="filter-status">
-              <option></option>
-              <option value="Not Started">Not Started</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Submitted">Submitted</option>
+              <option value=""></option>
+              <option value="NS">NS</option>
+              <option value="IP">IP</option>
+              <option value="S">S</option>
             </select>
           </th>
-          <th>
-            <input type="text" class="filter-field" id="filter-school"/>
-          </th>
         </tr>
+        {% for participant in participants %}
+          <tr id="{{ participant.id }}">
+          {% for field in ["firstname", "lastname", "email", "school", "type_account", "status"] %}
+            <td class="user-{{ field }}">{{ participant[field] }}</td>
+          {% endfor %}
+          </tr>
+        {% endfor %}
       </table>
-=======
-      <div class="header">
-        <div class="head-cover">
-          <h2>Search</h2>
-        </div>
-
-      </div>
->>>>>>> applicant-view
     </div>
   </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
-<<<<<<< HEAD
 <script type="text/javascript">
   var participants = {{ participants|safe }};
   
@@ -86,58 +77,47 @@
 
   var participantFields = ["firstname", "lastname", "email", "type_account", "status", "school"];
 
-  for(var i = 0; i < participants.length; i++){
-    var tableEntry = document.createElement("tr");
-    tableEntry.id = participants[i].id;
-
-    for(var j = 0; j < participantFields.length; j++){
-      var column = document.createElement("td");
-      column.appendChild(document.createTextNode(participants[i][participantFields[j]]));
-      column.classList.add("user-" + participantFields[j]);
-      tableEntry.appendChild(column);
-    }
-    participantTable.getElementsByTagName("tbody")[0].appendChild(tableEntry);
-  }
-
-  filter = function(filterVals){
-    for(var i = 0; i < participants.length; i++){
+  filter = function(filterVals) {
+    for (var i = 0; i < participants.length; i++) {
       var show = true;
-      for(var j = 0; j < filterVals.length; j++){
+      for (var j = 0; j < filterVals.length; j++) {
         var criteria = filterVals[j];
         var field = criteria[0];
         var partialVal = criteria[1].toLowerCase();
-        if(participants[i][field].toLowerCase().indexOf(partialVal) == -1){
+        if (participants[i][field].toLowerCase().indexOf(partialVal) == -1) {
           show = false;
         }
       }
       var tableEntry = document.getElementById(participants[i].id);
-      if(show){
+      if (show) {
         tableEntry.classList.remove("hide");
       }
-      else{
+      else {
         tableEntry.classList.add("hide");
       }
     }
   }
 
-  getFilterVals = function(){
+  getFilterVals = function() {
     var filterVals = [];
-    for(var i = 0; i < participantFields.length; i++){
+    for (var i = 0; i < participantFields.length; i++) {
       var filterField = document.getElementById("filter-" + participantFields[i]);
-      if(filterField){
-        filterVals.push([participantFields[i], filterField.value]);
+      if (filterField) {
+        if (filterField.tagName === "INPUT") {
+          filterVals.push([participantFields[i], filterField.value]);
+        } else if (filterField.tagName === "SELECT") {
+          filterVals.push([participantFields[i], filterField.options[filterField.selectedIndex].value])
+        }
       }
     }
     return filterVals;
   }
 
   var filterFields = document.getElementsByClassName("filter-field");
-  for(var i = 0; i < filterFields.length; i++){
-    filterFields[i].onchange = function(){
+  for (var i = 0; i < filterFields.length; i++) {
+    filterFields[i].onchange = function() {
       filter(getFilterVals());
     }
   }
 </script>
-=======
->>>>>>> applicant-view
 {% endblock %}

@@ -1,5 +1,26 @@
 {% extends "hacker.base.html" %}
 
+{% if not nav_bar %}
+  {% set nav_bar = [
+    ("/", "Home"),
+    ("/search", "Search"),
+    ("/stats", "Statistics"),
+    ("/account", "Settings"),
+  ] -%}
+{% endif %}
+
 {% block content %}
-  {{ applicant }}
+  {% with nav_bar = nav_bar %}
+    {% include "navbar.html" %}
+  {% endwith %}
+  <div class="page-container">
+  <div class="page-section" id="settings">
+    <div class="container">
+      <h2>{{ applicant.firstname }} {{ applicant.lastname }}</h2>
+      <h3>{{ applicant.type_account }}</h3>
+      <h3>{{ applicant.status }}</h3>
+      {{ applicant }}
+    </div>
+  </div>
+</div>
 {% endblock %}
