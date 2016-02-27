@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-from flask import render_template, redirect, request, flash, session, jsonify
-=======
-from flask import render_template, redirect, request, flash, session, abort
->>>>>>> c26e3c166608f508c005a26bfaa66713eaa18632
+from flask import render_template, redirect, request, flash, session, jsonify, abort, Response, stream_with_context
 from flask.ext.login import login_required, current_user
 from . import hacker_module as mod_hacker
 from . import controllers as controller
@@ -16,19 +12,19 @@ def send_mass_email():
 
 @mod_hacker.route("/search")
 def search():
-  participants = controller.get_participants(0, 50)
-  participants = controller.summarize_participants(participants)
+  accounts = controller.get_all_accounts()
+  summarized = controller.summarize_participants(accounts)
 
-  return render_template("hacker.search.html", participants = json.dumps(participants))
+  return render_template("hacker.search.html")
 
 @mod_hacker.route("/api/get_participants", methods = ["GET"])
 def api_get_participants():
-  print(request.args)
-  if "page_num" not in request.args or "page_size" not in request.args:
-    return jsonify(status = -1, message = "Missing request parameters.")
-
-  participants = controller.get_participants(int(request.args["page_num"]), int(request.args["page_size"]))
-  participants = controller.summarize_participants(participants)
+  accounts = controller.get_all_accounts()
+  summarized = controller.summarize_participants(accounts)
+  return Response(
+    stream_with_context(controller.sse_load(summarized)),
+    mimetype = "text/event-stream"
+  )
 
   return json.dumps(participants)
 

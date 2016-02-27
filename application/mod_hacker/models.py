@@ -41,3 +41,29 @@ class UserEntry(Document):
   free_response3 = StringField() #Mentor: Workshop  
 
   mlh_terms = StringField() 
+
+class ServerSSEEvent(object):
+    """Object wrapper for Server-Sent Event communication with clients.
+    Arguments:
+        data: data to be passed to client.
+        event: event name that clients can use to distinguish different actions.
+        id: identification for instance of object.
+        desc_map: maps arguments to attributes expected by client.
+    """
+    def __init__(self, data, event):
+        self.data = data
+        self.event = event
+        self.id = None
+        self.desc_map = {
+            self.data: "data",
+            self.event: "event",
+            self.id: "id"
+        }
+
+    def encode(self):
+        """Encodes object into format that client will be expecting."""
+        if not self.data:
+            return ""
+        lines = ["%s: %s" % (v, k)
+                 for k, v in self.desc_map.items() if k]
+        return "%s\n\n" % "\n".join(lines)

@@ -3,10 +3,24 @@ from .models import *
 import sendgrid
 import time
 from itsdangerous import URLSafeTimedSerializer
+import json
+
+def sse_load(objects):
+    SSE_BUFFER = 50
+    chunks = [objects[i:i + SSE_BUFFER] for i in range(0, len(objects), SSE_BUFFER)]
+    for chunk in chunks:
+        event = ServerSSEEvent(str(json.dumps(chunk)), "chunk")
+        yield event.encode()
+    event = ServerSSEEvent(" ", "stop")
+    yield event.encode()
 
 def get_participants(page_num = 0, page_size = 50):
     users = UserEntry.objects(confirmed = True).skip((page_num + 1) * page_size).limit(page_size)
     return users
+
+def get_all_accounts():
+    accounts = UserEntry.objects()
+    return accounts
 
 def summarize_participants(participants):
     status_map = {
@@ -15,17 +29,16 @@ def summarize_participants(participants):
     "Submitted": "S"
     }
 
-    participants = [{
-    'id':           str(person.id),
-    'firstname':    person.firstname,
-    'lastname':     person.lastname,
-    'email':        person.email,
-    'type_account': person.type_account[0].upper(),
-    'status':       status_map[person.status],
-    'school':       person.school if person.school is not None else ''
+    summary = [{
+    "id":           str(person.id),
+    "name":         person.firstname + " " + person.lastname,
+    "email":        person.email,
+    "type_account": person.type_account[0].upper(),
+    "status":       status_map[person.status],
+    "school":       person.school if person.school is not None else ""
       }
     for person in participants]
-    return participants
+    return summary
 
 
 def get_participant(email):

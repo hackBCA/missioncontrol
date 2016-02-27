@@ -17,8 +17,7 @@
       <h2>Search</h2>
       <table id="participant-table" class="pure-table pure-table-horizontal">
         <tr>
-          <th>First Name</th>
-          <th>Last Name</th>
+          <th>Name</th>
           <th>Email</th> 
           <th>School</th>
           <th>Account Type</th>
@@ -26,10 +25,7 @@
         </tr>
         <tr>
           <th>
-            <input type="text" class="filter-field" id="filter-firstname"/>
-          </th>
-          <th>
-            <input type="text" class="filter-field" id="filter-lastname"/>
+            <input type="text" class="filter-field" id="filter-name"/>
           </th>
           <th>
             <input type="text" class="filter-field" id="filter-email"/>
@@ -56,8 +52,8 @@
         </tr>
         {% for participant in participants %}
           <tr id="{{ participant.id }}">
-          {% for field in ["firstname", "lastname", "email", "school", "type_account", "status"] %}
-            <td class="user-{{ field }}">{{ participant[field] }}</td>
+          {% for field in ["name", "email", "school", "type_account", "status"] %}
+            <td data-label="{{ field | upper }}" class="user-{{ field }}">{{ participant[field] }}</td>
           {% endfor %}
           </tr>
         {% endfor %}
@@ -69,12 +65,27 @@
 
 {% block scripts %}
 <script type="text/javascript">
-  var participants = {{ participants|safe }};
+  var participants = [];
   
   var participantTable = document.getElementById("participant-table");
   var pageSize = 50;
 
-  var participantFields = ["firstname", "lastname", "email", "type_account", "status", "school"];
+  var participantFields = ["name", "email", "school", "type_account", "status"];
+
+  loadChunk = function(chunk) {
+    var table = document.getElementById("participant-table");
+    for (var i = 0; i < chunk.length; i++) {
+      participants.push(chunk[i]);
+      var row = document.createElement("tr");
+      row.id = chunk[i].id;
+      for (var j = 0; j < participantFields.length; j++) {
+        var col = document.createElement("td");
+        col.innerHTML = chunk[i][participantFields[j]];
+        row.appendChild(col);
+      }
+      table.appendChild(row);
+    }
+  }
 
   filter = function(filterVals) {
     for (var i = 0; i < participants.length; i++) {
@@ -119,10 +130,13 @@
     }
   }
 
-  xttpObj = new XTPHttpRequest;
-  xttpObj.open("GET", "/api/get_participants?page_num=0&page_size=100", true); //True means async
-  xttpObj.send()
-
-  //Access response with xttpObj.responseText
+  var source = new EventSource("/api/get_participants");
+  source.addEventListener("chunk", function(e) {
+      chunk = JSON.parse(e.data);
+      loadChunk(chunk);
+  }, false);
+  source.addEventListener("stop", function(e) {
+      e.target.close();
+  }, false);
 </script>
 {% endblock %}
