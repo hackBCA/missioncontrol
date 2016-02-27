@@ -457,6 +457,7 @@ select {
 .pure-table {
   margin: 0 auto;
   width: 90%;
+  border-collapse: collapse;
   
   input, select {
     padding: 5px 10px;
@@ -464,6 +465,38 @@ select {
     background-image: none;
   }
 }
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+  table, thead, tbody, th, td, tr { 
+    display: block; 
+  }
+  thead tr { 
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+  
+  tr { border: 1px solid #ccc; }
+  
+  td { 
+    border: none;
+    border-bottom: 1px solid #eee; 
+    position: relative;
+    padding-left: 50%; 
+  }
+  
+  td:before { 
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 45%; 
+    padding-right: 10px; 
+    white-space: nowrap;
+  }
+}
+
 .page-container {
   margin-left: 200px;
   position: relative;
