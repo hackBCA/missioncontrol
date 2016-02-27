@@ -5,15 +5,22 @@ import time
 from itsdangerous import URLSafeTimedSerializer
 
 def get_participants(page_num = 0, page_size = 50):
-    users = UserEntry.objects(confirmed = True)
+    users = UserEntry.objects(confirmed = True).skip((page_num + 1) * page_size).limit(page_size)
+    return users
 
-    startPos = page_num * page_size
-    if startPos >= len(users):
-        return []
-    endPos = (page_num + 1) * page_size
-    if endPos > len(users):
-        return users[startPos:]
-    return users[startPos:endPos]
+def summarize_participants(participants):
+    participants = [{
+    'id':           str(person.id),
+    'firstname':    person.firstname,
+    'lastname':     person.lastname,
+    'email':        person.email,
+    'type_account': person.type_account,
+    'status':       person.status,
+    'school':       person.school if person.school is not None else ''
+      }
+    for person in participants]
+    return participants
+
 
 def get_participant(email):
     user = UserEntry.objects(email = email.lower())

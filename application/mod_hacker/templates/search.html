@@ -113,5 +113,11 @@
       filter(getFilterVals());
     }
   }
+
+  xttpObj = new XTPHttpRequest;
+  xttpObj.open("GET", "/api/get_participants?page_num=0&page_size=100", true); //True means async
+  xttpObj.send()
+
+  //Access response with xttpObj.responseText
 </script>
 {% endblock %}
