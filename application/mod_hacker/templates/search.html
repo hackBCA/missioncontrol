@@ -15,6 +15,7 @@
   <div class="page-section" id="search">
     <div class="container">
       <h2>Search</h2>
+      <h6 id="row_count">0 Rows loaded.</h6>
       <table id="participant-table" class="pure-table pure-table-horizontal">
         <thead>
           <tr>
@@ -53,6 +54,7 @@
           </tr>
         </thead>
       </table>
+      <i id="load_icon" class="fa fa-refresh fa-spin fa-3x"></i>
     </div>
   </div>
 </div>
@@ -83,6 +85,7 @@
       }
       table.appendChild(row);
     }
+    document.getElementById("row_count").innerHTML = participants.length + " Row" + (participants.length === 1 ? "" : "s") + " loaded.";
   }
 
   filter = function(filterVals) {
@@ -130,11 +133,12 @@
 
   var source = new EventSource("/api/get_participants");
   source.addEventListener("chunk", function(e) {
-      chunk = JSON.parse(e.data);
-      loadChunk(chunk);
+    chunk = JSON.parse(e.data);
+    loadChunk(chunk);
   }, false);
   source.addEventListener("stop", function(e) {
-      e.target.close();
+    document.getElementById("load_icon").classList.add("hide");
+    e.target.close();
   }, false);
 </script>
 {% endblock %}

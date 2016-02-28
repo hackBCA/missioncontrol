@@ -5,12 +5,16 @@ import time
 from itsdangerous import URLSafeTimedSerializer
 import json
 
-def sse_load(objects):
+def sse_load():
     SSE_BUFFER = 50
-    chunks = [objects[i:i + SSE_BUFFER] for i in range(0, len(objects), SSE_BUFFER)]
-    for chunk in chunks:
-        event = ServerSSEEvent(str(json.dumps(chunk)), "chunk")
+    page = 0
+    chunk = get_all_accounts(page, SSE_BUFFER)
+    while len(chunk) != 0:
+        summarized = summarize_participants(chunk)
+        page += 1
+        event = ServerSSEEvent(str(json.dumps(summarized)), "chunk")
         yield event.encode()
+        chunk = get_all_accounts(page, SSE_BUFFER)
     event = ServerSSEEvent(" ", "stop")
     yield event.encode()
 
@@ -18,8 +22,8 @@ def get_participants(page_num = 0, page_size = 50):
     users = UserEntry.objects(confirmed = True).skip((page_num + 1) * page_size).limit(page_size)
     return users
 
-def get_all_accounts():
-    accounts = UserEntry.objects()
+def get_all_accounts(page, buffer_size):
+    accounts = UserEntry.objects().skip((page) * buffer_size).limit(buffer_size)
     return accounts
 
 def summarize_participants(participants):

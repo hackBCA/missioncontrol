@@ -12,17 +12,12 @@ def send_mass_email():
 
 @mod_hacker.route("/search")
 def search():
-  accounts = controller.get_all_accounts()
-  summarized = controller.summarize_participants(accounts)
-
   return render_template("hacker.search.html")
 
 @mod_hacker.route("/api/get_participants", methods = ["GET"])
 def api_get_participants():
-  accounts = controller.get_all_accounts()
-  summarized = controller.summarize_participants(accounts)
   return Response(
-    stream_with_context(controller.sse_load(summarized)),
+    stream_with_context(controller.sse_load()),
     mimetype = "text/event-stream"
   )
 
