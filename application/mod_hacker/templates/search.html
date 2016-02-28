@@ -16,47 +16,42 @@
     <div class="container">
       <h2>Search</h2>
       <table id="participant-table" class="pure-table pure-table-horizontal">
-        <tr>
-          <th>Name</th>
-          <th>Email</th> 
-          <th>School</th>
-          <th>Account Type</th>
-          <th>Account Status</th>
-        </tr>
-        <tr>
-          <th>
-            <input type="text" class="filter-field" id="filter-name"/>
-          </th>
-          <th>
-            <input type="text" class="filter-field" id="filter-email"/>
-          </th>
-          <th>
-            <input type="text" class="filter-field" id="filter-school"/>
-          </th>
-          <th>
-            <select class="filter-field" id="filter-type_account">
-              <option value=""></option>
-              <option value="H">H</option>
-              <option value="M">M</option>
-              <option value="S">S</option>
-            </select>
-          </th>
-          <th>
-            <select class="filter-field" id="filter-status">
-              <option value=""></option>
-              <option value="NS">NS</option>
-              <option value="IP">IP</option>
-              <option value="S">S</option>
-            </select>
-          </th>
-        </tr>
-        {% for participant in participants %}
-          <tr id="{{ participant.id }}">
-          {% for field in ["name", "email", "school", "type_account", "status"] %}
-            <td data-label="{{ field | upper }}" class="user-{{ field }}">{{ participant[field] }}</td>
-          {% endfor %}
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th> 
+            <th>School</th>
+            <th>Account Type</th>
+            <th>Account Status</th>
           </tr>
-        {% endfor %}
+          <tr>
+            <th>
+              <input type="text" class="filter-field" id="filter-name"/>
+            </th>
+            <th>
+              <input type="text" class="filter-field" id="filter-email"/>
+            </th>
+            <th>
+              <input type="text" class="filter-field" id="filter-school"/>
+            </th>
+            <th>
+              <select class="filter-field" id="filter-type_account">
+                <option value=""></option>
+                <option value="H">H</option>
+                <option value="M">M</option>
+                <option value="S">S</option>
+              </select>
+            </th>
+            <th>
+              <select class="filter-field" id="filter-status">
+                <option value=""></option>
+                <option value="NS">NS</option>
+                <option value="IP">IP</option>
+                <option value="S">S</option>
+              </select>
+            </th>
+          </tr>
+        </thead>
       </table>
     </div>
   </div>
@@ -71,6 +66,7 @@
   var pageSize = 50;
 
   var participantFields = ["name", "email", "school", "type_account", "status"];
+  var fieldTitles = ["Name", "Email", "School", "Account Type", "Status"];
 
   loadChunk = function(chunk) {
     var table = document.getElementById("participant-table");
@@ -78,8 +74,10 @@
       participants.push(chunk[i]);
       var row = document.createElement("tr");
       row.id = chunk[i].id;
+      row.onclick = function() { window.location.href = "/applicant/" + this.id; }
       for (var j = 0; j < participantFields.length; j++) {
         var col = document.createElement("td");
+        col.dataset.label = fieldTitles[j];
         col.innerHTML = chunk[i][participantFields[j]];
         row.appendChild(col);
       }

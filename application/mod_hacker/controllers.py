@@ -35,7 +35,7 @@ def summarize_participants(participants):
     "email":        person.email,
     "type_account": person.type_account[0].upper(),
     "status":       status_map[person.status],
-    "school":       person.school if person.school is not None else ""
+    "school":       person.school if person.school is not None else "&nbsp;"
       }
     for person in participants]
     return summary

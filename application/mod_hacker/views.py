@@ -34,4 +34,3 @@ def applicant_view(uid):
   if applicant is None:
     abort(404)
   return render_template("hacker.applicant.html", applicant = applicant)
-
