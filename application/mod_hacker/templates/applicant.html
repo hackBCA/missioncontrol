@@ -19,7 +19,9 @@
       <h2>{{ applicant.firstname }} {{ applicant.lastname }}</h2>
       <h3>{{ applicant.type_account }}</h3>
       <h3>{{ applicant.status }}</h3>
-      {{ applicant }}
+      {% for field, val in applicant.items() %}
+          <p>{{ field }}: {{ val }}</p>
+      {% endfor %}
     </div>
   </div>
 </div>

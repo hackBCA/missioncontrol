@@ -4,11 +4,13 @@ import sendgrid
 import time
 from itsdangerous import URLSafeTimedSerializer
 import json
+from mongoengine.errors import FieldDoesNotExist
 
 def sse_load():
     SSE_BUFFER = 50
     page = 0
     chunk = get_all_accounts(page, SSE_BUFFER)
+    print("chunk " + str(page) + ": " + str(len(chunk)))
     while len(chunk) != 0:
         summarized = summarize_participants(chunk)
         page += 1
@@ -48,8 +50,8 @@ def summarize_participants(participants):
 def get_participant(email):
     user = UserEntry.objects(email = email.lower())
 
-    if entries.count() == 1:
-        return entries[0]
+    if user.count() == 1:
+        return user[0]
     return None
 
 def check_in(email):
@@ -72,6 +74,7 @@ def get_applicant_dict(uid):
   applicant = get_applicant_by_id(uid)
   applicant = {k: applicant[k] for k, _ in applicant._fields.items()}
   applicant.pop("hashed", None)
+  applicant.pop("id", None)
   return applicant
 
 def tokenize_email(email):
