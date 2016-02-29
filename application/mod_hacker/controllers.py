@@ -15,13 +15,13 @@ def get_participant(email):
     return None   
 
 def get_next_application(reviewer_email):
-    users = UserEntry.objects(status = "Submitted", lastname = "Neus", review1 = None)
+    users = UserEntry.objects(status = "Submitted", review1 = None)
     if users.count():
         return users[0]
-    users = UserEntry.objects(status = "Submitted", lastname = "Neus", review2 = None, reviewer1__ne = reviewer_email)
+    users = UserEntry.objects(status = "Submitted", review2 = None, reviewer1__ne = reviewer_email)
     if users.count():
         return users[0]
-    users = UserEntry.objects(status = "Submitted", lastname = "Neus", review3 = None, reviewer1__ne = reviewer_email, reviewer2__ne = reviewer_email)
+    users = UserEntry.objects(status = "Submitted", review3 = None, reviewer1__ne = reviewer_email, reviewer2__ne = reviewer_email)
     if users.count():
         return users[0]
     return None
