@@ -42,6 +42,13 @@ class UserEntry(Document):
 
   mlh_terms = StringField() 
 
+  review1 = IntField()
+  reviewer1 = StringField()
+  review2 = IntField()
+  reviewer2 = StringField()
+  review3 = IntField()
+  reviewer3 = StringField()
+
 class ServerSSEEvent(object):
     """Object wrapper for Server-Sent Event communication with clients.
     Arguments:
