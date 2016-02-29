@@ -41,3 +41,10 @@ class UserEntry(Document):
   free_response3 = StringField() #Mentor: Workshop  
 
   mlh_terms = StringField() 
+
+  review1 = IntField()
+  reviewer1 = StringField()
+  review2 = IntField()
+  reviewer2 = StringField()
+  review3 = IntField()
+  reviewer3 = StringField()

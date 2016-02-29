@@ -7,6 +7,34 @@ from itsdangerous import URLSafeTimedSerializer
 sg = sendgrid.SendGridClient(CONFIG["SENDGRID_API_KEY"])
 ts = URLSafeTimedSerializer(CONFIG["SECRET_KEY"])
 
+def get_participant(email):
+    entries = UserEntry.objects(email = email.lower())
+
+    if entries.count() == 1:
+        return entries[0]
+    return None   
+
+def get_next_application(reviewer_email):
+    users = UserEntry.objects(status = "Submitted", review1 = None)
+    if users.count():
+        return users[0]
+    users = UserEntry.objects(status = "Submitted", review2 = None, reviewer1__ne = reviewer_email)
+    if users.count():
+        return users[0]
+    users = UserEntry.objects(status = "Submitted", review3 = None, reviewer1__ne = reviewer_email, reviewer2__ne = reviewer_email)
+    if users.count():
+        return users[0]
+    return None
+
+def review_application(email, review, reviewer):
+    user = get_participant(email)
+    for r in ["1","2","3"]:
+        if not "review"+r in user or user["review"+r] not in [1, 2, 3, 4, 5]:
+            user["review"+r] = review
+            user["reviewer"+r] = reviewer 
+            break
+    user.save()
+
 def tokenize_email(email):
   return ts.dumps(email, salt = CONFIG["EMAIL_TOKENIZER_SALT"])
 

@@ -1,14 +1,5 @@
 {% extends "hacker.base.html" %}
 
-{% if not nav_bar %}
-  {% set nav_bar = [
-    ("/", "Home"),
-    ("/search", "Search")
-    ("/stats", "Statistics"),
-    ("/account", "Settings"),
-  ] -%}
-{% endif %}
-
 {% block content %}
 {% with nav_bar = nav_bar %}
   {% include "navbar.html" %}
