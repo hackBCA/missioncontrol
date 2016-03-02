@@ -1,11 +1,12 @@
 from mongoengine import *
 
+#Mongo Object
 class UserEntry(Document):
   email = StringField(required = True)
   hashed = StringField(required = True)
 
   firstname = StringField(required = True)
-  lastname = StringField(required = True) 
+  lastname = StringField(required = True)
 
   confirmed = BooleanField(required = False, default = False)
 
@@ -20,7 +21,7 @@ class UserEntry(Document):
   ethnicity = StringField()
   grade = StringField()
   num_hackathons = StringField()
-  
+
   phone = StringField()
 
   github_link = StringField()
@@ -38,9 +39,9 @@ class UserEntry(Document):
 
   free_response1 = StringField() #Mentor: Phone Number
   free_response2 = StringField() #Mentor: Skills
-  free_response3 = StringField() #Mentor: Workshop  
+  free_response3 = StringField() #Mentor: Workshop
 
-  mlh_terms = StringField() 
+  mlh_terms = StringField()
 
   review1 = IntField()
   reviewer1 = StringField()
@@ -48,6 +49,22 @@ class UserEntry(Document):
   reviewer2 = StringField()
   review3 = IntField()
   reviewer3 = StringField()
+
+  attending = StringField()
+  phone = StringField()
+  t_shirt_size = StringField()
+
+  emergency_contact_name1 = StringField()
+  emergency_contact_phone1 = StringField()
+  emergency_contact_relation1 = StringField()
+
+  emergency_contact_name2 = StringField()
+  emergency_contact_phone2 = StringField()
+  emergency_contact_relation2 = StringField()
+
+  food_allergies = StringField()
+  medical_information = StringField()
+  hackbca_rules = StringField()
 
 class ServerSSEEvent(object):
     """Object wrapper for Server-Sent Event communication with clients.
