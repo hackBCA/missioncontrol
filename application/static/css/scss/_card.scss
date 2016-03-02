@@ -1,0 +1,22 @@
+.card {
+  width: 80%;
+  background-color: #3B3C3D;
+  color: #fff;
+  border-radius: 2px;
+  margin: 0 auto;
+
+  .pure-g {
+    -webkit-justify-content: center;
+    justify-content: center;
+    max-width: 80%;
+    margin: 0 auto;
+  }
+
+  #basic_info, #links, #free_responses {
+    &> h4 {
+      background-color: #2B93C9;
+      color: #fff;
+      padding: 1% 0;
+    }
+  }
+}
