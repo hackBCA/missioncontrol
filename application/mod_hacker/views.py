@@ -35,3 +35,7 @@ def review():
 			session["active_app"] = user.email
 		
 	return render_template("hacker.review.html", form = form, user = user)
+
+@mod_hacker.route("/accept", methods = ["GET", "POST"])
+def accept():
+	return render_template("hacker.accept.html")
