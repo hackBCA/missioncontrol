@@ -4,7 +4,6 @@ import sendgrid
 import time
 from itsdangerous import URLSafeTimedSerializer
 import json
-from mongoengine.errors import FieldDoesNotExist
 
 def sse_load():
     SSE_BUFFER = 50

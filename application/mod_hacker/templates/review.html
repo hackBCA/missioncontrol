@@ -14,10 +14,9 @@
         </div>
         {% if user != None %}
         <div class="user-view">
-            <!-- Insert User View here -->
-            {{ user.firstname + " " + user.lastname }}
-            <br />
-            {{ user.email }}
+          {% with applicant = user %}
+            {% include "hacker.applicant_card.html" %}
+          {% endwith %}
         </div>
         <h5>Rate Application</h5>
         <form id="rate_applicant-form" method="POST" action="/review">
@@ -26,9 +25,7 @@
           <i class="fa fa-star-o fa-2x rating-star" value="3" id="star-3"></i>
           <i class="fa fa-star-o fa-2x rating-star" value="4" id="star-4"></i>
           <i class="fa fa-star-o fa-2x rating-star" value="5" id="star-5"></i>
-          <br />
           {{ form["rating"].errors[0] }}
-
           <div class="hide">
             <input type="radio" name="rating" id="rate-1" value="1"/>1
             <input type="radio" name="rating" id="rate-2" value="2"/>2
@@ -36,12 +33,10 @@
             <input type="radio" name="rating" id="rate-4" value="4"/>4
             <input type="radio" name="rating" id="rate-5" value="5"/>5
           </div>
-          <br /><br />
-
-          <button class="btn" type="submit" name="submit">Rate and Continue</button>
+          <p><button class="btn" type="submit" name="submit">Rate and Continue</button></p>
         </form>
         {% else %}
-          There is not currently anyone for you to review!
+          <p>There is not currently anyone for you to review!</p>
         {% endif %}
       </div>
     </div>

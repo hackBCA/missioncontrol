@@ -3,13 +3,20 @@
   background-color: #3B3C3D;
   color: #fff;
   border-radius: 2px;
-  margin: 0 auto;
+  margin: 1% auto;
 
   .pure-g {
     -webkit-justify-content: center;
     justify-content: center;
     max-width: 80%;
     margin: 0 auto;
+
+    p {
+      span {
+        text-decoration: underline;
+        font-weight: bold;
+      }
+    }
   }
 
   #basic_info, #links, #free_responses {
