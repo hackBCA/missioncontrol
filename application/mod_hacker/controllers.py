@@ -3,9 +3,70 @@ from .models import *
 import sendgrid
 import time
 from itsdangerous import URLSafeTimedSerializer
+import json
+
+def sse_load():
+    SSE_BUFFER = 50
+    page = 0
+    chunk = get_all_accounts(page, SSE_BUFFER)
+    print("chunk " + str(page) + ": " + str(len(chunk)))
+    while len(chunk) != 0:
+        summarized = summarize_participants(chunk)
+        page += 1
+        event = ServerSSEEvent(str(json.dumps(summarized)), "chunk")
+        yield event.encode()
+        chunk = get_all_accounts(page, SSE_BUFFER)
+    event = ServerSSEEvent(" ", "stop")
+    yield event.encode()
+
+def get_participants(page_num = 0, page_size = 50):
+    users = UserEntry.objects(confirmed = True).skip((page_num + 1) * page_size).limit(page_size)
+    return users
+
+def get_all_accounts(page, buffer_size):
+    accounts = UserEntry.objects().skip((page) * buffer_size).limit(buffer_size)
+    return accounts
+
+def summarize_participants(participants):
+    status_map = {
+    "Not Started": "NS",
+    "In Progress": "IP",
+    "Submitted": "S"
+    }
+
+    summary = [{
+    "id":           str(person.id),
+    "name":         person.firstname + " " + person.lastname,
+    "email":        person.email,
+    "type_account": person.type_account[0].upper(),
+    "status":       status_map[person.status],
+    "school":       person.school if person.school is not None else "&nbsp;"
+      }
+    for person in participants]
+    return summary
+
+def check_in(email):
+    user = get_participant(email)
+
+    #user.checked_in = True
+    #user.save()
 
 sg = sendgrid.SendGridClient(CONFIG["SENDGRID_API_KEY"])
 ts = URLSafeTimedSerializer(CONFIG["SECRET_KEY"])
+
+def get_applicant_by_id(uid):
+  applicant_entries = UserEntry.objects(id = uid)
+  if applicant_entries.count() != 1:
+    return None
+  applicant = applicant_entries[0]
+  return applicant
+
+def get_applicant_dict(uid):
+  applicant = get_applicant_by_id(uid)
+  applicant = {k: applicant[k] for k, _ in applicant._fields.items()}
+  applicant.pop("hashed", None)
+  applicant.pop("id", None)
+  return applicant
 
 def get_participant(email):
     entries = UserEntry.objects(email = email.lower())

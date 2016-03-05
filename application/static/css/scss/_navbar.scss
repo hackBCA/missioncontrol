@@ -7,6 +7,7 @@
   top: 0;
   left: 0;
   -webkit-overflow-scrolling: touch;
+  z-index: 9999;
   @include transition(all 0.2s ease-out);
 
   .pure-menu-item {

@@ -177,7 +177,6 @@ select {
   -webkit-appearance: none;
    -moz-appearance: none;
    appearance: none;
-   background-image: url(/static/chevrondown.png);
    background-position: 100%;
    background-repeat: no-repeat;
    background-size: 50px;
@@ -453,6 +452,71 @@ select {
     font-family: "Proxima Nova Light", Helvetica, sans-serif;
   }
 }
+
+.pure-table {
+  margin: 0 auto;
+  width: 90%;
+  border-collapse: collapse;
+  
+  input, select {
+    padding: 5px 10px;
+    margin: 0;
+    background-image: none;
+  }
+
+  thead {
+    background-color: inherit;
+    color: inherit;
+    text-align: center;
+  }
+
+  &> tr {
+    &:hover {
+      background-color: #eee;
+      color: #000;
+      cursor: pointer;
+    }
+  }
+}
+
+#load_icon {
+  margin: 1% 0;
+}
+
+.small-filter {
+  display: none;
+}
+
+@media screen and (max-width: 1280px) {
+  .pure-table thead {
+    display: none;
+  }
+
+  .small-filter {
+    display: block;
+  }
+
+  .pure-table tr {
+    display: block;
+    border-bottom: 1px solid #ccc;
+  }
+  .pure-table td {
+    display: block;
+    text-align: right;
+    font-size: 13px;
+    border-bottom: 1px dotted #ccc;
+  }
+  .pure-table td:last-child {
+    border-bottom: 0;
+  }
+  .pure-table td:before {
+    content: attr(data-label);
+    float: left;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+}
+
 .page-container {
   margin-left: 200px;
   position: relative;

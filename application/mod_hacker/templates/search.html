@@ -4,20 +4,143 @@
 {% with nav_bar = nav_bar %}
   {% include "navbar.html" %}
 {% endwith %}
-
 <div class="page-container">
-  <div class="page-section" id="settings">
+  <div class="page-section" id="search">
     <div class="container">
-      <div class="header">
-        <div class="head-cover">
-          <h2>Search</h2>
-        </div>
-
-      </div>
+      <h2>Search</h2>
+      <h6 id="row_count">0 Rows loaded.</h6>
+      <table id="participant-table" class="pure-table pure-table-horizontal">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th> 
+            <th>School</th>
+            <th>Account Type</th>
+            <th>Account Status</th>
+          </tr>
+          <tr>
+            <th>
+              <input type="text" class="filter-field" id="filter-name"/>
+            </th>
+            <th>
+              <input type="text" class="filter-field" id="filter-email"/>
+            </th>
+            <th>
+              <input type="text" class="filter-field" id="filter-school"/>
+            </th>
+            <th>
+              <select class="filter-field" id="filter-type_account">
+                <option value=""></option>
+                <option value="H">H</option>
+                <option value="M">M</option>
+                <option value="S">S</option>
+              </select>
+            </th>
+            <th>
+              <select class="filter-field" id="filter-status">
+                <option value=""></option>
+                <option value="NS">NS</option>
+                <option value="IP">IP</option>
+                <option value="S">S</option>
+              </select>
+            </th>
+          </tr>
+        </thead>
+      </table>
+      <i id="load_icon" class="fa fa-refresh fa-spin fa-3x"></i>
     </div>
   </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
+<script type="text/javascript">
+  var participants = [];
+  
+  var participantTable = document.getElementById("participant-table");
+  var pageSize = 50;
+
+  var participantFields = ["name", "email", "school", "type_account", "status"];
+  var fieldTitles = ["Name", "Email", "School", "Account Type", "Status"];
+
+  loadChunk = function(chunk) {
+    var table = document.getElementById("participant-table");
+    for (var i = 0; i < chunk.length; i++) {
+      participants.push(chunk[i]);
+      var row = document.createElement("tr");
+      row.id = chunk[i].id;
+      row.onclick = function() { window.location.href = "/applicant/" + this.id; }
+      for (var j = 0; j < participantFields.length; j++) {
+        var col = document.createElement("td");
+        col.dataset.label = fieldTitles[j];
+        col.innerHTML = chunk[i][participantFields[j]];
+        row.appendChild(col);
+      }
+      table.appendChild(row);
+    }
+    document.getElementById("row_count").innerHTML = participants.length + " Row" + (participants.length === 1 ? "" : "s") + " loaded.";
+  }
+
+  filter = function(filterVals) {
+    for (var i = 0; i < participants.length; i++) {
+      var show = true;
+      for (var j = 0; j < filterVals.length; j++) {
+        var criteria = filterVals[j];
+        var field = criteria[0];
+        var partialVal = criteria[1].toLowerCase();
+        if(partialVal.length > 0){
+          if(field === "type_account" || field === "status"){
+            if (participants[i][field].toLowerCase() != partialVal){
+              show = false;
+            }
+          }
+          else{
+            if (participants[i][field].toLowerCase().indexOf(partialVal) === -1) {
+              show = false;
+            }
+          }
+        }
+      }
+      var tableEntry = document.getElementById(participants[i].id);
+      if (show) {
+        tableEntry.classList.remove("hide");
+      }
+      else {
+        tableEntry.classList.add("hide");
+      }
+    }
+  }
+
+  getFilterVals = function() {
+    var filterVals = [];
+    for (var i = 0; i < participantFields.length; i++) {
+      var filterField = document.getElementById("filter-" + participantFields[i]);
+      if (filterField) {
+        if (filterField.tagName === "INPUT") {
+          filterVals.push([participantFields[i], filterField.value]);
+        } else if (filterField.tagName === "SELECT") {
+          filterVals.push([participantFields[i], filterField.options[filterField.selectedIndex].value])
+        }
+      }
+    }
+    return filterVals;
+  }
+
+  var filterFields = document.getElementsByClassName("filter-field");
+  for (var i = 0; i < filterFields.length; i++) {
+    filterFields[i].onchange = function() {
+      filter(getFilterVals());
+    }
+  }
+
+  var source = new EventSource("/api/get_participants");
+  source.addEventListener("chunk", function(e) {
+    chunk = JSON.parse(e.data);
+    loadChunk(chunk);
+  }, false);
+  source.addEventListener("stop", function(e) {
+    document.getElementById("load_icon").classList.add("hide");
+    e.target.close();
+  }, false);
+</script>
 {% endblock %}
