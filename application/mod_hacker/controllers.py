@@ -9,7 +9,6 @@ def sse_load_participants():
     SSE_BUFFER = 50
     page = 0
     chunk = get_all_accounts_paginate(page, SSE_BUFFER)
-    print("chunk " + str(page) + ": " + str(len(chunk)))
     while len(chunk) != 0:
         summarized = summarize_participants(chunk)
         page += 1
@@ -45,9 +44,10 @@ def summarize_participants(participants):
     "email":        person.email,
     "type_account": person.type_account[0].upper(),
     "status":       status_map[person.status],
-    "school":       person.school if person.school is not None else "&nbsp;"
+    "school":       person.school if not person.school in ("", None) else "&nbsp;"
       }
     for person in participants]
+
     return summary
 
 def check_in(email):
