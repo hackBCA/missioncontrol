@@ -88,8 +88,17 @@
         var criteria = filterVals[j];
         var field = criteria[0];
         var partialVal = criteria[1].toLowerCase();
-        if (participants[i][field].toLowerCase().indexOf(partialVal) == -1) {
-          show = false;
+        if(partialVal.length > 0){
+          if(field === "type_account" || field === "status"){
+            if (participants[i][field].toLowerCase() != partialVal){
+              show = false;
+            }
+          }
+          else{
+            if (participants[i][field].toLowerCase().indexOf(partialVal) === -1) {
+              show = false;
+            }
+          }
         }
       }
       var tableEntry = document.getElementById(participants[i].id);
