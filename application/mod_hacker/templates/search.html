@@ -133,14 +133,28 @@
     }
   }
 
-  var source = new EventSource("/api/get_participants");
-  source.addEventListener("chunk", function(e) {
-    chunk = JSON.parse(e.data);
-    loadChunk(chunk);
-  }, false);
-  source.addEventListener("stop", function(e) {
-    document.getElementById("load_icon").classList.add("hide");
-    e.target.close();
-  }, false);
+  if (!!window.EventSource) {
+    var source = new EventSource("/api/get_participants_sse");
+    source.addEventListener("chunk", function(e) {
+      chunk = JSON.parse(e.data);
+      loadChunk(chunk);
+    }, false);
+    source.addEventListener("stop", function(e) {
+      document.getElementById("load_icon").classList.add("hide");
+      e.target.close();
+    }, false);
+  } else {
+    // Fall back to AJAX :(
+    var request = new XMLHttpRequest();
+    request.open("GET", "/api/get_participants_ajax", true);
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400) {
+        var chunk = JSON.parse(request.responseText);
+        loadChunk(chunk);
+      } else {}
+    };
+    request.onerror = function() {};
+    request.send();
+  }
 </script>
 {% endblock %}
