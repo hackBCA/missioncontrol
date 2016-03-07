@@ -43,7 +43,7 @@
 
 {% block scripts %}
 <script type="text/javascript">
-  rows = document.querySelectorAll("table > tr");
+  rows = document.querySelectorAll("table tbody tr");
   for (var i = 0; i < rows.length; i++) {
     rows[i].onclick = function() {
       window.location.href = "/admin/edit/" + this.id;

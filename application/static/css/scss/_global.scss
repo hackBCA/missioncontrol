@@ -208,7 +208,8 @@ select {
       }
 
       @media screen and (max-width: 480px) {
-        width: 49.5%;
+        width: 50%;
+        margin-right: 0;
       }
 
       &:last-child {
@@ -254,10 +255,11 @@ select {
         background-color: #c8c8c8;
         color: #fff;
         width: 12%;
+        margin-bottom: 1%;
         @media screen and (max-width: 1366px) { width: 25%; }
         @media screen and (max-width: 1024px) { width: 35%; }
         @media screen and (max-width: 768px) { width: 45%; }
-        @media screen and (max-width: 480px) { width: 50%; }
+        @media screen and (max-width: 480px) { width: 51%; }
 
         input[type="checkbox"] {
           width: auto !important;
