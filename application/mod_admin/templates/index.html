@@ -5,14 +5,35 @@
 <div class="page-container">
   <div class="page-section" id="settings">
     <div class="container">
-      <table class="pure-table">
-      {% for user in users %}
-        <tr id="{{ user.id }}">
-          <td>
-            {{ user.full_name() }}
-          </td>
-        </tr>
-      {% endfor %}
+      <table class="pure-table pure-table-horizontal">
+        <thead>
+          <tr>
+            <th><h6>Name</h6></th>
+            <th><h6>Email</h6></th>
+            <th><h6>Roles</h6></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+            <tr id="{{ user.id }}">
+              <td data-label="Name">
+                {{ user.full_name() }}
+              </td>
+              <td data-label="Email">
+                {{ user.email }}
+              </td>
+              <td data-label="Roles">
+                {% if user.roles|length > 0 %}
+                  {% for role in user.roles %}
+                    <span>{{ role|title }}</span>
+                  {% endfor %}
+                {% else %}
+                  <span id="none">None</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
       </table>
       <a href="/admin/new"><button class="btn">Add User</button></a>
     </div>
@@ -22,7 +43,7 @@
 
 {% block scripts %}
 <script type="text/javascript">
-  rows = document.querySelectorAll("table tr");
+  rows = document.querySelectorAll("table > tr");
   for (var i = 0; i < rows.length; i++) {
     rows[i].onclick = function() {
       window.location.href = "/admin/edit/" + this.id;

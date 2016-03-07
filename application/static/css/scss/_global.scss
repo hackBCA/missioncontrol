@@ -454,7 +454,7 @@ select {
 }
 
 .pure-table {
-  margin: 0 auto;
+  margin: 1% auto;
   width: 90%;
   border-collapse: collapse;
   
@@ -470,11 +470,24 @@ select {
     text-align: center;
   }
 
-  &> tr {
-    &:hover {
-      background-color: #eee;
-      color: #000;
-      cursor: pointer;
+  tbody {
+    &> tr {
+      &:hover {
+        background-color: #eee;
+        color: #000;
+        cursor: pointer;
+      }
+    }
+
+    span {
+      background-color: #3498db;
+      color: #fff;
+      padding: 5px;
+      border-radius: 2.5px;
+
+      &#none {
+        background-color: #f39c12;
+      }
     }
   }
 }
@@ -498,13 +511,13 @@ select {
 
   .pure-table tr {
     display: block;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 2px solid #ccc !important;
   }
   .pure-table td {
     display: block;
     text-align: right;
     font-size: 13px;
-    border-bottom: 1px dotted #ccc;
+    border-bottom: 1px dotted #ccc !important;
   }
   .pure-table td:last-child {
     border-bottom: 0;
