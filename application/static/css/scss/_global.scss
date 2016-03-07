@@ -151,7 +151,7 @@ a {
 }
 
 .hide {
-  display: none;
+  display: none !important;
 }
 
 .clearfix:after {
@@ -475,7 +475,7 @@ select {
   tbody {
     &> tr {
       &:hover {
-        background-color: #eee;
+        background-color: #eee !important;
         color: #000;
         cursor: pointer;
       }
@@ -498,7 +498,7 @@ select {
   margin: 1% 0;
 }
 
-.small-filter {
+.m-filters {
   display: none;
 }
 
@@ -507,13 +507,20 @@ select {
     display: none;
   }
 
-  .small-filter {
+  .m-filters {
     display: block;
+    margin-bottom: 1%;
+
+    label {
+      p {
+        display: inline-block;
+      }
+    }
   }
 
   .pure-table tr {
     display: block;
-    border-bottom: 2px solid #ccc !important;
+    border: 2px solid #ccc !important;
   }
   .pure-table td {
     display: block;
