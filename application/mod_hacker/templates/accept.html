@@ -6,13 +6,13 @@
 {% endwith %}
 
 <div class="page-container">
-  <div class="page-section" id="settings">
+  <div class="page-section" id="accept">
     <div class="container">
       <div class="header">
         <div class="head-cover">
           <h2>Accept Applicants</h2>
         </div>
-        <p><strong>Percentages based on number of fully reviewed (3x) applications</strong></p>
+        <h6>Percentages based on number of fully reviewed (3x) applications</h6>
         {% for type_account in ['hacker', 'mentor', 'scholarship'] %}
           <div id="{{ type_account }}" class="stats-box hide">
             {% for field in stats[type_account] %}
@@ -46,7 +46,7 @@
 
 {% block scripts %}
 <script type="text/javascript">
-  var reset_buttons = function(){
+  var reset_buttons = function() {
     document.getElementById('waitlist').classList.remove("clicked");
     document.getElementById('accept').classList.remove("clicked");
   }
@@ -67,14 +67,14 @@
 
   var type_account_select = document.getElementById("type_account");
   type_account_select.onchange = function() { 
-    if(this.value === "mentor") {
+    if (this.value === "mentor") {
       document.getElementById("waitlist-btn").classList.add("hide");
     }
     else {
       document.getElementById("waitlist-btn").classList.remove("hide");
     }
     var stats_boxes = document.getElementsByClassName("stats-box");
-    for(var i = 0; i < stats_boxes.length; i++) {
+    for (var i = 0; i < stats_boxes.length; i++) {
       if(stats_boxes[i].id == this.value){
         stats_boxes[i].classList.remove('hide');
       }
