@@ -5,17 +5,16 @@
 <div class="page-container">
   <div class="page-section" id="settings">
     <div class="container">
-			<table>
-			{% for user in users %}
-			<tr>
-				<td onclick="postIt('{{ user.email }}')">
-					{{ user.full_name() }}
-				</td>
-			</tr>
-			{% endfor %}
-			</table>
-
-			<a href="/admin/new"><button class="btn">Add User</button></a>
+      <table class="pure-table">
+      {% for user in users %}
+        <tr id="{{ user.id }}">
+          <td>
+            {{ user.full_name() }}
+          </td>
+        </tr>
+      {% endfor %}
+      </table>
+      <a href="/admin/new"><button class="btn">Add User</button></a>
     </div>
   </div>
 </div>
@@ -23,17 +22,11 @@
 
 {% block scripts %}
 <script type="text/javascript">
-	function postIt(email) {
-		form = document.createElement("form");
-		form.method = "post";
-		form.action = "";
-		input = document.createElement("input");
-		input.type = "hidden";
-		input.name = "email";
-		input.value = email;
-		form.appendChild(input);
-		form.submit();
-	}
+  rows = document.querySelectorAll("table tr");
+  for (var i = 0; i < rows.length; i++) {
+    rows[i].onclick = function() {
+      window.location.href = "/admin/edit/" + this.id;
+    }
+  }
 </script>
 {% endblock %}
-

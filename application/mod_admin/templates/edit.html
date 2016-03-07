@@ -12,10 +12,10 @@
 				{{ render_field(field) }}
 			{% endfor %}
 
-			<div class="buttons">
-				<button class="btn" type="submit">Save</button>
-				<a href="/admin"><button class="btn" type="button">Cancel</button></a>
-			</div>
+				<div class="buttons">
+					<button class="btn" type="submit" name="save">Save</button>
+					<button class="btn" type="submit" name="cancel">Cancel</button>
+				</div>
 			</form>
 	
 			<button class="btn" type="button" onclick="deleteUser('{{ user.email }}')">Delete User</button>
