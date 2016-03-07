@@ -9,6 +9,39 @@
     <div class="container">
       <h2>Search</h2>
       <h6 id="row_count">0 Rows loaded.</h6>
+      <div class="m-filters">
+        <div>
+          <input type="text" class="m-filter-field" id="m-filter-name" placeholder="Name"/>
+        </div>
+        <div>
+          <input type="text" class="m-filter-field" id="m-filter-email" placeholder="Email"/>
+        </div>
+        <div>
+          <input type="text" class="m-filter-field" id="m-filter-school" placeholder="School"/>
+        </div>
+        <div>
+          <label for="m-filter-type_account">
+            <p>Account Type</p>
+            <select class="m-filter-field" id="m-filter-type_account">
+              <option value=""></option>
+              <option value="H">H</option>
+              <option value="M">M</option>
+              <option value="S">S</option>
+            </select>
+          </label>
+        </div>
+        <div>
+          <label for="m-filter-status">
+            <p>Account Status</p>
+            <select class="m-filter-field" id="m-filter-status">
+              <option value=""></option>
+              <option value="NS">NS</option>
+              <option value="IP">IP</option>
+              <option value="S">S</option>
+            </select>
+          </label>
+        </div>
+      </div>
       <table id="participant-table" class="pure-table pure-table-horizontal">
         <thead>
           <tr>
@@ -89,8 +122,8 @@
         var field = criteria[0];
         var partialVal = criteria[1].toLowerCase();
         if(partialVal.length > 0){
-          if(field === "type_account" || field === "status"){
-            if (participants[i][field].toLowerCase() != partialVal){
+          if(field === "type_account" || field === "status") {
+            if (participants[i][field].toLowerCase() != partialVal) {
               show = false;
             }
           }
@@ -126,21 +159,61 @@
     return filterVals;
   }
 
-  var filterFields = document.getElementsByClassName("filter-field");
-  for (var i = 0; i < filterFields.length; i++) {
-    filterFields[i].onchange = function() {
-      filter(getFilterVals());
+  mGetFilterVals = function() {
+    var filterVals = [];
+    for (var i = 0; i < participantFields.length; i++) {
+      var filterField = document.getElementById("m-filter-" + participantFields[i]);
+      if (filterField) {
+        if (filterField.tagName === "INPUT") {
+          filterVals.push([participantFields[i], filterField.value]);
+        } else if (filterField.tagName === "SELECT") {
+          filterVals.push([participantFields[i], filterField.options[filterField.selectedIndex].value])
+        }
+      }
+    }
+    return filterVals;
+  }  
+
+  filterInit = function() {
+    var filterFields = document.getElementsByClassName("filter-field");
+    for (var i = 0; i < filterFields.length; i++) {
+      filterFields[i].onchange = function() {
+        filter(getFilterVals());
+      }
+    }
+
+    var mFilterFields = document.getElementsByClassName("m-filter-field");
+    for (var i = 0; i < filterFields.length; i++) {
+      mFilterFields[i].onchange = function() {
+        filter(mGetFilterVals());
+      }
     }
   }
 
-  var source = new EventSource("/api/get_participants");
-  source.addEventListener("chunk", function(e) {
-    chunk = JSON.parse(e.data);
-    loadChunk(chunk);
-  }, false);
-  source.addEventListener("stop", function(e) {
-    document.getElementById("load_icon").classList.add("hide");
-    e.target.close();
-  }, false);
+  filterInit();
+
+  if (!!window.EventSource) {
+    var source = new EventSource("/api/get_participants_sse");
+    source.addEventListener("chunk", function(e) {
+      chunk = JSON.parse(e.data);
+      loadChunk(chunk);
+    }, false);
+    source.addEventListener("stop", function(e) {
+      document.getElementById("load_icon").classList.add("hide");
+      e.target.close();
+    }, false);
+  } else {
+    // Fall back to AJAX :(
+    var request = new XMLHttpRequest();
+    request.open("GET", "/api/get_participants_ajax", true);
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400) {
+        var chunk = JSON.parse(request.responseText);
+        loadChunk(chunk);
+      } else {}
+    };
+    request.onerror = function() {};
+    request.send();
+  }
 </script>
 {% endblock %}

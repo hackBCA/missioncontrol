@@ -5,26 +5,30 @@ import time
 from itsdangerous import URLSafeTimedSerializer
 import json
 
-def sse_load():
+def sse_load_participants():
     SSE_BUFFER = 50
     page = 0
-    chunk = get_all_accounts(page, SSE_BUFFER)
-    print("chunk " + str(page) + ": " + str(len(chunk)))
+    chunk = get_all_accounts_paginate(page, SSE_BUFFER)
     while len(chunk) != 0:
         summarized = summarize_participants(chunk)
         page += 1
         event = ServerSSEEvent(str(json.dumps(summarized)), "chunk")
         yield event.encode()
-        chunk = get_all_accounts(page, SSE_BUFFER)
+        chunk = get_all_accounts_paginate(page, SSE_BUFFER)
     event = ServerSSEEvent(" ", "stop")
     yield event.encode()
 
-def get_participants(page_num = 0, page_size = 50):
-    users = UserEntry.objects(confirmed = True).skip((page_num + 1) * page_size).limit(page_size)
-    return users
+def ajax_load_participants():
+    accounts = get_all_accounts()
+    summarized = summarize_participants(accounts)
+    return summarized
 
-def get_all_accounts(page, buffer_size):
-    accounts = UserEntry.objects().skip((page) * buffer_size).limit(buffer_size)
+def get_all_accounts():
+    accounts = UserEntry.objects()
+    return accounts
+
+def get_all_accounts_paginate(page, buffer_size):
+    accounts = UserEntry.objects().skip(page * buffer_size).limit(buffer_size)
     return accounts
 
 def summarize_participants(participants):
@@ -40,9 +44,10 @@ def summarize_participants(participants):
     "email":        person.email,
     "type_account": person.type_account[0].upper(),
     "status":       status_map[person.status],
-    "school":       person.school if person.school is not None else "&nbsp;"
+    "school":       person.school if not person.school in ("", None) else "&nbsp;"
       }
     for person in participants]
+
     return summary
 
 def check_in(email):

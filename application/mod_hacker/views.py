@@ -15,14 +15,17 @@ def send_mass_email():
 def search():
   return render_template("hacker.search.html")
 
-@mod_hacker.route("/api/get_participants", methods = ["GET"])
-def api_get_participants():
+@mod_hacker.route("/api/get_participants_sse", methods = ["GET"])
+def api_get_participants_sse():
   return Response(
-    stream_with_context(controller.sse_load()),
+    stream_with_context(controller.sse_load_participants()),
     mimetype = "text/event-stream"
   )
 
-  return json.dumps(participants)
+@mod_hacker.route("/api/get_participants_ajax", methods = ["GET"])
+def api_get_participants_ajax():
+    participants = controller.ajax_load_participants()
+    return json.dumps(participants)
 
 @mod_hacker.route("/applicant/<uid>")
 def applicant_view(uid):

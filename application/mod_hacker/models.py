@@ -66,6 +66,8 @@ class UserEntry(Document):
   medical_information = StringField()
   hackbca_rules = StringField()
 
+  meta = {"strict" : False }
+  
 class ServerSSEEvent(object):
     """Object wrapper for Server-Sent Event communication with clients.
     Arguments:
