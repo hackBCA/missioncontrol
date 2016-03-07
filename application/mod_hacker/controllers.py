@@ -120,7 +120,6 @@ def accept_applicants(type_account, block_size):
 
         total_beginner = 0
         for i in range(0, len(user_pool)):
-            print(user_pool[i]["email"], user_pool[i]["gender"], user_pool[i]["beginner"], user_pool[i]["review1"] + user_pool[i]["review2"] + user_pool[i]["review3"])
             if user_pool[i]["beginner"] == "yes":
                 total_beginner += 1
         total_non_beginner = len(user_pool) - total_beginner
@@ -158,7 +157,6 @@ def accept_applicants(type_account, block_size):
     for user in accepted_users:
         user.decision = "Accepted"
         user.accepted_time = int(time.time())
-        print(user.decision, user.accepted_time)
         if not CONFIG["DEBUG"]:
             user.save()
             send_accepted_email(user['email'])     
