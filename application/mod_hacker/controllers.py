@@ -46,7 +46,7 @@ def expire_applicants():
 def accept_applicants(type_account, block_size):
     expire_applicants()
 
-    user_pool = UserEntry.objects(status = "Submitted", type_account = type_account, review3__ne = None, decision__nin = ["Accepted", "Waitlisted", "Expired"])
+    user_pool = UserEntry.objects(status = "Submitted", type_account = type_account, review3__ne = None, decision__nin = ["Accepted", "Expired"])
     user_pool = sorted(user_pool, key = lambda k: k["review1"] + k["review2"] + k["review3"], reverse = True)
 
     if type_account == "hacker":
@@ -93,8 +93,9 @@ def accept_applicants(type_account, block_size):
         user.decision = "Accepted"
         user.accepted_time = int(time.time())
         print(user.decision, user.accepted_time)
-        #user.save()
-        #send_accepted_email(user['email'])     
+        if not CONFIG["DEBUG"]:
+            user.save()
+            send_accepted_email(user['email'])     
     return str(len(accepted_users)) + " " + type_account + "s accepted."   
 
 def waitlist_applicants(type_account, block_size):
@@ -102,8 +103,9 @@ def waitlist_applicants(type_account, block_size):
         users = UserEntry.objects(status = "Submitted", type_account = type_account, review3__ne = None, decision__nin = ["Accepted", "Waitlisted", "Expired"])[:block_size]
         for user in users:
             user.decision = "Waitlisted"
-            #user.save()
-            #send_waitlisted_email(user['email'])
+            if not CONFIG["DEBUG"]:
+                user.save()
+                send_waitlisted_email(user['email'])
         return str(len(users)) + " hackers waitlisted."
     if type_account == "mentor":
         return 0 + " mentors Waitlisted."        
@@ -118,10 +120,9 @@ def send_waitlisted_email(email):
     message.add_filter("templates", "enable", "1")
     message.add_filter("templates", "template_id", CONFIG["SENDGRID_WAITLISTED_TEMPLATE"])
 
-    #status, msg = sg.send(message)
-    #print(email, status, msg)
+    status, msg = sg.send(message)
 
-def send_waitlisted_email(email):
+def send_accepted_email(email):
     message = sendgrid.Mail()
     message.add_to(email)
     message.set_from("contact@hackbca.com")
@@ -131,9 +132,7 @@ def send_waitlisted_email(email):
     message.add_filter("templates", "enable", "1")
     message.add_filter("templates", "template_id", CONFIG["SENDGRID_ACCEPTED_TEMPLATE"])
 
-    #status, msg = sg.send(message)
-    #print(email, status, msg)
-
+    status, msg = sg.send(message)
 
 def tokenize_email(email):
   return ts.dumps(email, salt = CONFIG["EMAIL_TOKENIZER_SALT"])
