@@ -12,8 +12,31 @@
         <div class="head-cover">
           <h2>Accept Applicants</h2>
         </div>
-        <form>
-          
+        <p><strong>Percentages based on number of fully reviewed (3x) applications</strong></p>
+        {% for type_account in ['hacker', 'mentor', 'scholarship'] %}
+          <div id="{{ type_account }}" class="stats-box hide">
+            {% for field in stats[type_account] %}
+              <p>{{ field }}</p>
+            {% endfor %}
+          </div>
+        {% endfor %}
+        <form method="POST" action="">
+        {% for field in form %}
+          {{ render_field(field) }}
+        {% endfor %}
+
+          <div class="buttons horizontal">
+            <span id="waitlist-btn">
+              <button class="btn" id="waitlist" onclick="verify_submit('waitlist'); return false;">Waitlist Applicants</button>
+            </span>
+            <button class="btn" id="accept" onclick="verify_submit('accept'); return false;">Accept Applicants</button>
+          </div>
+          <div class="buttons horizontal hide" id="verify-submit">
+            <h6>Are you sure?</h6>
+            <input type="hidden" id="action-field" name="action"></input>
+            <button class="btn" id="confirm_button" type="submit" name="submit">Yes</button>
+            <button class="btn" onclick="decline_verify(); return false;">No</button>
+          </div>
         </form>
       </div>
     </div>
@@ -22,4 +45,44 @@
 {% endblock %}
 
 {% block scripts %}
+<script type="text/javascript">
+  var reset_buttons = function(){
+    document.getElementById('waitlist').classList.remove("clicked");
+    document.getElementById('accept').classList.remove("clicked");
+  }
+
+  var verify_submit = function(action) {
+    var button_group = document.getElementById("verify-submit");
+    button_group.classList.remove("hide");
+    reset_buttons();
+    document.getElementById(action).classList.add("clicked");
+    document.getElementById("action-field").value = action;
+  }
+
+  var decline_verify = function() {
+    reset_buttons();
+    var button_group = document.getElementById("verify-submit");
+    button_group.classList.add("hide");
+  }
+
+  var type_account_select = document.getElementById("type_account");
+  type_account_select.onchange = function() { 
+    if(this.value === "mentor") {
+      document.getElementById("waitlist-btn").classList.add("hide");
+    }
+    else {
+      document.getElementById("waitlist-btn").classList.remove("hide");
+    }
+    var stats_boxes = document.getElementsByClassName("stats-box");
+    for(var i = 0; i < stats_boxes.length; i++) {
+      if(stats_boxes[i].id == this.value){
+        stats_boxes[i].classList.remove('hide');
+      }
+      else{
+        stats_boxes[i].classList.add('hide');
+      }
+    }
+  }
+  type_account_select.onchange();
+</script>
 {% endblock %}

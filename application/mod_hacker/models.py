@@ -1,6 +1,10 @@
 from mongoengine import *
 
 class UserEntry(Document):
+  meta = {
+    "strict": False
+  }
+
   email = StringField(required = True)
   hashed = StringField(required = True)
 
@@ -48,3 +52,8 @@ class UserEntry(Document):
   reviewer2 = StringField()
   review3 = IntField()
   reviewer3 = StringField()
+
+  decision = StringField()
+  accepted_time = IntField()
+  attending = StringField()
+  rsvp = BooleanField(default = False) #Has the user submitted their rsvp form?

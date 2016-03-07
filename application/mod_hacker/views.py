@@ -3,7 +3,7 @@ from flask.ext.login import login_required, current_user
 from . import hacker_module as mod_hacker
 from . import controllers as controller
 from application import CONFIG
-from .forms import RateForm
+from .forms import RateForm, AcceptForm
 
 @mod_hacker.route("/email")
 def send_mass_email():
@@ -38,4 +38,23 @@ def review():
 
 @mod_hacker.route("/accept", methods = ["GET", "POST"])
 def accept():
-	return render_template("hacker.accept.html")
+	form = AcceptForm(request.form)
+
+	if request.method == "POST":
+		if form.validate():
+			action = request.form['action']
+			if action == "accept":
+				info = controller.accept_applicants(form["type_account"].data, int(form["block_size"].data))	
+			elif action == "waitlist":
+				info = controller.waitlist_applicants(form["type_account"].data, int(form["block_size"].data))
+			else:
+				flash("Invalid operation.", "error")
+			
+			if info:
+				flash(info, "neutral")
+		else:
+			flash("Please correct any errors.", "error")
+
+	stats = controller.get_accepted_stats()
+
+	return render_template("hacker.accept.html", form = form, stats = stats)

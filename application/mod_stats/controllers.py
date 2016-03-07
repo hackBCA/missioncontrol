@@ -53,4 +53,33 @@ def get_applicant_stats():
 
   return stats
 
-  
+def get_accepted_stats():
+  stats = {}
+     
+  account_types = {"hacker": "Hackers", "mentor": "Mentors", "scholarship": "Scholarship"}
+  for type_account in account_types:
+    num_ready_accept = UserEntry.objects(status = "Submitted", type_account = type_account, review3__ne = None).count()
+    num_accepted = UserEntry.objects(status = "Submitted", type_account = type_account, decision = "Accepted").count()
+    num_waitlisted = UserEntry.objects(status = "Waitlisted", type_account = type_account, decision = "Waitlisted").count()
+
+    num_not_rsvped = UserEntry.objects(status = "Submitted", type_account = type_account, decision = "Accepted", rsvp__ne = True).count()
+    num_attending = UserEntry.objects(status = "Submitted", type_account = type_account, decision = "Accepted", rsvp = True, attending = "Attending").count()
+    num_not_attending = UserEntry.objects(status = "Submitted", type_account = type_account, decision = "Accepted", rsvp = True, attending = "Not Attending").count()
+
+    percent_accepted = 0 if num_ready_accept == 0 else 100.0 * num_accepted / num_ready_accept
+    percent_waitlisted = 0 if num_ready_accept == 0 else 100.0 * num_waitlisted / num_ready_accept
+    
+    percent_not_rsvped = 0 if num_accepted == 0 else 100.0 * num_not_rsvped / num_accepted
+    percent_attending = 0 if num_accepted == 0 else 100.0 * num_attending / num_accepted
+    percent_not_attending = 0 if num_accepted == 0 else 100.0 * num_not_attending / num_accepted
+
+    type_account_stats = []
+
+    type_account_stats.append('%d%% Accepted (%d)' % (percent_accepted, num_accepted))
+    type_account_stats.append('%d%% Waitlisted (%d)' % (percent_waitlisted, num_waitlisted))
+    type_account_stats.append('%d%% Not Yet Responded (%d)' % (percent_not_rsvped, num_not_rsvped))
+    type_account_stats.append('%d%% Attending (%d)' % (percent_attending, num_attending))
+    type_account_stats.append('%d%% Not Attending (%d)' % (percent_not_attending, num_not_attending))
+
+    stats[type_account] = type_account_stats
+  return stats
