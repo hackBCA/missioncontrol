@@ -62,14 +62,18 @@ def accept():
 
 	if request.method == "POST":
 		if form.validate():
-			action = request.form['action']
-			if action == "accept":
-				info = controller.accept_applicants(form["type_account"].data, int(form["block_size"].data))	
-			elif action == "waitlist":
-				info = controller.waitlist_applicants(form["type_account"].data, int(form["block_size"].data))
-			else:
-				flash("Invalid operation.", "error")
-			
+			try:
+				action = request.form['action']
+				if action == "accept":
+					info = controller.accept_applicants(form["type_account"].data, int(form["block_size"].data))	
+				elif action == "waitlist":
+					info = controller.waitlist_applicants(form["type_account"].data, int(form["block_size"].data))
+				else:
+					flash("Invalid operation.", "error")
+			except Exception as e:
+				if CONFIG["DEBUG"]:
+					raise e
+				flash("Something went wrong.", "error")				
 			if info:
 				flash(info, "neutral")
 		else:
