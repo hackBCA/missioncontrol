@@ -26,7 +26,7 @@
   text-decoration: none;
   margin-bottom: 10px;
 
-  &:hover {
+  &:hover, &.clicked {
     background-color: $blue-fade-color-fallback;
     background-color: $blue-fade-color;
     color: #fff;
