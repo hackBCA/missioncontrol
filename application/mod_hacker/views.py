@@ -12,23 +12,23 @@ import json
 @login_required
 @sentinel.board.require(http_exception = 403)
 def send_mass_email():
-  #controller.send_unconfirmed_email()
-  return render_template("hacker.email.html")
+    #controller.send_unconfirmed_email()
+    return render_template("hacker.email.html")
 
 @mod_hacker.route("/search")
 @login_required
 @sentinel.read_data.require(http_exception = 403)
 def search():
-  return render_template("hacker.search.html")
+    return render_template("hacker.search.html")
 
 @mod_hacker.route("/applicant/<uid>")
 @login_required
 @sentinel.read_data.require()
 def applicant_view(uid):
-  applicant = controller.get_applicant_dict(uid)
-  if applicant is None:
-    abort(404)
-  return render_template("hacker.applicant.html", applicant = applicant)
+    applicant = controller.get_applicant_dict(uid)
+    if applicant is None:
+        abort(404)
+    return render_template("hacker.applicant.html", applicant = applicant)
 
 @mod_hacker.route("/review", methods = ["GET", "POST"])
 @login_required
@@ -56,10 +56,10 @@ def review():
 
 @mod_hacker.route("/api/get_participants_sse", methods = ["GET"])
 def api_get_participants_sse():
-  return Response(
-    stream_with_context(controller.sse_load_participants()),
-    mimetype = "text/event-stream"
-  )
+    return Response(
+        stream_with_context(controller.sse_load_participants()),
+        mimetype = "text/event-stream"
+    )
 
 @mod_hacker.route("/api/get_participants_ajax", methods = ["GET"])
 def api_get_participants_ajax():

@@ -10,8 +10,8 @@ roles = [
 ]
 
 class permissions:
-  def __init__(self, roles):    
-    for role in roles:
-        setattr(self, role, Permission(RoleNeed(role)))
+    def __init__(self, roles):    
+        for role in roles:
+            setattr(self, role, Permission(RoleNeed(role)))
 
 sentinel = permissions(roles)

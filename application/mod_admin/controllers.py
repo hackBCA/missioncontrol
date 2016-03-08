@@ -15,13 +15,13 @@ def get_users():
     return entries
 
 def add_user(email, firstname, lastname, password, roles):
-  existingUser = get_user(email)
-  if existingUser is not None:
-    raise UserExistsError
+    existingUser = get_user(email)
+    if existingUser is not None:
+        raise UserExistsError
   
-  hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
-  new_entry = StaffUserEntry(email = email, hashed = hashed, firstname = firstname, lastname = lastname, roles = roles)
-  new_entry.save()
+    hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+    new_entry = StaffUserEntry(email = email, hashed = hashed, firstname = firstname, lastname = lastname, roles = roles)
+    new_entry.save()
 
 def edit_user(firstname, lastname, email, roles):
     existingUser = get_user(email)

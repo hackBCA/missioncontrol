@@ -9,6 +9,6 @@ from application import CONFIG
 @login_required
 #No specific permission required
 def login():
-  application_stats = controller.get_application_stats()
-  applicant_stats = controller.get_applicant_stats()
-  return render_template("stats.stats.html", application_stats = application_stats, applicant_stats = applicant_stats)
+    application_stats = controller.get_application_stats()
+    applicant_stats = controller.get_applicant_stats()
+    return render_template("stats.stats.html", application_stats = application_stats, applicant_stats = applicant_stats)
