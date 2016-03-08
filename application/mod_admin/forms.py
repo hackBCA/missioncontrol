@@ -1,6 +1,7 @@
 from wtforms import Form, TextField, PasswordField, SelectField, TextAreaField, \
     BooleanField, validators, ValidationError, RadioField, SelectMultipleField, \
     widgets
+from .permissions import roles
 import re
 
 class MultiCheckboxField(SelectMultipleField):
@@ -14,9 +15,7 @@ class MultiCheckboxField(SelectMultipleField):
     option_widget = widgets.CheckboxInput()
 
 role_choices = [
-    ("organizer", "Organizer"),
-    ("reviewer", "Reviewer"),
-    ("admin", "Admin")
+    (role, (role[0].upper() + role[1:]).replace("_"," ")) for role in roles
 ]
 
 class StaffForm(Form):
@@ -62,6 +61,4 @@ class StaffUpdateForm(Form):
         validators.Email(message = "Invalid email address.")
     ], description = "Email")
 
-    roles = MultiCheckboxField("Roles", [
-        validators.Required(message = "You must select at least one role.")
-    ], description = "Roles", choices = role_choices)
+    roles = MultiCheckboxField("Roles", [], description = "Roles", choices = role_choices)
