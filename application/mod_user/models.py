@@ -37,7 +37,7 @@ class User(UserMixin):
     if "review_apps" in self.roles:
       navbar.append(("/review", "Review Apps"))
     
-    if "user_data" in self.roles:
+    if "read_data" in self.roles:
       navbar.append(("/search", "Search"))
     if "admin" in self.roles:
       navbar.append(("/admin", "Admin"))
