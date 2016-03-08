@@ -4,7 +4,7 @@ roles = [
 "admin", 
 "board", 
 "review_apps",
-"user_data",
+"read_data",
 "organizer", 
 "volunteer"
 ]
