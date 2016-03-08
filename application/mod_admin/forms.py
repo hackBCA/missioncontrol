@@ -39,9 +39,7 @@ class StaffForm(Form):
 
     confirm_password = PasswordField("Confirm Password", description = "Confirm Password")
 
-    roles = MultiCheckboxField("Roles", [
-        validators.Required(message = "You must select at least one role.")
-    ], description = "Roles", choices = role_choices)
+    roles = MultiCheckboxField("Roles", description = "Roles", choices = role_choices)
 
     def validate_confirm_password(form, field):
         password = form['password'].data
@@ -62,6 +60,4 @@ class StaffUpdateForm(Form):
         validators.Email(message = "Invalid email address.")
     ], description = "Email")
 
-    roles = MultiCheckboxField("Roles", [
-        validators.Required(message = "You must select at least one role.")
-    ], description = "Roles", choices = role_choices)
+    roles = MultiCheckboxField("Roles", description = "Roles", choices = role_choices)
