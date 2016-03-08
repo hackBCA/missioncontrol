@@ -1,5 +1,6 @@
 from flask import render_template, redirect, request, flash, session
 from flask.ext.login import login_required, current_user
+from flask.ext.principal import Principal, Permission, RoleNeed
 from . import user_module as mod_user
 from . import controllers as controller
 from .forms import *
@@ -7,6 +8,9 @@ from application import CONFIG
 
 @mod_user.route("/login", methods=["GET", "POST"])
 def login():
+  if current_user.is_authenticated:
+    return redirect("/")
+
   form = LoginForm(request.form)
   if request.method == "POST" and form.validate():
     try:
@@ -20,6 +24,7 @@ def login():
         raise e
       else:
         flash("Something went wrong.", "error")
+
   return render_template("user.login.html", form = form)
 
 @mod_user.route("/logout", methods=["GET", "POST"])
@@ -63,7 +68,7 @@ def recover_change(token):
   return render_template("user.recover.html", email = email, form = form)
 
 @mod_user.route("/account", methods = ["GET", "POST"])
-#@login_required
+@login_required
 def account():
   name_form = ChangeNameForm(request.form)
   password_form = ChangePasswordForm(request.form)
@@ -106,5 +111,5 @@ def account():
   user = controller.get_user(current_user.email)
   name_form = ChangeNameForm(obj = user)
 
-  return render_template("user.settings.html", name_form = name_form, password_form = password_form)
+  return render_template("user.account.html", name_form = name_form, password_form = password_form)
 

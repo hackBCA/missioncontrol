@@ -1,19 +1,20 @@
 {% extends "user.base.html" %}
 
 {% set nav_bar = [
-  ("/#home", "Home", False)
+  ("/", "Home")
 ] -%}
 
 {% block content %}
 {% with nav_bar = nav_bar %}
   {% include "navbar.html" %}
 {% endwith %}
-<div class="full-page-container">
+<div class="page-container">
   <div class="page-section" id="login">
     <div class="container">
       <div class="cover">
         <div class="content">
-          <h2>Login</h2>
+          <img class="logo" src="https://s3.amazonaws.com/hackbcawebsite/logo.png">
+          <h2>Staff Login</h2>
           <form method="POST" action="">
             {% for field in form %}
               {{ render_field(field) }}

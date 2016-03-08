@@ -1,0 +1,33 @@
+{% extends "hacker.base.html" %}
+
+{% block content %}
+  {% with nav_bar = nav_bar %}
+    {% include "navbar.html" %}
+  {% endwith %}
+  <div class="page-container">
+  <div class="page-section" id="settings">
+    <div class="container">
+      {% with applicant = applicant %}
+        {% include "hacker.applicant_card.html" %}
+      {% endwith %}
+      <div class="raw">
+        <p><button class="btn" onclick="toggleRawData();">Toggle Raw Data</button></p>
+        <div id="raw_data" class="hide">
+          {% for field, val in applicant.items() %}
+            <p>{{ field }}: {{ val }}</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+  toggleRawData = function() {
+    var raw = document.getElementById("raw_data");
+    raw.classList.toggle("hide");
+  }
+</script>
+{% endblock %}

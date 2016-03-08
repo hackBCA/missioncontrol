@@ -1,0 +1,100 @@
+{% set free_response1_prompt = "What do you hope to learn and accomplish at hackBCA?" %}
+{% set free_response2_prompt = "What is something you’re proud of (it doesn’t have to be tech related)?" %}
+{% set free_response3_prompt = "Is there anything else you want us to know?" %}
+
+<div class="card">
+  <div class="header">
+    <div class="pure-g">
+      <div class="pure-u-1-1">
+        <h3>{{ applicant.firstname }} {{ applicant.lastname }}</h3>
+        <p><span>Account Type:</span> {{ applicant.type_account|title }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="body">
+    <div id="basic_info">
+      <h4>Basic Info</h4>
+      <div class="pure-g">
+        <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
+          <p><span>Status:</span> {{ applicant.status|title }}</p>
+        </div>
+        <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
+          <p><span>School:</span> {{ applicant.school }}</p>
+        </div>
+        <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
+          <p><span>Grade:</span> {{ applicant.grade }}</p>
+        </div>
+        <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
+          <p><span>Email:</span> {{ applicant.email }}</p>
+        </div>
+        <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
+          <p><span>Beginner:</span> {{ applicant.beginner }}</p>
+        </div>
+        <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
+          <p><span># Hackathons:</span> {{ applicant.num_hackathons }}</p>
+        </div>
+        {% if applicant.type_account|lower == "scholarship" %}
+          <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
+            {% if applicant.other_intended_major %}
+              <p><span>Intended Major:</span> {{ applicant.other_intended_major }}</p>
+            {% else %}
+              <p><span>Intended Major:</span> {{ applicant.intended_major }}</p>
+            {% endif %}
+          </div>
+          <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
+            <p><span>Reduced Lunch:</span> {{ applicant.reduced_lunch }}</p>
+          </div>
+          <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
+            {% if applicant.other_hear_about_us %}
+              <p><span>Hear About Us:</span> {{ applicant.other_hear_about_us }}</p>
+            {% else %}
+              <p><span>Hear About Us:</span> {{ applicant.hear_about_us }}</p>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    <div id="links">
+      <h4>Links</h4>
+      <div class="pure-g">
+        {% if applicant.github_link %}
+          <div class="pure-u-sm-1-1 pure-u-md-1-2 pure-u-lg-1-3 pure-u-xl-1-3 pure-u-1-1">
+            <p><span>Github:</span> {{ applicant.github_link }}</p>
+          </div>
+        {% endif %}
+        {% if applicant.site_link %}
+          <div class="pure-u-sm-1-1 pure-u-md-1-2 pure-u-lg-1-3 pure-u-xl-1-3 pure-u-1-1">
+            <p><span>Site:</span> {{ applicant.site_link }}</p>
+          </div>
+        {% endif %}
+        {% if applicant.linkedin_link %}
+          <div class="pure-u-sm-1-1 pure-u-md-1-2 pure-u-lg-1-3 pure-u-xl-1-3 pure-u-1-1">
+            <p><span>LinkedIn:</span> {{ applicant.linkedin_link }}</p>
+          </div>
+        {% endif %}
+        {% if applicant.other_link %}
+          <div class="pure-u-sm-1-1 pure-u-md-1-2 pure-u-lg-1-3 pure-u-xl-1-3 pure-u-1-1">
+            <p><span>Other:</span> {{ applicant.other_link }}</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    <div id="free_responses">
+      <h4>Free Responses</h4>
+      <div class="pure-g">
+        <div class="pure-u-sm-2-3 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1 pure-u-1-1">
+          <h6>{{ free_response1_prompt }}</h6>
+          <p>{{ applicant.free_response1 }}</p>
+        </div>
+        <div class="pure-u-sm-2-3 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1 pure-u-1-1">
+          <h6>{{ free_response2_prompt }}</h6>
+          <p>{{ applicant.free_response2 }}</p>
+        </div>
+        <div class="pure-u-sm-2-3 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1 pure-u-1-1">
+          <h6>{{ free_response3_prompt }}</h6>
+          <p>{{ applicant.free_response3 }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
