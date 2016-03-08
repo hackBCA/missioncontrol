@@ -32,7 +32,7 @@ select {
 
     li {
       width: 12%;
-      margin-right: 1%;
+      margin: 0% 0.5% 1%;
       display: inline-block;
       background-color: #c8c8c8;
       background-color: rgba(200, 200, 200, 0.5);
@@ -89,7 +89,7 @@ select {
     }
     &.checkboxes, &#roles {
       li {
-        background-color: #c8c8c8;
+        background-color: rgba(200,200,200,0.5);
         color: #fff;
         width: 12%;
         @media screen and (max-width: 1366px) { width: 25%; }
