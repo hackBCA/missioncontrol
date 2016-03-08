@@ -1,5 +1,6 @@
 from flask.ext.login import LoginManager, UserMixin
 from mongoengine import *
+from application.mod_admin.permissions import roles as all_roles
 
 #Mongo Object
 class StaffUserEntry(Document):
@@ -17,12 +18,33 @@ class StaffUserEntry(Document):
   roles = ListField(required = False)
 
 class User(UserMixin):
-  def __init__(self, uid, email, firstname, lastname):
+  def __init__(self, uid, email, firstname, lastname, roles):
 
     self.uid = str(uid)
     self.email = email
     self.firstname = firstname
     self.lastname = lastname
+    if "admin" in roles:
+      self.roles = all_roles
+    else:
+      self.roles = roles
+
+  def get_navbar(self):
+    navbar = [
+      ("/", "Home"),
+      ("/stats", "Statistics")]
+    
+    if "review_apps" in self.roles:
+      navbar.append(("/review", "Review Apps"))
+    
+    if "user_data" in self.roles:
+      navbar.append(("/search", "Search"))
+    if "admin" in self.roles:
+      navbar.append(("/admin", "Admin"))
+
+    navbar.append(("/account", "Settings"))
+
+    return navbar 
 
   def is_authenticated(self):
     return True

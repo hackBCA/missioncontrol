@@ -1,13 +1,12 @@
 
 {% if not nav_bar %}
-  {% set nav_bar = [
-    ("/", "Home"),
-    ("/stats", "Statistics"),
-    ("/search", "Search"),
-    ("/review", "Review Apps"),
-    ("/admin", "Admin"),
-    ("/account", "Settings"),
-  ] -%}
+  {% if current_user == None %}
+    {% set nav_bar = [
+      ("/", "Home")
+    ] -%}
+  {% else %}
+    {% set nav_bar = current_user.get_navbar() %}
+  {% endif %}
 {% endif %}
 
 <a href="#menu" id="menuLink" class="menu-link">
