@@ -1,13 +1,17 @@
 from flask import url_for, render_template, redirect, request, flash, session
 from flask.ext.login import login_required, current_user
+from flask.ext.principal import PermissionDenied
 from . import admin_module as mod_admin
 from . import controllers as controller
+from .permissions import sentinel
 from .forms import *
 from application import CONFIG
 from application import cache
 
 @cache.cached()
 @mod_admin.route("/admin", methods = ["GET", "POST"])
+@login_required
+@sentinel.admin.require(http_exception = 403)
 def admin():
     if request.method == "POST":
         user = request.form["email"]
@@ -17,6 +21,8 @@ def admin():
 
 @cache.cached()
 @mod_admin.route("/admin/new", methods = ["GET", "POST"])
+@login_required
+@sentinel.admin.require(http_exception = 403)
 def add_member():
     form = StaffForm(request.form)
 
@@ -38,8 +44,11 @@ def add_member():
                     flash("Something went wrong.", "error")
     return render_template("admin.new.html", form = form)
 
+
 @cache.cached()
 @mod_admin.route("/admin/edit/<uid>", methods = ["GET", "POST"])
+@login_required
+@sentinel.admin.require(http_exception = 403)
 def edit_member(uid):
     form = StaffUpdateForm(request.form)
     print(request.form.getlist("roles"))
@@ -67,6 +76,8 @@ def edit_member(uid):
 
 @cache.cached()
 @mod_admin.route("/admin/delete", methods = ["GET", "POST"])
+@login_required
+@sentinel.admin.require(http_exception = 403)
 def delete_member():
     if request.method == "POST":
         controller.delete_user(request.form["email"])

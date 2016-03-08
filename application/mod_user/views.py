@@ -6,9 +6,6 @@ from . import controllers as controller
 from .forms import *
 from application import CONFIG
 
-admin_permission = Permission(RoleNeed("admin"))
-test_permission = Permission(RoleNeed("test"))
-
 @mod_user.route("/login", methods=["GET", "POST"])
 def login():
   if current_user.is_authenticated:
@@ -36,7 +33,6 @@ def logout():
   return redirect("/")
 
 @mod_user.route("/forgot", methods = ["GET", "POST"])
-@test_permission.require(http_exception = 403)
 def recover():
   form = EmailForm(request.form)
   if request.method == "POST" and form.validate():
@@ -72,7 +68,7 @@ def recover_change(token):
   return render_template("user.recover.html", email = email, form = form)
 
 @mod_user.route("/account", methods = ["GET", "POST"])
-#@login_required
+@login_required
 def account():
   name_form = ChangeNameForm(request.form)
   password_form = ChangePasswordForm(request.form)
