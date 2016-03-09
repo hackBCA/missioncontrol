@@ -3,7 +3,7 @@ from .models import *
 import sendgrid
 import time
 from itsdangerous import URLSafeTimedSerializer
-import json
+import json, os
 
 def sse_load_participants():
     SSE_BUFFER = 50
@@ -155,3 +155,29 @@ def send_in_progress_email():
     message.add_filter("templates", "template_id", CONFIG["SENDGRID_APPLICATION_IN_PROGRESS_TEMPLATE"])
     #status, msg = sg.send(message)
     #print(email, status, msg)
+
+def allowed_file(filename, allowed_extensions):
+    return '.' in filename and filename.rsplit(".", 1)[1] in allowed_extensions
+
+def process_waiver_file(filename):
+    try:
+        csv = open(os.path.join(CONFIG["UPLOAD_FOLDER"], filename), "r")
+        fields = csv.readline().split(",")
+        data = [d.split(",") for d in csv.read().split("\n")]    
+        csv.close()
+        os.remove(os.path.join(CONFIG["UPLOAD_FOLDER"], filename))
+
+        emailPos = fields.index("email") 
+    except Exception as e:
+        raise Exception("CsvException", "Invalid CSV File")
+    
+    emails = [d[emailPos] for d in data]
+    users = UserEntry.objects(email__in = emails)
+    users_updated = 0
+    for user in users:
+        if user.waiver != True:
+            users_updated += 1
+        user.waiver = True
+        user.save() 
+    return users_updated
+    
