@@ -66,6 +66,8 @@ class UserEntry(Document):
   medical_information = StringField()
   hackbca_rules = StringField()
 
+  waiver = BooleanField(default = False)
+
   meta = {"strict" : False }
   
 class ServerSSEEvent(object):

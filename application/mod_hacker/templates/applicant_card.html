@@ -16,7 +16,13 @@
       <h4>Basic Info</h4>
       <div class="pure-g">
         <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
-          <p><span>Status:</span> {{ applicant.status|title }}</p>
+          <p><span>Gender:</span> 
+            {% if applicant.other_gender %}
+              {{ applicant.other_gender|title }}
+            {% else %}
+              {{ applicant.gender|title }}
+            {% endif %}
+          </p>
         </div>
         <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
           <p><span>School:</span> {{ applicant.school }}</p>
@@ -58,23 +64,55 @@
       <h4>Links</h4>
       <div class="pure-g">
         {% if applicant.github_link %}
-          <div class="pure-u-sm-1-1 pure-u-md-1-2 pure-u-lg-1-3 pure-u-xl-1-3 pure-u-1-1">
-            <p><span>Github:</span> {{ applicant.github_link }}</p>
+          <div class="pure-u-1-1">
+            <p><span>Github:</span>
+              {% if "http" in applicant.github_link %}
+                <a target="_blank" href="{{ applicant.github_link }}">
+              {% else %}
+                <a target="_blank" href="http://{{ applicant.github_link }}">
+              {% endif %}
+              {{ applicant.github_link }}
+              </a>
+            </p>
           </div>
         {% endif %}
         {% if applicant.site_link %}
-          <div class="pure-u-sm-1-1 pure-u-md-1-2 pure-u-lg-1-3 pure-u-xl-1-3 pure-u-1-1">
-            <p><span>Site:</span> {{ applicant.site_link }}</p>
+          <div class="pure-u-1-1">
+            <p><span>Site:</span>
+              {% if "http" in applicant.site_link %}
+                <a target="_blank" href="{{ applicant.site_link }}">
+              {% else %}
+                <a target="_blank" href="http://{{ applicant.site_link }}">
+              {% endif %}
+              {{ applicant.site_link }}
+              </a>
+            </p>
           </div>
         {% endif %}
         {% if applicant.linkedin_link %}
-          <div class="pure-u-sm-1-1 pure-u-md-1-2 pure-u-lg-1-3 pure-u-xl-1-3 pure-u-1-1">
-            <p><span>LinkedIn:</span> {{ applicant.linkedin_link }}</p>
+          <div class="pure-u-1-1">
+            <p><span>LinkedIn:</span>
+              {% if "http" in applicant.linkedin_link %}
+                <a target="_blank" href="{{ applicant.linkedin_link }}">
+              {% else %}
+                <a target="_blank" href="http://{{ applicant.linkedin_link }}">
+              {% endif %}
+              {{ applicant.linkedin_link }}
+              </a>
+            </p>
           </div>
         {% endif %}
         {% if applicant.other_link %}
-          <div class="pure-u-sm-1-1 pure-u-md-1-2 pure-u-lg-1-3 pure-u-xl-1-3 pure-u-1-1">
-            <p><span>Other:</span> {{ applicant.other_link }}</p>
+          <div class="pure-u-1-1">
+            <p><span>Other:</span>
+              {% if "http" in applicant.other_link %}
+                <a target="_blank" href="{{ applicant.other_link }}">
+              {% else %}
+                <a target="_blank" href="http://{{ applicant.other_link }}">
+              {% endif %}
+              {{ applicant.other_link }}
+              </a>
+            </p>
           </div>
         {% endif %}
       </div>
