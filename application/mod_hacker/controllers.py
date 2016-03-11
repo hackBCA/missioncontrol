@@ -4,6 +4,7 @@ import sendgrid
 import time
 from itsdangerous import URLSafeTimedSerializer
 import json
+import random
 
 def sse_load_participants():
     SSE_BUFFER = 50
@@ -81,15 +82,15 @@ def get_participant(email):
     return None   
 
 def get_next_application(reviewer_email):
-    users = UserEntry.objects(status = "Submitted", review1 = None)
+    users = UserEntry.objects(status = "Submitted", type_account = "hacker", review1 = None)
     if users.count():
-        return users[0]
-    users = UserEntry.objects(status = "Submitted", review2 = None, reviewer1__ne = reviewer_email)
+        return users[random.randint(0, users.count() - 1)]
+    users = UserEntry.objects(status = "Submitted", type_account = "hacker", review2 = None, reviewer1__ne = reviewer_email)
     if users.count():
-        return users[0]
-    users = UserEntry.objects(status = "Submitted", review3 = None, reviewer1__ne = reviewer_email, reviewer2__ne = reviewer_email)
+        return users[random.randint(0, users.count() - 1)]
+    users = UserEntry.objects(status = "Submitted", type_account = "hacker", review3 = None, reviewer1__ne = reviewer_email, reviewer2__ne = reviewer_email)
     if users.count():
-        return users[0]
+        return users[random.randint(0, users.count() - 1)]
     return None
 
 def review_application(email, review, reviewer):
