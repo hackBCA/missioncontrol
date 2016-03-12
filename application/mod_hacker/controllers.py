@@ -165,7 +165,7 @@ def accept_applicants(type_account, block_size):
 def accept_applicant(user):
     user.decision = "Accepted"
     user.accepted_time = int(time.time())
-    if user['lastname'] == 'Neus' or not CONFIG["DEBUG"]:
+    if not CONFIG["DEBUG"]:
         user.save()
         send_accepted_email(user['email'])
     
