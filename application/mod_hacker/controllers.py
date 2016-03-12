@@ -228,7 +228,7 @@ def send_unconfirmed_email():
     print(email, status, msg)
 
 def send_not_started_email():
-  users = UserEntry.objects(status = "Not Started")
+  users = UserEntry.objects(confirmed = True, status = "Not Started")
   for u in users:
     email = u.email
     
@@ -242,10 +242,10 @@ def send_not_started_email():
     message.add_filter("templates", "template_id", CONFIG["SENDGRID_APPLICATION_NOT_STARTED_TEMPLATE"])
     
     #status, msg = sg.send(message)
-    #print(email, status, msg)
+    print(email, status, msg)
 
 def send_in_progress_email():
-  users = UserEntry.objects(status = "In Progress")
+  users = UserEntry.objects(confirmed = True, status = "In Progress")
   for u in users:
     email = u.email
 
@@ -257,8 +257,9 @@ def send_in_progress_email():
 
     message.add_filter("templates", "enable", "1")
     message.add_filter("templates", "template_id", CONFIG["SENDGRID_APPLICATION_IN_PROGRESS_TEMPLATE"])
+
     #status, msg = sg.send(message)
-    #print(email, status, msg)
+    print(email, status, msg)
 
 def allowed_file(filename, allowed_extensions):
     return '.' in filename and filename.rsplit(".", 1)[1] in allowed_extensions

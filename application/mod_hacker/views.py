@@ -13,6 +13,8 @@ import json, os
 @sentinel.board.require(http_exception = 403)
 def send_mass_email():
     #controller.send_unconfirmed_email()
+    #controller.send_not_started_email()
+    #controller.send_in_progress_email()
     return render_template("hacker.email.html")
 
 @mod_hacker.route("/search")
@@ -25,7 +27,6 @@ def search():
 @login_required
 @sentinel.read_data.require()
 def applicant_view(uid):
-    
     if request.method == "POST":
       for k in request.form:
         print(k)
