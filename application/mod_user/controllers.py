@@ -2,7 +2,7 @@ from application import CONFIG, app
 from .models import *
 from flask import current_app, session
 from flask.ext.login import login_user, logout_user, current_user
-from flask.ext.principal import Principal, Identity, AnonymousIdentity, identity_changed, identity_loaded
+from flask.ext.principal import Principal, Identity, AnonymousIdentity, identity_changed, identity_loaded, RoleNeed
 import bcrypt
 import re
 import sendgrid
@@ -27,7 +27,7 @@ def load_user(user_id):
   if user_entries.count() != 1:
     return None
   currUser = user_entries[0]
-  user = User(currUser.id, currUser.email, currUser.firstname, currUser.lastname) 
+  user = User(currUser.id, currUser.email, currUser.firstname, currUser.lastname, currUser.roles) 
   return user
 
 @identity_loaded.connect_via(app)
@@ -74,15 +74,6 @@ def logout():
     session.pop(key, None)
 
   identity_changed.send(current_app._get_current_object(), identity = AnonymousIdentity())
-
-def add_user(email, firstname, lastname, password, roles=""):
-  existingUser = get_user(email)
-  if existingUser is not None:
-    raise UserExistsError
-  
-  hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
-  new_entry = StaffUserEntry(email = email, hashed = hashed, firstname = firstname, lastname = lastname, roles = [x.strip() for x in roles.split(',')])
-  new_entry.save()
 
 def tokenize_email(email):
   return ts.dumps(email, salt = CONFIG["EMAIL_TOKENIZER_SALT"])

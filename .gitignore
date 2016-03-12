@@ -77,3 +77,6 @@ ez_setup.py
 
 # Logging
 *.log
+
+# Temporary Uploads
+uploads/

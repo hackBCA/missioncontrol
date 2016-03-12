@@ -5,6 +5,7 @@ import time
 from itsdangerous import URLSafeTimedSerializer
 from application.mod_stats.controllers import get_accepted_stats
 import json
+import os
 import random
 
 sg = sendgrid.SendGridClient(CONFIG["SENDGRID_API_KEY"])
@@ -108,13 +109,14 @@ def expire_applicants():
     users = UserEntry.objects(rsvp__ne = True, decision = "Accepted", accepted_time__lte = bad_time) 
     for user in users:
         user.decision = "Expired"
+        user.rsvp = True
         user.save()
 
 def accept_applicants(type_account, block_size):
     expire_applicants()
 
     user_pool = UserEntry.objects(status = "Submitted", type_account = type_account, review3__ne = None, decision__nin = ["Accepted", "Expired"])
-
+    
     if type_account == "hacker":
         user_pool = sorted(user_pool, key = lambda k: k["review1"] + k["review2"] + k["review3"], reverse = True)
         user_pool = sorted(user_pool, key = lambda k: 0 if k["gender"] in ["female", "other"] else 1)
@@ -158,6 +160,7 @@ def accept_applicants(type_account, block_size):
     for user in accepted_users:
         user.decision = "Accepted"
         user.accepted_time = int(time.time())
+        print(user['firstname'] + ' ' + user['lastname'], user['email'], user['review1'] + user['review2'] + user['review3'])
         if not CONFIG["DEBUG"]:
             user.save()
             send_accepted_email(user['email'])     
@@ -253,3 +256,29 @@ def send_in_progress_email():
     message.add_filter("templates", "template_id", CONFIG["SENDGRID_APPLICATION_IN_PROGRESS_TEMPLATE"])
     #status, msg = sg.send(message)
     #print(email, status, msg)
+
+def allowed_file(filename, allowed_extensions):
+    return '.' in filename and filename.rsplit(".", 1)[1] in allowed_extensions
+
+def process_waiver_file(filename):
+    try:
+        csv = open(os.path.join(CONFIG["UPLOAD_FOLDER"], filename), "r")
+        fields = csv.readline().split(",")
+        data = [d.split(",") for d in csv.read().split("\n")]    
+        csv.close()
+        os.remove(os.path.join(CONFIG["UPLOAD_FOLDER"], filename))
+
+        emailPos = fields.index("email") 
+    except Exception as e:
+        raise Exception("CsvException", "Invalid CSV File")
+    
+    emails = [d[emailPos] for d in data]
+    users = UserEntry.objects(email__in = emails)
+    users_updated = 0
+    for user in users:
+        if user.waiver != True:
+            users_updated += 1
+        user.waiver = True
+        user.save() 
+    return users_updated
+    

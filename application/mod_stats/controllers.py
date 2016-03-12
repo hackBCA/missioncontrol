@@ -58,7 +58,11 @@ def get_accepted_stats():
      
   account_types = {"hacker": "Hackers", "mentor": "Mentors", "scholarship": "Scholarship"}
   for type_account in account_types:
-    num_ready_accept = UserEntry.objects(status = "Submitted", type_account = type_account, review3__ne = None).count()
+    if type_account == "hacker":
+      num_ready_accept = UserEntry.objects(status = "Submitted", type_account = type_account, review3__ne = None).count()
+    else:
+      num_ready_accept = UserEntry.objects(status = "Submitted", type_account = type_account).count()
+
     num_accepted = UserEntry.objects(status = "Submitted", type_account = type_account, decision = "Accepted").count()
     num_waitlisted = UserEntry.objects(status = "Submitted", type_account = type_account, decision = "Waitlisted").count()
     num_expired = UserEntry.objects(status = "Submitted", type_account = type_account, decision = "Expired").count()
@@ -77,7 +81,7 @@ def get_accepted_stats():
 
     type_account_stats = []
 
-    type_account_stats.append('%d Reviewed Users' % num_ready_accept)
+    type_account_stats.append('%d Accept-able Users' % num_ready_accept)
     type_account_stats.append('%d%% Accepted (%d)' % (percent_accepted, num_accepted))
     type_account_stats.append('%d%% Waitlisted (%d)' % (percent_waitlisted, num_waitlisted))
     type_account_stats.append('%d%% Offer Expired (%d)' % (percent_expired, num_expired))

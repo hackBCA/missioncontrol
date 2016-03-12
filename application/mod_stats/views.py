@@ -7,6 +7,7 @@ from application import CONFIG
 
 @mod_stats.route("/stats", methods=["GET", "POST"])
 @login_required
+#No specific permission required
 def login():
   application_stats = controller.get_application_stats()
   applicant_stats = controller.get_applicant_stats()

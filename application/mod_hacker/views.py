@@ -1,33 +1,29 @@
 from flask import render_template, redirect, request, flash, session, jsonify, abort, Response, stream_with_context
+from werkzeug import secure_filename
 from flask.ext.login import login_required, current_user
 from . import hacker_module as mod_hacker
 from . import controllers as controller
-from application import CONFIG
-import json
 from .forms import RateForm, AcceptForm
+from application import CONFIG
+from application.mod_admin.permissions import sentinel
+import json, os
 
 @mod_hacker.route("/email")
+@login_required
+@sentinel.board.require(http_exception = 403)
 def send_mass_email():
     #controller.send_unconfirmed_email()
     return render_template("hacker.email.html")
 
 @mod_hacker.route("/search")
+@login_required
+@sentinel.read_data.require(http_exception = 403)
 def search():
     return render_template("hacker.search.html")
 
-@mod_hacker.route("/api/get_participants_sse", methods = ["GET"])
-def api_get_participants_sse():
-    return Response(
-        stream_with_context(controller.sse_load_participants()),
-        mimetype = "text/event-stream"
-    )
-
-@mod_hacker.route("/api/get_participants_ajax", methods = ["GET"])
-def api_get_participants_ajax():
-    participants = controller.ajax_load_participants()
-    return json.dumps(participants)
-
 @mod_hacker.route("/applicant/<uid>")
+@login_required
+@sentinel.read_data.require()
 def applicant_view(uid):
     applicant = controller.get_applicant_dict(uid)
     if applicant is None:
@@ -35,6 +31,8 @@ def applicant_view(uid):
     return render_template("hacker.applicant.html", applicant = applicant)
 
 @mod_hacker.route("/review", methods = ["GET", "POST"])
+@login_required
+@sentinel.review_apps.require()
 def review():
     form = RateForm(request.form)
 
@@ -57,6 +55,8 @@ def review():
     return render_template("hacker.review.html", form = form, user = user)
 
 @mod_hacker.route("/accept", methods = ["GET", "POST"])
+@login_required
+@sentinel.director.require()
 def accept():
     form = AcceptForm(request.form)
 
@@ -82,3 +82,39 @@ def accept():
     stats = controller.get_accepted_stats()
 
     return render_template("hacker.accept.html", form = form, stats = stats)
+
+@mod_hacker.route("/waivers", methods = ["GET", "POST"])
+@login_required
+@sentinel.board.require()
+def waivers():
+  if request.method == "POST":
+    file = request.files['waiver_doc']
+    if file and controller.allowed_file(file.filename, ["csv"]):
+      filename = secure_filename(file.filename)
+      try: 
+        file.save(os.path.join(CONFIG["UPLOAD_FOLDER"], filename))
+        users_updated = controller.process_waiver_file(filename)
+        flash("CSV Processed. %d users updated." % users_updated, "success")
+      except Exception as e:
+        if CONFIG["DEBUG"]:
+          raise e
+        if e[0] == "CsvException":
+          flash("Invalid CSV.", "error")
+        else:
+          flash("Something went wrong.", "error")
+    else:
+      flash("Invalid CSV.", "error")
+
+  return render_template("hacker.waiver.html")
+
+@mod_hacker.route("/api/get_participants_sse", methods = ["GET"])
+def api_get_participants_sse():
+  return Response(
+    stream_with_context(controller.sse_load_participants()),
+    mimetype = "text/event-stream"
+  )
+
+@mod_hacker.route("/api/get_participants_ajax", methods = ["GET"])
+def api_get_participants_ajax():
+    participants = controller.ajax_load_participants()
+    return json.dumps(participants)
