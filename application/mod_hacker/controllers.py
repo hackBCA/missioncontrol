@@ -158,14 +158,17 @@ def accept_applicants(type_account, block_size):
         accepted_users = user_pool[:block_size]
     
     for user in accepted_users:
-        user.decision = "Accepted"
-        user.accepted_time = int(time.time())
         print(user['firstname'] + ' ' + user['lastname'], user['email'], user['review1'] + user['review2'] + user['review3'])
-        if not CONFIG["DEBUG"]:
-            user.save()
-            send_accepted_email(user['email'])     
+        accept_applicant(user)  
     return str(len(accepted_users)) + " " + type_account + "s accepted."   
 
+def accept_applicant(user):
+    user.decision = "Accepted"
+    user.accepted_time = int(time.time())
+    if user['lastname'] == 'Neus' or not CONFIG["DEBUG"]:
+        user.save()
+        send_accepted_email(user['email'])
+    
 def waitlist_applicants(type_account, block_size):
     if type_account == "hacker":
         users = UserEntry.objects(status = "Submitted", type_account = type_account, review3__ne = None, decision__nin = ["Accepted", "Waitlisted", "Expired"])[:block_size]

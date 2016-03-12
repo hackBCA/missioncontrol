@@ -10,6 +10,11 @@
       {% with applicant = applicant %}
         {% include "hacker.applicant_card.html" %}
       {% endwith %}
+      {% if applicant.decision != "Accepted" %}
+        <form method="POST" action="">
+          <button class="btn" type="submit" name="manual-accept">Manually Accept</button>
+        </form>
+      {% endif %}
       <div class="raw">
         <p><button class="btn" onclick="toggleRawData();">Toggle Raw Data</button></p>
         <div id="raw_data" class="hide">
