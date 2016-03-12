@@ -8,6 +8,19 @@
       <div class="pure-u-1-1">
         <h3>{{ applicant.firstname }} {{ applicant.lastname }}</h3>
         <p><span>Account Type:</span> {{ applicant.type_account|title }}</p>
+        {% if applicant.decision %}
+          <p><span>Decision:</span> {{ applicant.decision|title }}</p>
+          {% if applicant.rsvp %}
+            <p><span>Attending:</span> {{ applicant.attending|title }}</p>
+            {% if applicant.checked_in == True %}
+              <p><span>Checked In:</span> True</p>
+            {% else %}
+              <p><span>Checked In:</span> False</p>
+            {% endif %}
+          {% else %}
+            <p><span>Attending:</span> Undecided</p>
+          {% endif %}
+        {% endif %}
       </div>
     </div>
   </div>

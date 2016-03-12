@@ -3,57 +3,96 @@ from werkzeug import secure_filename
 from flask.ext.login import login_required, current_user
 from . import hacker_module as mod_hacker
 from . import controllers as controller
-from .forms import RateForm
+from .forms import RateForm, AcceptForm
 from application import CONFIG
 from application.mod_admin.permissions import sentinel
 import json, os
-
 
 @mod_hacker.route("/email")
 @login_required
 @sentinel.board.require(http_exception = 403)
 def send_mass_email():
-  #controller.send_unconfirmed_email()
-  return render_template("hacker.email.html")
+    #controller.send_unconfirmed_email()
+    #controller.send_not_started_email()
+    #controller.send_in_progress_email()
+    return render_template("hacker.email.html")
 
 @mod_hacker.route("/search")
 @login_required
 @sentinel.read_data.require(http_exception = 403)
 def search():
-  return render_template("hacker.search.html")
+    return render_template("hacker.search.html")
 
-@mod_hacker.route("/applicant/<uid>")
+@mod_hacker.route("/applicant/<uid>", methods = ["GET", "POST"])
 @login_required
 @sentinel.read_data.require()
 def applicant_view(uid):
-  applicant = controller.get_applicant_dict(uid)
-  if applicant is None:
-    abort(404)
-  return render_template("hacker.applicant.html", applicant = applicant)
+    if request.method == "POST":
+      for k in request.form:
+        print(k)
+      if 'manual-accept' in request.form:
+        if sentinel.board.can():
+          controller.accept_applicant(controller.get_applicant_by_id(uid))
+          flash("User manually accepted.", "success")
+        else:
+          flash("Sorry, you don't have permission to do this.", "error")
+    applicant = controller.get_applicant_dict(uid)
+    if applicant is None:
+        abort(404)
+    return render_template("hacker.applicant.html", applicant = applicant)
 
 @mod_hacker.route("/review", methods = ["GET", "POST"])
 @login_required
 @sentinel.review_apps.require()
 def review():
-	form = RateForm(request.form)
+    form = RateForm(request.form)
 
-	if request.method == "POST" and form.validate():
-		if "active_app" in session:
-			controller.review_application(session["active_app"], int(form["rating"].data), current_user.email)
-			flash("User successfully reviewed.", "success")
-			session.pop("active_app")		
-		else:
-			flash("Something went wrong.", "error")
+    if request.method == "POST" and form.validate():
+        if "active_app" in session:
+            controller.review_application(session["active_app"], int(form["rating"].data), current_user.email)
+            flash("User successfully reviewed.", "success")
+            session.pop("active_app")       
+        else:
+            flash("Something went wrong.", "error")
 
-	if "active_app" in session:
-		active_app_email = session["active_app"]
-		user = controller.get_participant(active_app_email)
-	else:
-		user = controller.get_next_application(current_user.email)
-		if user is not None:
-			session["active_app"] = user.email
-		
-	return render_template("hacker.review.html", form = form, user = user)
+    if "active_app" in session:
+        active_app_email = session["active_app"]
+        user = controller.get_participant(active_app_email)
+    else:
+        user = controller.get_next_application(current_user.email)
+        if user is not None:
+            session["active_app"] = user.email
+        
+    return render_template("hacker.review.html", form = form, user = user)
+
+@mod_hacker.route("/accept", methods = ["GET", "POST"])
+@login_required
+@sentinel.director.require()
+def accept():
+    form = AcceptForm(request.form)
+
+    if request.method == "POST":
+        if form.validate():
+            try:
+                action = request.form['action']
+                if action == "accept":
+                    info = controller.accept_applicants(form["type_account"].data, int(form["block_size"].data))    
+                elif action == "waitlist":
+                    info = controller.waitlist_applicants(form["type_account"].data, int(form["block_size"].data))
+                else:
+                    flash("Invalid operation.", "error")
+            except Exception as e:
+                if CONFIG["DEBUG"]:
+                    raise e
+                flash("Something went wrong.", "error")             
+            if info:
+                flash(info, "neutral")
+        else:
+            flash("Please correct any errors.", "error")
+
+    stats = controller.get_accepted_stats()
+
+    return render_template("hacker.accept.html", form = form, stats = stats)
 
 @mod_hacker.route("/waivers", methods = ["GET", "POST"])
 @login_required
