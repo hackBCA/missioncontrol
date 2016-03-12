@@ -7,6 +7,15 @@
   <div class="page-container">
   <div class="page-section" id="settings">
     <div class="container">
+      {% if applicant.attending == "Attending" %}
+        <form method="POST" action="">
+          {% if applicant.checked_in != True %}
+            <button class="btn" type="submit" name="check-in">Check In</button>
+          {% else %}
+            <button class="btn" type="submit" name="check-out">Check Out</button>
+          {% endif %}
+        </form>
+      {% endif %}
       {% with applicant = applicant %}
         {% include "hacker.applicant_card.html" %}
       {% endwith %}

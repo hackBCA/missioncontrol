@@ -5,6 +5,7 @@ import time
 from itsdangerous import URLSafeTimedSerializer
 import random
 import json, os
+
 def sse_load_participants():
     SSE_BUFFER = 50
     page = 0
@@ -49,12 +50,6 @@ def summarize_participants(participants):
     for person in participants]
 
     return summary
-
-def check_in(email):
-    user = get_participant(email)
-
-    #user.checked_in = True
-    #user.save()
 
 sg = sendgrid.SendGridClient(CONFIG["SENDGRID_API_KEY"])
 ts = URLSafeTimedSerializer(CONFIG["SECRET_KEY"])
@@ -180,4 +175,9 @@ def process_waiver_file(filename):
         user.waiver = True
         user.save() 
     return users_updated
-    
+
+def check_in_status_user(user, checked_in): 
+    if user.attending != "Attending":
+        return
+    user.checked_in = checked_in
+    user.save()

@@ -22,10 +22,17 @@ def send_mass_email():
 def search():
   return render_template("hacker.search.html")
 
-@mod_hacker.route("/applicant/<uid>")
+@mod_hacker.route("/applicant/<uid>", methods = ["GET", "POST"])
 @login_required
 @sentinel.read_data.require()
 def applicant_view(uid):
+  if request.method == "POST":
+    user = controller.get_applicant_by_id(uid)
+    if 'check-in' in request.form:
+      controller.check_in_status_user(user, True)
+    elif 'check-out' in request.form:
+      controller.check_in_status_user(user, False)
+
   applicant = controller.get_applicant_dict(uid)
   if applicant is None:
     abort(404)

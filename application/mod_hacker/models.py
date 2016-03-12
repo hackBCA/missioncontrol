@@ -68,6 +68,8 @@ class UserEntry(Document):
 
   waiver = BooleanField(default = False)
 
+  checked_in = BooleanField(default = False)
+
   meta = {"strict" : False }
   
 class ServerSSEEvent(object):
