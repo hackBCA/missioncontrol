@@ -35,8 +35,7 @@ class ChangeNameForm(Form):
 
 class ChangePasswordForm(Form):
     password = PasswordField("Password", [
-        validators.Required(message = "You must enter your current password."),
-        validators.Length(min = 8, message = "Password must be at least 8 characters.")
+        validators.Required(message = "You must enter your current password.")
     ], description = "Password")
 
     new_password = PasswordField("New Password", [

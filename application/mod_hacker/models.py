@@ -2,6 +2,8 @@ from mongoengine import *
 
 #Mongo Object
 class UserEntry(Document):
+  meta = {"strict" : False }
+
   email = StringField(required = True)
   hashed = StringField(required = True)
 
@@ -66,9 +68,12 @@ class UserEntry(Document):
   medical_information = StringField()
   hackbca_rules = StringField()
 
-  waiver = BooleanField(default = False)
+  decision = StringField()
+  accepted_time = IntField()
+  attending = StringField()
+  rsvp = BooleanField(default = False) #Has the user submitted their rsvp form?
 
-  meta = {"strict" : False }
+  waiver = BooleanField(default = False)
   
 class ServerSSEEvent(object):
     """Object wrapper for Server-Sent Event communication with clients.
