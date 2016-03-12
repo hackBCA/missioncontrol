@@ -122,8 +122,8 @@ def accept_applicants(type_account, block_size):
         user_pool = sorted(user_pool, key = lambda k: 0 if k["gender"] in ["female", "other"] else 1)
 
         total_beginner = 0
-        for i in range(0, len(user_pool)):
-            if user_pool[i]["beginner"] == "yes":
+        for user in user_pool:
+            if user["beginner"] == "yes":
                 total_beginner += 1
         total_non_beginner = len(user_pool) - total_beginner
 
@@ -134,10 +134,9 @@ def accept_applicants(type_account, block_size):
 
         accepted_users = []
 
-        for i in range(0, len(user_pool)):
+        for user in user_pool:
             if total_target == 0:
                 break
-            user = user_pool[i]
 
             accept_user = False
 
