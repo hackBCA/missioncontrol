@@ -114,9 +114,9 @@ def accept_applicants(type_account, block_size):
     expire_applicants()
 
     user_pool = UserEntry.objects(status = "Submitted", type_account = type_account, review3__ne = None, decision__nin = ["Accepted", "Expired"])
-    user_pool = sorted(user_pool, key = lambda k: k["review1"] + k["review2"] + k["review3"], reverse = True)
 
     if type_account == "hacker":
+        user_pool = sorted(user_pool, key = lambda k: k["review1"] + k["review2"] + k["review3"], reverse = True)
         user_pool = sorted(user_pool, key = lambda k: 0 if k["gender"] in ["female", "other"] else 1)
 
         total_beginner = 0
