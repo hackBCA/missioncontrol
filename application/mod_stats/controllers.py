@@ -53,6 +53,23 @@ def get_applicant_stats():
 
   return stats
 
+def get_review_stats():
+  stats = []
+
+  num_submitted = UserEntry.objects(type_account = "hacker", status = "Submitted").count()
+  num_review0 = UserEntry.objects(type_account = "hacker", status = "Submitted", review1 = None).count()
+  num_review1 = UserEntry.objects(type_account = "hacker", status = "Submitted", review1__in = [1, 2, 3, 4, 5], review2 = None).count()
+  num_review2 = UserEntry.objects(type_account = "hacker", status = "Submitted", review2__in = [1, 2, 3, 4, 5], review3 = None).count()
+  num_review3 = UserEntry.objects(type_account = "hacker", status = "Submitted", review3__in = [1, 2, 3, 4, 5]).count()
+
+  stats.append('%d Submitted Apps' % num_submitted)
+  stats.append('%d Apps reviewed 0 times' % num_review0)
+  stats.append('%d Apps reviewed 1 time' % num_review1)
+  stats.append('%d Apps reviewed 2 times' % num_review2)
+  stats.append('%d Apps reviewed 3 times' % num_review3)
+
+  return stats
+
 def get_accepted_stats():
   stats = {}
      
