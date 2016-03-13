@@ -84,13 +84,13 @@ def get_participant(email):
     return None   
 
 def get_next_application(reviewer_email):
-    users = UserEntry.objects(status = "Submitted", type_account = "hacker", review1 = None)
+    users = UserEntry.objects(status = "Submitted", type_account = "hacker", decision = None, review1 = None)
     if users.count():
         return users[random.randint(0, users.count() - 1)]
-    users = UserEntry.objects(status = "Submitted", type_account = "hacker", review2 = None, reviewer1__ne = reviewer_email)
+    users = UserEntry.objects(status = "Submitted", type_account = "hacker", decision = None,  review2 = None, reviewer1__ne = reviewer_email)
     if users.count():
         return users[random.randint(0, users.count() - 1)]
-    users = UserEntry.objects(status = "Submitted", type_account = "hacker", review3 = None, reviewer1__ne = reviewer_email, reviewer2__ne = reviewer_email)
+    users = UserEntry.objects(status = "Submitted", type_account = "hacker", decision = None,  review3 = None, reviewer1__ne = reviewer_email, reviewer2__ne = reviewer_email)
     if users.count():
         return users[random.randint(0, users.count() - 1)]
     return None
@@ -111,7 +111,7 @@ def expire_applicants():
         user.decision = "Expired"
         user.rsvp = True
         user.save()
-
+ 
 def accept_applicants(type_account, block_size):
     expire_applicants()
 
