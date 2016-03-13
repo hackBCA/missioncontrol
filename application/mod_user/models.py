@@ -40,6 +40,8 @@ class User(UserMixin):
       navbar.append(("/review", "Review Apps"))
     if "board" in self.roles:
       navbar.append(("/waivers", "Update Waivers"))
+    if "director" in self.roles:
+      navbar.append(("/accept", "Accept Applicants"))
     if "admin" in self.roles:
       navbar.append(("/admin", "Admin"))
 

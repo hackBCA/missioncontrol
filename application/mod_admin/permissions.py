@@ -2,6 +2,7 @@ from flask.ext.principal import Principal, Permission, RoleNeed
 
 roles = [
     "admin", 
+    "director",
     "board", 
     "review_apps",
     "read_data",
