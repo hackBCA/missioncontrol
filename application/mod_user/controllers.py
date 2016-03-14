@@ -95,6 +95,7 @@ def send_recovery_email(email):
 
   message.add_filter("templates", "enable", "1")
   message.add_filter("templates", "template_id", CONFIG["SENDGRID_ACCOUNT_RECOVERY_TEMPLATE"])
+  message.add_substitution("prefix", "staff")
   message.add_substitution("token", token)  
 
   status, msg = sg.send(message)
