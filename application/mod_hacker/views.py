@@ -32,7 +32,8 @@ def applicant_view(uid):
         print(k)
       if 'manual-accept' in request.form:
         if sentinel.board.can():
-          controller.accept_applicant(controller.get_applicant_by_id(uid))
+          user = controller.get_applicant_by_id(uid)
+          controller.accept_applicant(user)
           flash("User manually accepted.", "success")
         else:
           flash("Sorry, you don't have permission to do this.", "error")
