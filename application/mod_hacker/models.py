@@ -74,7 +74,8 @@ class UserEntry(Document):
   rsvp = BooleanField(default = False) #Has the user submitted their rsvp form?
 
   waiver = BooleanField(default = False)
-  checked_in = BooleanField(default = False)
+  checked_in = BooleanField(default = False) 
+  check_in_log = ListField()
 
   meta = {"strict" : False }
 
