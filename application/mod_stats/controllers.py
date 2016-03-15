@@ -108,3 +108,39 @@ def get_accepted_stats():
 
     stats[type_account] = type_account_stats
   return stats
+
+def get_rsvp_stats():
+  stats = {}
+
+  account_types = {"hacker": "Hacker", "mentor": "Mentors", "scholarship": "Scholarship"}
+
+  for type_account in account_types:
+    type_account_stats = []
+    num_attending = UserEntry.objects(rsvp = True, attending = "Attending", type_account = type_account).count()
+
+    type_account_stats.append("%d Attending" % (num_attending))
+    if type_account in ["hacker", "scholarship"]:
+      num_male_attending = UserEntry.objects(rsvp = True, attending = "Attending", type_account = type_account, gender = "male").count()
+      num_female_attending = UserEntry.objects(rsvp = True, attending = "Attending", type_account = type_account, gender = "female").count()
+      num_other_attending = UserEntry.objects(rsvp = True, attending = "Attending", type_account = type_account, gender = "other").count()
+      num_rns_attending = UserEntry.objects(rsvp = True, attending = "Attending", type_account = type_account, gender = "rns").count()
+      print(num_male_attending, num_attending)
+      percent_male_attending = 0 if num_attending == 0 else 100.0 * num_male_attending / num_attending
+      percent_female_attending = 0 if num_attending == 0 else 100.0 * num_female_attending / num_attending
+      percent_other_attending = 0 if num_attending == 0 else 100.0 * num_other_attending / num_attending
+      percent_rns_attending = 0 if num_attending == 0 else 100.0 * num_rns_attending / num_attending
+    
+      type_account_stats.append("%d%% Male (%d)" % (percent_male_attending, num_male_attending))
+      type_account_stats.append("%d%% Female (%d)" % (percent_female_attending, num_female_attending))
+      type_account_stats.append("%d%% Other (%d)" % (percent_other_attending, num_other_attending))
+      type_account_stats.append("%d%% Rather Not Say (%d)" % (percent_rns_attending, num_rns_attending))
+
+      num_beginner_attending = UserEntry.objects(rsvp = True, attending = "Attending", type_account = type_account, beginner = "yes").count()
+      num_nonbeginner_attending = UserEntry.objects(rsvp = True, attending = "Attending", type_account = type_account, beginner = "no").count()
+
+      percent_beginner_attending = 0 if num_attending == 0 else 100.0 * num_beginner_attending / num_attending
+      percent_nonbeginner_attending = 0 if num_attending == 0 else 100.0 * num_nonbeginner_attending / num_attending
+      type_account_stats.append("%d%% Beginner (%d)" % (percent_beginner_attending, num_beginner_attending))
+      type_account_stats.append("%d%% Non Beginner (%d)" % (percent_nonbeginner_attending, num_nonbeginner_attending))
+    stats[account_types[type_account]] = type_account_stats
+  return stats
