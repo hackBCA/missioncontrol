@@ -51,10 +51,11 @@
 {% block scripts %}
 <script type="text/javascript">
   var toggleData = function(type_account){
-    var stats = document.getElementsByClassName("rsvp");
+    var stats = document.getElementsByClassName("rsvp-stats");
     for(var i = 0; i < stats.length; i++){
-      console.log(stats[i]);
-      stats[i].classList.add("hide");
+      if(stats[i].id != type_account+"-rsvp"){
+        stats[i].classList.add("hide");
+      }
     }
     document.getElementById(type_account+"-rsvp").classList.toggle("hide");
   }
