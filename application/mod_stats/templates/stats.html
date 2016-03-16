@@ -12,25 +12,52 @@
     <div class="container">
       <h2>Statistics</h2>
       <h4>Hey, {{ current_user.firstname }}!</h4>
-      <div class="application">
+      <div id="application">
         <h5>Application Stats</h5>
         {% for field in application_stats %}
           <p>{{field}}</p>
         {% endfor %}
       </div>
-      <div class="applicants">
+      <div id="applicants">
         <h5>Applicant Stats (Submitted Applications)</h5>
         {% for field in applicant_stats %}
           <p>{{field}}</p>
         {% endfor %}
       </div>
-      <div class="review">
+      <div id="review">
         <h5>Application Review Stats (Hackers only)</h5>
         {% for field in review_stats %}
           <p>{{field}}</p>
         {% endfor %}
       </div>
+      <div id="rsvp">
+        <h5>Attending Stats</h5>
+        {% for type_account in rsvp_stats %}
+          <button class="btn" onclick="toggleData('{{type_account}}'); return false;">{{type_account}}</button>
+        {% endfor %}
+        {% for type_account in rsvp_stats %}
+          <div id="{{type_account}}-rsvp" class="rsvp-stats hide">
+            {% for field in rsvp_stats[type_account] %} 
+              <p>{{field}}</p>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+  var toggleData = function(type_account){
+    var stats = document.getElementsByClassName("rsvp-stats");
+    for(var i = 0; i < stats.length; i++){
+      if(stats[i].id != type_account+"-rsvp"){
+        stats[i].classList.add("hide");
+      }
+    }
+    document.getElementById(type_account+"-rsvp").classList.toggle("hide");
+  }
+</script>
 {% endblock %}

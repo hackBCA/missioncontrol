@@ -35,7 +35,7 @@ def applicant_view(uid):
       controller.check_in_status_user(user, False)
     elif 'manual-accept' in request.form:
       if sentinel.board.can():
-        controller.accept_applicant(controller.get_applicant_by_id(uid))
+        controller.accept_applicant(user)
         flash("User manually accepted.", "success")
       else:
         flash("Sorry, you don't have permission to do this.", "error")
@@ -58,10 +58,13 @@ def review():
         else:
             flash("Something went wrong.", "error")
 
+    user = None
     if "active_app" in session:
         active_app_email = session["active_app"]
         user = controller.get_participant(active_app_email)
-    else:
+        if 'review3' in user:
+          user = None
+    if user is None:
         user = controller.get_next_application(current_user.email)
         if user is not None:
             session["active_app"] = user.email

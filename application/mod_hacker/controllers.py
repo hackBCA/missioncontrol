@@ -159,7 +159,7 @@ def accept_applicant(user):
     user.accepted_time = int(time.time())
     if not CONFIG["DEBUG"]:
         user.save()
-        send_accepted_email(user['email'])
+        send_accepted_email(user['email'], user['type_account'])
     
 def waitlist_applicants(type_account, block_size):
     if type_account == "hacker":
@@ -173,7 +173,7 @@ def waitlist_applicants(type_account, block_size):
     if type_account == "mentor":
         return 0 + " mentors Waitlisted."        
 
-def send_waitlisted_email(email):
+def send_waitlisted_email(email, type):
     message = sendgrid.Mail()
     message.add_to(email)
     message.set_from("contact@hackbca.com")
@@ -185,7 +185,7 @@ def send_waitlisted_email(email):
 
     status, msg = sg.send(message)
 
-def send_accepted_email(email):
+def send_accepted_email(email, type_account):
     message = sendgrid.Mail()
     message.add_to(email)
     message.set_from("contact@hackbca.com")
@@ -193,7 +193,10 @@ def send_accepted_email(email):
     message.set_html("<p></p>")
 
     message.add_filter("templates", "enable", "1")
-    message.add_filter("templates", "template_id", CONFIG["SENDGRID_ACCEPTED_TEMPLATE"])
+    if type_account == "mentor":
+        message.add_filter("templates", "template_id", CONFIG["SENDGRID_MENTOR_ACCEPTED_TEMPLATE"])
+    else:
+        message.add_filter("templates", "template_id", CONFIG["SENDGRID_ACCEPTED_TEMPLATE"])
 
     status, msg = sg.send(message)
 
