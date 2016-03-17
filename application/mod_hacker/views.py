@@ -30,9 +30,15 @@ def applicant_view(uid):
   if request.method == "POST":
     user = controller.get_applicant_by_id(uid)
     if 'check-in' in request.form:
-      controller.check_in_status_user(user, True)
+      if 'checked_in' in user and user['checked_in']:
+        flash("User is already checked in.", "error")
+      else:
+        controller.check_in_status_user(user, True)
     elif 'check-out' in request.form:
-      controller.check_in_status_user(user, False)
+      if 'checked_in' in user and not user['checked_in']:
+        flash("User is already checked out.", "error")
+      else:
+        controller.check_in_status_user(user, False)
     elif 'manual-accept' in request.form:
       if sentinel.board.can():
         controller.accept_applicant(user)
