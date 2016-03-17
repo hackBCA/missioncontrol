@@ -104,17 +104,23 @@ def review_application(email, review, reviewer):
             break
     user.save()
 
-def expire_applicants():
+def expire_applicants(type_account, block_size):
+    if type_account == "mentor":
+        return "0 mentors expired."
+
     bad_time = int(time.time()) - 7 * 24 * 60 * 60 #How to break your iPhone 101
-    users = UserEntry.objects(rsvp__ne = True, decision = "Accepted", accepted_time__lte = bad_time) 
+    users = UserEntry.objects(rsvp__ne = True, type_account = type_account, decision = "Accepted", accepted_time__lte = bad_time).order_by("accepted_time")
+    if len(users) > block_size:
+        users = users[:block_size]
+ 
     for user in users:
         user.decision = "Expired"
         user.rsvp = True
-        user.save()
+        if not CONFIG["DEBUG"]:
+            user.save()
+    return str(len(users)) + " " + type_account + "s expired."
  
-def accept_applicants(type_account, block_size):
-    expire_applicants()
-    
+def accept_applicants(type_account, block_size):    
     if type_account == "hacker":
         user_pool = UserEntry.objects(status = "Submitted", type_account = type_account, review3__ne = None, decision__nin = ["Accepted", "Expired"])
         user_pool = sorted(user_pool, key = lambda k: k["review1"] + k["review2"] + k["review3"], reverse = True)
@@ -177,7 +183,7 @@ def waitlist_applicants(type_account, block_size):
                 send_waitlisted_email(user['email'])
         return str(len(users)) + " hackers waitlisted."
     if type_account == "mentor":
-        return 0 + " mentors Waitlisted."        
+        return 0 + " mentors waitlisted."        
 
 def send_waitlisted_email(email, type):
     message = sendgrid.Mail()
@@ -201,6 +207,8 @@ def send_accepted_email(email, type_account):
     message.add_filter("templates", "enable", "1")
     if type_account == "mentor":
         message.add_filter("templates", "template_id", CONFIG["SENDGRID_MENTOR_ACCEPTED_TEMPLATE"])
+    elif type_account == "scholarship":
+        message.add_filter("templates", "template_id", CONFIG["SENDGRID_SCHOLARSHIP_ACCEPTED_TEMPLATE"])
     else:
         message.add_filter("templates", "template_id", CONFIG["SENDGRID_ACCEPTED_TEMPLATE"])
 

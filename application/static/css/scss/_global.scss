@@ -285,6 +285,10 @@ a {
 
           input, textarea, select {
             width: 25%;
+
+            @media screen and (max-width: 1024px) { width: 37%; }
+            @media screen and (max-width: 768px) { width: 50%; }
+            @media screen and (max-width: 480px) { width: 75%; }
           }
         }
       }

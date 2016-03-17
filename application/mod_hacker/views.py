@@ -79,8 +79,11 @@ def accept():
         if form.validate():
             try:
                 action = request.form['action']
+                info = None
                 if action == "accept":
-                    info = controller.accept_applicants(form["type_account"].data, int(form["block_size"].data))    
+                    info = controller.accept_applicants(form["type_account"].data, int(form["block_size"].data)) 
+                elif action == "expire":
+                    info = controller.expire_applicants(form["type_account"].data, int(form["block_size"].data))    
                 elif action == "waitlist":
                     info = controller.waitlist_applicants(form["type_account"].data, int(form["block_size"].data))
                 else:
