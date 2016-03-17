@@ -29,6 +29,9 @@
             <span id="waitlist-btn">
               <button class="btn" id="waitlist" onclick="verify_submit('waitlist'); return false;">Waitlist Applicants</button>
             </span>
+            <span id="expire-btn">
+              <button class="btn" id="expire" onclick="verify_submit('expire'); return false;">Expire Applicants</button>
+            </span>
             <button class="btn" id="accept" onclick="verify_submit('accept'); return false;">Accept Applicants</button>
           </div>
           <div class="buttons horizontal hide" id="verify-submit">
@@ -48,6 +51,7 @@
 <script type="text/javascript">
   var reset_buttons = function() {
     document.getElementById('waitlist').classList.remove("clicked");
+    document.getElementById('expire').classList.remove("clicked");
     document.getElementById('accept').classList.remove("clicked");
   }
 
@@ -69,9 +73,11 @@
   type_account_select.onchange = function() { 
     if (this.value === "mentor") {
       document.getElementById("waitlist-btn").classList.add("hide");
+      document.getElementById("expire-btn").classList.add("hide");
     }
     else {
       document.getElementById("waitlist-btn").classList.remove("hide");
+      document.getElementById("expire-btn").classList.remove("hide");
     }
     var stats_boxes = document.getElementsByClassName("stats-box");
     for (var i = 0; i < stats_boxes.length; i++) {
