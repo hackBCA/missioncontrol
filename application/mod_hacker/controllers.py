@@ -201,6 +201,8 @@ def send_accepted_email(email, type_account):
     message.add_filter("templates", "enable", "1")
     if type_account == "mentor":
         message.add_filter("templates", "template_id", CONFIG["SENDGRID_MENTOR_ACCEPTED_TEMPLATE"])
+    elif type_account == "scholarship":
+        message.add_filter("templates", "template_id", CONFIG["SENDGRID_SCHOLARSHIP_ACCEPTED_TEMPLATE"])
     else:
         message.add_filter("templates", "template_id", CONFIG["SENDGRID_ACCEPTED_TEMPLATE"])
 
