@@ -167,6 +167,11 @@ a {
   [class *="pure-u"] {
     font-family: "Proxima Nova Light", Helvetica, sans-serif;
   }
+
+  &.center {
+    -webkit-justify-content: center;
+    justify-content: center;
+  }
 }
 
 .pure-table {
