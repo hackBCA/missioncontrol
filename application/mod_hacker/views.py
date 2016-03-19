@@ -10,11 +10,12 @@ import json, os
 
 @mod_hacker.route("/email")
 @login_required
-@sentinel.board.require(http_exception = 403)
+@sentinel.admin.require(http_exception = 403)
 def send_mass_email():
     #controller.send_unconfirmed_email()
     #controller.send_not_started_email()
     #controller.send_in_progress_email()
+    #controller.send_not_rsvped_email()
     return render_template("hacker.email.html")
 
 @mod_hacker.route("/search")

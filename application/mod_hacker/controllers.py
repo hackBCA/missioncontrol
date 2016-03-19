@@ -270,6 +270,23 @@ def send_in_progress_email():
     #status, msg = sg.send(message)
     print(email, status, msg)
 
+def send_not_rsvped_email():
+    users = UserEntry.objects(confirmed = True, decision = "Accepted", rsvp__ne = True)
+    for u in users:
+        email = u.email
+        
+        message = sendgrid.Mail()
+        message.add_to(email)
+        message.set_from("contact@hackbca.com")
+        message.set_subject("hackBCA III - Don't forget to RSVP!")
+        message.set_html(CONFIG["NOT_YET_RSVPED_BODY"])
+        
+        message.add_filter("templates", "enable", "1")
+        message.add_filter("templates", "template_id", CONFIG["SENDGRID_GENERIC_TEMPLATE"])
+        #print(email)
+        status, msg = sg.send(message)
+        print(email, status, msg)
+
 def allowed_file(filename, allowed_extensions):
     return '.' in filename and filename.rsplit(".", 1)[1] in allowed_extensions
 
