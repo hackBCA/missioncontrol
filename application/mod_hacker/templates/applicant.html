@@ -23,7 +23,7 @@
             <button class="btn" type="submit" name="check-out">Check Out</button>
           {% endif %}
         </form>
-        <button class="btn" onclick="toggleCheckInLog(); return false;"><span id="button-action-text">Show</span> Check In/Out Log</button>
+        <button class="btn{{' hide' if applicant.check_in_log|length == 0}}" onclick="toggleCheckInLog(); return false;"><span id="button-action-text">Show</span> Check In/Out Log</button>
         <div id="check_in_log" class="hide">
           {% for entry in applicant.check_in_log %}
             <div class="pure-g center">

@@ -6,7 +6,7 @@ from . import controllers as controller
 from .forms import RateForm, AcceptForm
 from application import CONFIG
 from application.mod_admin.permissions import sentinel
-import json, os
+import json, os, time
 
 @mod_hacker.route("/email")
 @login_required
@@ -45,9 +45,17 @@ def applicant_view(uid):
         flash("User manually accepted.", "success")
       else:
         flash("Sorry, you don't have permission to do this.", "error")
-  applicant = controller.get_applicant_dict(uid)
+  applicant = controller.get_applicant_dict(uid)  
+
   if applicant is None:
       abort(404)
+
+  if "check_in_log" in applicant.keys():
+    check_in_log = [list(row) for row in applicant["check_in_log"]] #Have to do this for some reason
+    for k in range(len(check_in_log)):
+      check_in_log[k][1] = time.strftime('%Y-%m-%d %I:%M:%S %p', time.localtime(check_in_log[k][1]))
+    applicant["check_in_log"] = check_in_log
+
   return render_template("hacker.applicant.html", applicant = applicant)
 
 @mod_hacker.route("/review", methods = ["GET", "POST"])
