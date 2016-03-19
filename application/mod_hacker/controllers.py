@@ -285,5 +285,5 @@ def check_in_status_user(user, checked_in):
     if user.attending != "Attending":
         return
     user.checked_in = checked_in
-    user.check_in_log.append((checked_in, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))))
+    user.check_in_log.append((checked_in, time.strftime('%Y-%m-%d %I:%M:%S %p', time.localtime(time.time()))))
     user.save()
