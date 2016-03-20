@@ -139,3 +139,4 @@ def set_user_attr(email, attr, value):
   setattr(user, attr, value)
 
   user.save()
+

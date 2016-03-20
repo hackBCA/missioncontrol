@@ -1,6 +1,11 @@
 from application import CONFIG, app
 from .models import *
+
 import sendgrid
+
+import twilio
+from twilio.rest import TwilioRestClient
+
 import time
 from itsdangerous import URLSafeTimedSerializer
 from application.mod_stats.controllers import get_accepted_stats
@@ -295,3 +300,22 @@ def process_waiver_file(filename):
         user.save() 
     return users_updated
     
+twilio_client = twilio.rest.TwilioRestClient(CONFIG["TWILIO_SID"], CONFIG["TWILIO_AUTH_TOKEN"])
+
+def sendTextMessage(body, to):
+    msg = twilio_client.messages.create(body = body, to = to, from_ = "+12012214142")
+
+def sms_blast(type_accounts, message):
+    users = UserEntry.objects(checked_in = True, type_account__in = type_accounts, smsblast_optin = True)
+    sent, failed = 0, 0
+    for u in users:
+        try:
+            phone = u['phone']
+            sendTextMessage(message, phone)  
+            sent += 1
+        except Exception as e:
+            if CONFIG["DEBUG"]:
+                raise e
+            failed += 1
+            pass
+    return (sent, failed)

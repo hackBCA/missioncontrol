@@ -68,6 +68,8 @@ class UserEntry(Document):
   medical_information = StringField()
   hackbca_rules = StringField()
 
+  checked_in = BooleanField(default = False)
+
   decision = StringField()
   accepted_time = IntField()
   attending = StringField()
@@ -75,6 +77,9 @@ class UserEntry(Document):
 
   waiver = BooleanField(default = False)
   
+  smsblast_optin = BooleanField(default = False)
+
+
 class ServerSSEEvent(object):
     """Object wrapper for Server-Sent Event communication with clients.
     Arguments:
