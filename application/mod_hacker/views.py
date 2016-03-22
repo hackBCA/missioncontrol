@@ -136,3 +136,16 @@ def api_get_participants_sse():
 def api_get_participants_ajax():
     participants = controller.ajax_load_participants()
     return json.dumps(participants)
+
+@mod_hacker.route("/api/accept_applicant", methods = ["POST"])
+def api_accept_user():
+  if request.json["secret-key"] != CONFIG["SECRET_KEY"]:
+    return json.dumps({"success" : "0", "error" : "Invalid secret key."})
+  try:
+    user = controller.get_applicant_by_id(request.json["user-id"])
+    if user['decision'] == 'Accepted':
+      return json.dumps({"success": "0", "error": "User already accepted."})
+    controller.accept_applicant(user)
+    return json.dumps({"success" : "1"})
+  except Exception as e:
+    return json.dumps({"success" : "0", "error" : "Something went wrong."})
