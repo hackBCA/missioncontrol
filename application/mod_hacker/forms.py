@@ -6,7 +6,8 @@ class RateForm(Form):
 account_type_choices = [
     ("", "Account Type"),
     ("hacker", "Hackers"),
-    ("mentor", "Mentors")
+    ("mentor", "Mentors"),
+    ("scholarship", "Scholarship")
 ]
 
 class AcceptForm(Form):

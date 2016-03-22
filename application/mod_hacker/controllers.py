@@ -110,6 +110,7 @@ def expire_applicants(type_account, block_size):
 
     bad_time = int(time.time()) - 7 * 24 * 60 * 60 #How to break your iPhone 101
     users = UserEntry.objects(rsvp__ne = True, type_account = type_account, decision = "Accepted", accepted_time__lte = bad_time).order_by("accepted_time")
+
     if len(users) > block_size:
         users = users[:block_size]
  
@@ -174,13 +175,14 @@ def accept_applicant(user):
         send_accepted_email(user['email'], user['type_account'])
     
 def waitlist_applicants(type_account, block_size):
-    if type_account == "hacker":
-        users = UserEntry.objects(status = "Submitted", type_account = type_account, review3__ne = None, decision__nin = ["Accepted", "Waitlisted", "Expired"])[:block_size]
+    if type_account == "hacker" or type_account == "scholarship":
+        users = UserEntry.objects(status = "Submitted", type_account = type_account, review3__ne = None, decision__nin = ["Accepted", "Waitlisted", "Expired"]).limit(block_size)
+
         for user in users:
             user.decision = "Waitlisted"
             if not CONFIG["DEBUG"]:
                 user.save()
-                send_waitlisted_email(user['email'])
+                send_waitlisted_email(user['email'], user['type_account'])
         return str(len(users)) + " hackers waitlisted."
     if type_account == "mentor":
         return 0 + " mentors waitlisted."        

@@ -80,13 +80,13 @@ def get_accepted_stats():
     else:
       num_ready_accept = UserEntry.objects(status = "Submitted", type_account = type_account).count()
 
-    num_accepted = UserEntry.objects(status = "Submitted", type_account = type_account, decision = "Accepted").count()
-    num_waitlisted = UserEntry.objects(status = "Submitted", type_account = type_account, decision = "Waitlisted").count()
-    num_expired = UserEntry.objects(status = "Submitted", type_account = type_account, decision = "Expired").count()
+    num_accepted = UserEntry.objects(type_account = type_account, decision = "Accepted").count()
+    num_waitlisted = UserEntry.objects(type_account = type_account, decision = "Waitlisted").count()
+    num_expired = UserEntry.objects(type_account = type_account, decision = "Expired").count()
 
-    num_not_rsvped = UserEntry.objects(status = "Submitted", type_account = type_account, decision = "Accepted", rsvp__ne = True).count()
-    num_attending = UserEntry.objects(status = "Submitted", type_account = type_account, decision = "Accepted", rsvp = True, attending = "Attending").count()
-    num_not_attending = UserEntry.objects(status = "Submitted", type_account = type_account, decision = "Accepted", rsvp = True, attending = "Not Attending").count()
+    num_not_rsvped = UserEntry.objects(type_account = type_account, decision = "Accepted", rsvp__ne = True).count()
+    num_attending = UserEntry.objects(type_account = type_account, decision = "Accepted", rsvp = True, attending = "Attending").count()
+    num_not_attending = UserEntry.objects(type_account = type_account, decision = "Accepted", rsvp = True, attending = "Not Attending").count()
 
     percent_accepted = 0 if num_ready_accept == 0 else 100.0 * num_accepted / num_ready_accept
     percent_waitlisted = 0 if num_ready_accept == 0 else 100.0 * num_waitlisted / num_ready_accept
@@ -124,7 +124,7 @@ def get_rsvp_stats():
       num_female_attending = UserEntry.objects(rsvp = True, attending = "Attending", type_account = type_account, gender = "female").count()
       num_other_attending = UserEntry.objects(rsvp = True, attending = "Attending", type_account = type_account, gender = "other").count()
       num_rns_attending = UserEntry.objects(rsvp = True, attending = "Attending", type_account = type_account, gender = "rns").count()
-      print(num_male_attending, num_attending)
+
       percent_male_attending = 0 if num_attending == 0 else 100.0 * num_male_attending / num_attending
       percent_female_attending = 0 if num_attending == 0 else 100.0 * num_female_attending / num_attending
       percent_other_attending = 0 if num_attending == 0 else 100.0 * num_other_attending / num_attending
