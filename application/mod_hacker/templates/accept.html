@@ -76,13 +76,17 @@
     if (this.value === "mentor") {
       document.getElementById("waitlist-btn").classList.add("hide");
       document.getElementById("expire-btn").classList.add("hide");
+      document.getElementById("accept-btn").classList.remove("hide");
     }
     else if (this.value === "scholarship"){
       document.getElementById("accept-btn").classList.add("hide");
+      document.getElementById("waitlist-btn").classList.remove("hide");
+      document.getElementById("expire-btn").classList.remove("hide");
     }
     else {
       document.getElementById("waitlist-btn").classList.remove("hide");
       document.getElementById("expire-btn").classList.remove("hide");
+      document.getElementById("accept-btn").classList.remove("hide");
     }
     var stats_boxes = document.getElementsByClassName("stats-box");
     for (var i = 0; i < stats_boxes.length; i++) {
