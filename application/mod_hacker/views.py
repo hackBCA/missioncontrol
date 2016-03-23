@@ -6,7 +6,7 @@ from . import controllers as controller
 from .forms import RateForm, AcceptForm, SmsBlastForm
 from application import CONFIG
 from application.mod_admin.permissions import sentinel
-import json, os
+import json, os, time
 
 @mod_hacker.route("/email")
 @login_required
@@ -27,20 +27,36 @@ def search():
 @login_required
 @sentinel.read_data.require()
 def applicant_view(uid):
-    if request.method == "POST":
-      for k in request.form:
-        print(k)
-      if 'manual-accept' in request.form:
-        if sentinel.board.can():
-          user = controller.get_applicant_by_id(uid)
-          controller.accept_applicant(user)
-          flash("User manually accepted.", "success")
-        else:
-          flash("Sorry, you don't have permission to do this.", "error")
-    applicant = controller.get_applicant_dict(uid)
-    if applicant is None:
-        abort(404)
-    return render_template("hacker.applicant.html", applicant = applicant)
+  if request.method == "POST":
+    user = controller.get_applicant_by_id(uid)
+    if 'check-in' in request.form:
+      if 'checked_in' in user and user['checked_in']:
+        flash("User is already checked in.", "error")
+      else:
+        controller.check_in_status_user(user, True)
+    elif 'check-out' in request.form:
+      if 'checked_in' in user and not user['checked_in']:
+        flash("User is already checked out.", "error")
+      else:
+        controller.check_in_status_user(user, False)
+    elif 'manual-accept' in request.form:
+      if sentinel.board.can():
+        controller.accept_applicant(user)
+        flash("User manually accepted.", "success")
+      else:
+        flash("Sorry, you don't have permission to do this.", "error")
+  applicant = controller.get_applicant_dict(uid)  
+
+  if applicant is None:
+      abort(404)
+
+  if "check_in_log" in applicant.keys():
+    check_in_log = [list(row) for row in applicant["check_in_log"]] #Have to do this for some reason
+    for k in range(len(check_in_log)):
+      check_in_log[k][1] = time.strftime('%Y-%m-%d %I:%M:%S %p', time.localtime(check_in_log[k][1]))
+    applicant["check_in_log"] = check_in_log
+
+  return render_template("hacker.applicant.html", applicant = applicant)
 
 @mod_hacker.route("/review", methods = ["GET", "POST"])
 @login_required
@@ -153,3 +169,16 @@ def api_get_participants_sse():
 def api_get_participants_ajax():
     participants = controller.ajax_load_participants()
     return json.dumps(participants)
+
+@mod_hacker.route("/api/accept_applicant", methods = ["POST"])
+def api_accept_user():
+  if request.json["secret-key"] != CONFIG["SECRET_KEY"]:
+    return json.dumps({"success" : "0", "error" : "Invalid secret key."})
+  try:
+    user = controller.get_applicant_by_id(request.json["user-id"])
+    if user['decision'] == 'Accepted':
+      return json.dumps({"success": "0", "error": "User already accepted."})
+    controller.accept_applicant(user)
+    return json.dumps({"success" : "1"})
+  except Exception as e:
+    return json.dumps({"success" : "0", "error" : "Something went wrong."})

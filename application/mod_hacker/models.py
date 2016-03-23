@@ -76,9 +76,16 @@ class UserEntry(Document):
   rsvp = BooleanField(default = False) #Has the user submitted their rsvp form?
 
   waiver = BooleanField(default = False)
+<<<<<<< .merge_file_PfxtSg
   
   smsblast_optin = BooleanField(default = False)
 
+=======
+  checked_in = BooleanField(default = False) 
+  check_in_log = ListField()
+
+  meta = {"strict" : False }
+>>>>>>> .merge_file_tHeLTB
 
 class ServerSSEEvent(object):
     """Object wrapper for Server-Sent Event communication with clients.

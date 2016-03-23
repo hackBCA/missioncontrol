@@ -1,6 +1,11 @@
-{% set free_response1_prompt = "What do you hope to learn and accomplish at hackBCA?" %}
-{% set free_response2_prompt = "What is something you’re proud of (it doesn’t have to be tech related)?" %}
-{% set free_response3_prompt = "Is there anything else you want us to know?" %}
+{% if applicant.type_account == 'mentor' %}
+  {% set free_response1_prompt = "Please list languages/frameworks/technologies that you would like to mentor students in." %}
+  {% set free_response2_prompt = "Would you like to run a workshop? If so, please briefly describe your ideas." %}
+{% else %}
+  {% set free_response1_prompt = "What do you hope to learn and accomplish at hackBCA?" %}
+  {% set free_response2_prompt = "What is something you’re proud of (it doesn’t have to be tech related)?" %}
+  {% set free_response3_prompt = "Is there anything else you want us to know?" %}
+{% endif %}
 
 <div class="card">
   <div class="header">
@@ -10,7 +15,7 @@
         <p><span>Account Type:</span> {{ applicant.type_account|title }}</p>
         {% if applicant.decision %}
           <p><span>Decision:</span> {{ applicant.decision|title }}</p>
-          {% if applicant.rsvp %}
+          {% if applicant.rsvp == True %}
             <p><span>Attending:</span> {{ applicant.attending|title }}</p>
             {% if applicant.checked_in == True %}
               <p><span>Checked In:</span> True</p>
@@ -157,10 +162,12 @@
           <h6>{{ free_response2_prompt }}</h6>
           <p>{{ applicant.free_response2 }}</p>
         </div>
-        <div class="pure-u-sm-2-3 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1 pure-u-1-1">
-          <h6>{{ free_response3_prompt }}</h6>
-          <p>{{ applicant.free_response3 }}</p>
-        </div>
+        {% if applicant.type_account != "mentor" %}
+          <div class="pure-u-sm-2-3 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1 pure-u-1-1">
+            <h6>{{ free_response3_prompt }}</h6>
+            <p>{{ applicant.free_response3 }}</p>
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>

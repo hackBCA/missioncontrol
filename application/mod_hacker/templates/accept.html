@@ -32,7 +32,9 @@
             <span id="expire-btn">
               <button class="btn" id="expire" onclick="verify_submit('expire'); return false;">Expire Applicants</button>
             </span>
-            <button class="btn" id="accept" onclick="verify_submit('accept'); return false;">Accept Applicants</button>
+            <span id="accept-btn">
+              <button class="btn" id="accept" onclick="verify_submit('accept'); return false;">Accept Applicants</button>
+            </span>
           </div>
           <div class="buttons horizontal hide" id="verify-submit">
             <h6>Are you sure?</h6>
@@ -74,10 +76,17 @@
     if (this.value === "mentor") {
       document.getElementById("waitlist-btn").classList.add("hide");
       document.getElementById("expire-btn").classList.add("hide");
+      document.getElementById("accept-btn").classList.remove("hide");
+    }
+    else if (this.value === "scholarship"){
+      document.getElementById("accept-btn").classList.add("hide");
+      document.getElementById("waitlist-btn").classList.remove("hide");
+      document.getElementById("expire-btn").classList.remove("hide");
     }
     else {
       document.getElementById("waitlist-btn").classList.remove("hide");
       document.getElementById("expire-btn").classList.remove("hide");
+      document.getElementById("accept-btn").classList.remove("hide");
     }
     var stats_boxes = document.getElementsByClassName("stats-box");
     for (var i = 0; i < stats_boxes.length; i++) {
