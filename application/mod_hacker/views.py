@@ -146,7 +146,7 @@ def waivers():
 @sentinel.sms_blast.require()
 def smsblast():
   form = SmsBlastForm(request.form)
-
+  print(controller.get_staff_phone_nums())
   if request.method == "POST" and form.validate():
     try:
       sent_stats = controller.sms_blast(form['type_accounts'].data, form['message'].data)
