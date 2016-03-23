@@ -1,0 +1,20 @@
+{% extends "hacker.base.html" %}
+
+{% block scripts %}
+  <script type="text/javascript">
+
+    var populate_broadcasts = function(socket) {
+      socket.emit("fetch_all_broadcasts", function(data) {
+        console.log(data);
+      });
+    }
+    var socketio_init = function() {
+      var socket = io.connect("http://localhost:5000"); 
+
+      socket.on("connect", function() {
+        populate_broadcasts(this);   
+      });
+    }
+    socketio_init();
+  </script>
+{% endblock %}

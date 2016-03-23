@@ -136,3 +136,7 @@ def api_get_participants_sse():
 def api_get_participants_ajax():
     participants = controller.ajax_load_participants()
     return json.dumps(participants)
+
+@mod_hacker.route("/broadcast")
+def broadcast():
+  return render_template("hacker.broadcast.html")
