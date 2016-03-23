@@ -42,6 +42,8 @@ class User(UserMixin):
       navbar.append(("/waivers", "Update Waivers"))
     if "director" in self.roles:
       navbar.append(("/accept", "Accept Applicants"))
+    if "sms_blast" in self.roles:
+      navbar.append(("/smsblast", "SMS Blast"))
     if "admin" in self.roles:
       navbar.append(("/admin", "Admin"))
 

@@ -10,12 +10,14 @@
   {% endwith %}
 {% endmacro %}
 
-{% macro render_field(field, disabled = false) %}
+{% macro render_field(field, disabled = false, char_limit = None) %}
   <div class="form-elt {% if field.errors %}error{% endif %}">
     {% if field.type == "TextAreaField" %}
       <h6>{{ field.label }}</h6>
       {{ field(placeholder = field.description, maxlength = field.max, disabled = disabled) }}
-      <p class="count" id="{{ field.name }}">Characters left: 500</p>
+      {% if char_limit != None %}
+        <p class="count" id="{{ field.name }}">Characters left: {{ char_limit }}</p>
+      {% endif %}
     {% else %}
       {{ field(placeholder = field.description, disabled = disabled) }}
     {% endif %}
@@ -24,6 +26,7 @@
     {% endif %}
   </div>
 {% endmacro %}
+
 
 <!DOCTYPE html>
 

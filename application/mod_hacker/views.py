@@ -3,7 +3,7 @@ from werkzeug import secure_filename
 from flask.ext.login import login_required, current_user
 from . import hacker_module as mod_hacker
 from . import controllers as controller
-from .forms import RateForm, AcceptForm
+from .forms import RateForm, AcceptForm, SmsBlastForm
 from application import CONFIG
 from application.mod_admin.permissions import sentinel
 import json, os, time
@@ -140,6 +140,23 @@ def waivers():
       flash("Invalid CSV.", "error")
 
   return render_template("hacker.waiver.html")
+
+@mod_hacker.route("/smsblast", methods = ["GET", "POST"])
+@login_required
+@sentinel.sms_blast.require()
+def smsblast():
+  form = SmsBlastForm(request.form)
+
+  if request.method == "POST" and form.validate():
+    try:
+      sent_stats = controller.sms_blast(form['type_accounts'].data, form['message'].data)
+      flash("%d messages sent. %d failed." % sent_stats, "neutral")
+    except Exception as e:
+      if CONFIG["DEBUG"]:
+        raise e
+      flash("Something went wrong.", "error")
+      
+  return render_template("hacker.sms_blast.html", form = form)
 
 @mod_hacker.route("/api/get_participants_sse", methods = ["GET"])
 def api_get_participants_sse():

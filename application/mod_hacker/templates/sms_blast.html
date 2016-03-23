@@ -1,0 +1,54 @@
+{% extends "hacker.base.html" %}
+
+{% block content %}
+{% with nav_bar = nav_bar %}
+  {% include "navbar.html" %}
+{% endwith %}
+
+<div class="page-container">
+  <div class="page-section" id="settings">
+    <div class="container">
+      <div class="header">
+        <div class="head-cover">
+          <h2>SMS Blast</h2>
+          <form method="POST" action="">
+            {% for field in form %}
+              {{ render_field(field, char_limit = 160) }}
+            {% endfor %}
+            <button class="btn" type="submit" onclick="verify_submit(); return false;">Send SMS Blast</button>
+            <div class="buttons horizontal hide" id="verify-submit">
+              <h6>Are you sure?</h6>
+              <button class="btn" id="confirm_button" type="submit" name="submit">Yes</button>
+              <button class="btn" onclick="decline_verify(); return false;">No</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+  var verify_submit = function(action) {
+    var button_group = document.getElementById("verify-submit");
+    button_group.classList.remove("hide");
+  }
+  var decline_verify = function() {
+    var button_group = document.getElementById("verify-submit");
+    button_group.classList.add("hide");
+  }
+
+  var char_counter = function() {
+    fields = document.querySelectorAll("textarea");
+    for (var i = 0; i < fields.length; i++) {
+      fields[i].onkeyup = function () {
+        document.querySelector(".count#" + this.id).innerHTML = "Characters left: " + (160 - this.value.length);
+      }
+      document.querySelector(".count#" + fields[i].id).innerHTML = "Characters left: " + (160 - fields[i].value.length);
+    }
+  }
+  char_counter();
+</script>
+{% endblock %}

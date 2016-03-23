@@ -68,16 +68,24 @@ class UserEntry(Document):
   medical_information = StringField()
   hackbca_rules = StringField()
 
+  checked_in = BooleanField(default = False)
+
   decision = StringField()
   accepted_time = IntField()
   attending = StringField()
   rsvp = BooleanField(default = False) #Has the user submitted their rsvp form?
 
   waiver = BooleanField(default = False)
+<<<<<<< .merge_file_PfxtSg
+  
+  smsblast_optin = BooleanField(default = False)
+
+=======
   checked_in = BooleanField(default = False) 
   check_in_log = ListField()
 
   meta = {"strict" : False }
+>>>>>>> .merge_file_tHeLTB
 
 class ServerSSEEvent(object):
     """Object wrapper for Server-Sent Event communication with clients.
