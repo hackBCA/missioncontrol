@@ -56,12 +56,6 @@ def summarize_participants(participants):
 
     return summary
 
-def check_in(email):
-    user = get_participant(email)
-
-    #user.checked_in = True
-    #user.save()
-
 def get_applicant_by_id(uid):
   applicant_entries = UserEntry.objects(id = uid)
   if applicant_entries.count() != 1:
@@ -296,4 +290,10 @@ def process_waiver_file(filename):
         user.waiver = True
         user.save() 
     return users_updated
-    
+
+def check_in_status_user(user, checked_in): 
+    if user.attending != "Attending":
+        return
+    user.checked_in = checked_in
+    user.check_in_log.append([checked_in, int(time.time())])
+    user.save()
