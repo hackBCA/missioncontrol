@@ -48,6 +48,18 @@ def summarize_participants(participants):
     "In Progress": "IP",
     "Submitted": "S"
     }
+    decision_map = {
+        None: "N",
+        "Accepted": "A",
+        "Waitlisted": "W",
+        "Expired": "E"
+    }    
+    rsvp_map = {
+        None: "Error",
+        "Undecided": "U",
+        "Attending": "A",
+        "Not Attending": "NA"
+    }
 
     summary = [{
     "id":           str(person.id),
@@ -55,7 +67,9 @@ def summarize_participants(participants):
     "email":        person.email,
     "type_account": person.type_account[0].upper(),
     "status":       status_map[person.status],
-    "school":       person.school if not person.school in ("", None) else "&nbsp;"
+    "school":       person.school if not person.school in ("", None) else "&nbsp;",
+    "decision":     decision_map[person.decision],
+    "rsvp":         "N/A" if person.decision is None or person.decision != "Accepted" else rsvp_map["Undecided" if not person.rsvp else person.attending],
       }
     for person in participants]
 
