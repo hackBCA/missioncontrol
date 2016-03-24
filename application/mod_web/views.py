@@ -5,5 +5,7 @@ from . import controllers as controller
 from application import CONFIG
 
 @mod_web.route("/")
+@login_required
 def foo():
   return render_template("web.index.html")
+

@@ -1,0 +1,71 @@
+{% extends "hacker.base.html" %}
+
+{% block content %}
+{% with nav_bar = nav_bar %}
+  {% include "navbar.html" %}
+{% endwith %}
+
+<div class="page-container">
+  <div class="page-section" id="settings">
+    <div class="container">
+      <div class="header">
+        <div class="head-cover">
+          <h2>Review Applications</h2>
+        </div>
+        {% if user != None %}
+        <div class="user-view">
+          {% with applicant = user %}
+            {% include "hacker.applicant_card.html" %}
+          {% endwith %}
+        </div>
+        <h5>Rate Application</h5>
+        <form id="rate_applicant-form" method="POST" action="/review">
+          <i class="fa fa-star-o fa-2x rating-star" value="1" id="star-1"></i>
+          <i class="fa fa-star-o fa-2x rating-star" value="2" id="star-2"></i>
+          <i class="fa fa-star-o fa-2x rating-star" value="3" id="star-3"></i>
+          <i class="fa fa-star-o fa-2x rating-star" value="4" id="star-4"></i>
+          <i class="fa fa-star-o fa-2x rating-star" value="5" id="star-5"></i>
+          {{ form["rating"].errors[0] }}
+          <div class="hide">
+            <input type="radio" name="rating" id="rate-1" value="1"/>1
+            <input type="radio" name="rating" id="rate-2" value="2"/>2
+            <input type="radio" name="rating" id="rate-3" value="3"/>3
+            <input type="radio" name="rating" id="rate-4" value="4"/>4
+            <input type="radio" name="rating" id="rate-5" value="5"/>5
+          </div>
+          <p><button class="btn" type="submit" name="submit">Rate and Continue</button></p>
+        </form>
+        {% else %}
+          <p>There is not currently anyone for you to review!</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+  stars = document.getElementsByClassName("rating-star");
+  console.log(stars);
+  for(var i = 0; i < stars.length; i++){
+    stars[i].onclick = function(){
+      var star_num = this.getAttribute("value");
+      document.getElementById("rate-"+star_num).checked = true;
+      for(var i = 1; i <= 5; i++){
+        var star = document.getElementById("star-" + i);
+        console.log(star_num);
+        if(i <= parseInt(star_num)){
+          star.classList.remove("fa-star-o")
+          star.classList.add("fa-star")
+        }
+        else{
+          star.classList.remove("fa-star")
+          star.classList.add("fa-star-o")
+        }
+      }
+    }
+  }
+
+</script>
+{% endblock %}

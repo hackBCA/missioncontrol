@@ -1,0 +1,67 @@
+{% extends "hacker.base.html" %}
+
+{% block content %}
+  {% with nav_bar = nav_bar %}
+    {% include "navbar.html" %}
+  {% endwith %}
+  <div class="page-container">
+  <div class="page-section" id="settings">
+    <div class="container">
+      {% with applicant = applicant %}
+        {% include "hacker.applicant_card.html" %}
+      {% endwith %}
+      {% if applicant.decision != "Accepted" %}
+        <form method="POST" action="">
+          <button class="btn" type="submit" name="manual-accept">Manually Accept</button>
+        </form>
+      {% endif %}
+      {% if applicant.attending == "Attending" %}
+        <form method="POST" action="">
+          {% if applicant.checked_in != True %}
+            <button class="btn" type="submit" name="check-in">Check In</button>
+          {% else %}
+            <button class="btn" type="submit" name="check-out">Check Out</button>
+          {% endif %}
+        </form>
+        <button class="btn{{' hide' if applicant.check_in_log|length == 0}}" onclick="toggleCheckInLog(); return false;"><span id="button-action-text">Show</span> Check In/Out Log</button>
+        <div id="check_in_log" class="hide">
+          {% for entry in applicant.check_in_log %}
+            <div class="pure-g center">
+             <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1"><p>{{"Checked In" if entry[0] else "Checked Out"}}</p></div>
+             <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1"><p>{{entry[1]}}</p></div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      <div class="raw">
+        <p><button class="btn" onclick="toggleRawData();">Toggle Raw Data</button></p>
+        <div id="raw_data" class="hide">
+          {% for field, val in applicant.items() %}
+            <p>{{ field }}: {{ val }}</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+  toggleRawData = function() {
+    var raw = document.getElementById("raw_data");
+    raw.classList.toggle("hide");
+  }
+
+  toggleCheckInLog = function(){
+    var span = document.getElementById("button-action-text");
+    if(span.innerHTML === "Show"){
+      span.innerHTML = "Hide";
+    }
+    else{
+      span.innerHTML = "Show";
+    }
+    document.getElementById("check_in_log").classList.toggle("hide");
+  }
+</script>
+{% endblock %}

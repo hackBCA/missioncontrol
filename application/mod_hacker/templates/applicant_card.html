@@ -1,0 +1,174 @@
+{% if applicant.type_account == 'mentor' %}
+  {% set free_response1_prompt = "Please list languages/frameworks/technologies that you would like to mentor students in." %}
+  {% set free_response2_prompt = "Would you like to run a workshop? If so, please briefly describe your ideas." %}
+{% else %}
+  {% set free_response1_prompt = "What do you hope to learn and accomplish at hackBCA?" %}
+  {% set free_response2_prompt = "What is something you’re proud of (it doesn’t have to be tech related)?" %}
+  {% set free_response3_prompt = "Is there anything else you want us to know?" %}
+{% endif %}
+
+<div class="card">
+  <div class="header">
+    <div class="pure-g">
+      <div class="pure-u-1-1">
+        <h3>{{ applicant.firstname }} {{ applicant.lastname }}</h3>
+        <p><span>Account Type:</span> {{ applicant.type_account|title }}</p>
+        {% if applicant.decision %}
+          <p><span>Decision:</span> {{ applicant.decision|title }}</p>
+          {% if applicant.rsvp == True %}
+            <p><span>Attending:</span> {{ applicant.attending|title }}</p>
+            {% if applicant.checked_in == True %}
+              <p><span>Checked In:</span> True</p>
+            {% else %}
+              <p><span>Checked In:</span> False</p>
+            {% endif %}
+          {% else %}
+            <p><span>Attending:</span> Undecided</p>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="body">
+    <div id="basic_info">
+      <h4>Basic Info</h4>
+      <div class="pure-g">
+        <div class="pure-u-1-1">
+          <p><span>Email:</span> {{ applicant.email }}</p>
+        </div>
+        <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
+          <p><span>Gender:</span> 
+            {% if applicant.other_gender %}
+              {{ applicant.other_gender|title }}
+            {% else %}
+              {{ applicant.gender|title }}
+            {% endif %}
+          </p>
+        </div>
+        <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
+          <p><span>School:</span> {{ applicant.school }}</p>
+        </div>
+        <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
+          <p><span>Grade:</span> {{ applicant.grade }}</p>
+        </div>
+        <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
+          <p><span>Beginner:</span> {{ applicant.beginner }}</p>
+        </div>
+        <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
+          <p><span># Hackathons:</span> {{ applicant.num_hackathons }}</p>
+        </div>
+        {% if applicant.type_account|lower == "scholarship" %}
+          <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
+            {% if applicant.other_intended_major %}
+              <p><span>Intended Major:</span> {{ applicant.other_intended_major }}</p>
+            {% else %}
+              <p><span>Intended Major:</span> {{ applicant.intended_major }}</p>
+            {% endif %}
+          </div>
+          <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
+            <p><span>Reduced Lunch:</span> {{ applicant.reduced_lunch }}</p>
+          </div>
+          <div class="pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 pure-u-1-1">
+            {% if applicant.other_hear_about_us %}
+              <p><span>Hear About Us:</span> {{ applicant.other_hear_about_us }}</p>
+            {% else %}
+              <p><span>Hear About Us:</span> {{ applicant.hear_about_us }}</p>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    <div id="links">
+      <h4>Links</h4>
+      <div class="pure-g">
+        {% if applicant.github_link %}
+          <div class="pure-u-1-1">
+            <p><span>Github:</span>
+              {% if "http" in applicant.github_link %}
+                <a target="_blank" href="{{ applicant.github_link }}">
+              {% else %}
+                <a target="_blank" href="http://{{ applicant.github_link }}">
+              {% endif %}
+              {% if applicant.github_link|length <= 35 %}
+                {{ applicant.github_link }}
+              {% else %}
+                {{ applicant.github_link[0:35] }}...
+              {% endif %}
+              </a>
+            </p>
+          </div>
+        {% endif %}
+        {% if applicant.site_link %}
+          <div class="pure-u-1-1">
+            <p><span>Site:</span>
+              {% if "http" in applicant.site_link %}
+                <a target="_blank" href="{{ applicant.site_link }}">
+              {% else %}
+                <a target="_blank" href="http://{{ applicant.site_link }}">
+              {% endif %}
+              {% if applicant.site_link|length <= 35 %}
+                {{ applicant.site_link }}
+              {% else %}
+                {{ applicant.site_link[0:35] }}...
+              {% endif %}
+              </a>
+            </p>
+          </div>
+        {% endif %}
+        {% if applicant.linkedin_link %}
+          <div class="pure-u-1-1">
+            <p><span>LinkedIn:</span>
+              {% if "http" in applicant.linkedin_link %}
+                <a target="_blank" href="{{ applicant.linkedin_link }}">
+              {% else %}
+                <a target="_blank" href="http://{{ applicant.linkedin_link }}">
+              {% endif %}
+              {% if applicant.linkedin_link|length <= 35 %}
+                {{ applicant.linkedin_link }}
+              {% else %}
+                {{ applicant.linkedin_link[0:35] }}...
+              {% endif %}
+              </a>
+            </p>
+          </div>
+        {% endif %}
+        {% if applicant.other_link %}
+          <div class="pure-u-1-1">
+            <p><span>Other:</span>
+              {% if "http" in applicant.other_link %}
+                <a target="_blank" href="{{ applicant.other_link }}">
+              {% else %}
+                <a target="_blank" href="http://{{ applicant.other_link }}">
+              {% endif %}
+              {% if applicant.other_link|length <= 35 %}
+                {{ applicant.other_link }}
+              {% else %}
+                {{ applicant.other_link[0:35] }}...
+              {% endif %}
+              </a>
+            </p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    <div id="free_responses">
+      <h4>Free Responses</h4>
+      <div class="pure-g">
+        <div class="pure-u-sm-2-3 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1 pure-u-1-1">
+          <h6>{{ free_response1_prompt }}</h6>
+          <p>{{ applicant.free_response1 }}</p>
+        </div>
+        <div class="pure-u-sm-2-3 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1 pure-u-1-1">
+          <h6>{{ free_response2_prompt }}</h6>
+          <p>{{ applicant.free_response2 }}</p>
+        </div>
+        {% if applicant.type_account != "mentor" %}
+          <div class="pure-u-sm-2-3 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1 pure-u-1-1">
+            <h6>{{ free_response3_prompt }}</h6>
+            <p>{{ applicant.free_response3 }}</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

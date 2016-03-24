@@ -1,0 +1,31 @@
+{% extends "user.base.html" %}
+
+{% set nav_bar = [
+  ("/", "Home"),
+  ("/forgot", "Forgot Password")
+] -%}
+
+{% block content %}
+{% with nav_bar = nav_bar %}
+  {% include "navbar.html" %}
+{% endwith %}
+<div class="page-container">
+  <div class="page-section" id="forgot">
+    <div class="container">
+      <div class="cover">
+        <div class="content">
+          <h2>Password Recovery</h2>
+          <form method="POST" action="">
+            {% for field in form %}
+              {{ render_field(field) }}
+            {% endfor %}
+            <div class="buttons">
+              <button class="btn" type="submit">Send Email</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

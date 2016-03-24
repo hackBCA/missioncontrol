@@ -1,6 +1,7 @@
-from flask import Flask
+from flask import Flask, redirect, flash, render_template
 from mongoengine import register_connection
 import jinja2
+from flask.ext.cache import Cache
 
 # Credits for Jinja overloading method:
 # http://fewstreet.com/2015/01/16/flask-blueprint-templates.html
@@ -41,7 +42,7 @@ except FileNotFoundError:
 
 CONFIG = app.config
 
-#MongoLab
+# MongoLab
 register_connection(
     alias = "default", 
     name = CONFIG["DB_NAME"],
@@ -51,5 +52,27 @@ register_connection(
     port = CONFIG["DB_PORT"]
 )
 
+#Cache
+cache = Cache(app, config={"CACHE_TYPE": "simple", "CACHE_DEFAULT_TIMEOUT": 60 * 60 * 24 * 7})
+
 from application.mod_web import web_module
 app.register_blueprint(web_module)
+from application.mod_hacker import hacker_module
+app.register_blueprint(hacker_module)
+from application.mod_user import user_module
+app.register_blueprint(user_module)
+from application.mod_admin import admin_module
+app.register_blueprint(admin_module)
+from application.mod_stats import stats_module
+app.register_blueprint(stats_module)
+
+@app.errorhandler(401)
+def error(e):
+    return redirect("/login")
+@app.errorhandler(403)
+def error(e):
+    flash("You do not have permission to view that page.", "error")
+    return redirect("/")
+@app.errorhandler(404)
+def error(e):
+    return render_template("404.html"), 404

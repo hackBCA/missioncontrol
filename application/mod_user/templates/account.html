@@ -1,0 +1,41 @@
+{% extends "user.base.html" %}
+
+{% set nav_bar = [
+  ("/", "Home"),
+  ("/account/settings", "Settings")
+] -%}
+
+{% block content %}
+{% include "navbar.html" %}
+<div class="page-container">
+  <div class="page-section" id="settings">
+    <div class="container">
+      <h2>Account Settings</h2>
+      <h4>Hey, {{ current_user.firstname }}!</h4>
+      <h5>Change your name</h5>
+      <form id="name-form" method="POST" action="/account">
+        <input type="hidden" name="setting" value="name"/>
+        {% for field in name_form %}
+          {{ render_field(field) }}
+        {% endfor %}
+        <div class="buttons">
+          <button class="btn" type="submit">Change Name</button>
+        </div>
+      </form>
+      <h5>Change your password</h5>
+      <form id="password-form" method="POST" action="/account">
+        <input type="hidden" name="setting" value="password"/>
+        {% for field in password_form %}
+          {{ render_field(field) }}
+        {% endfor %}
+        <div class="buttons">
+          <button class="btn" type="submit">Change Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "admin.base.html" %}
+
+{% block content %}
+{% include "navbar.html" %}
+<div class="page-container">
+  <div class="page-section" id="settings">
+    <div class="container">
+      <h1>Add User</h1>
+
+      <form method="POST" action="">
+      {% for field in form %}
+        {{ render_field(field) }}
+      {% endfor %}
+
+      <p>Note: The admin role has universal access</p>
+
+        <div class="buttons">
+          <button class="btn" type="submit">Add User</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
