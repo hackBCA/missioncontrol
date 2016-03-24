@@ -271,6 +271,26 @@ def send_in_progress_email():
     #status, msg = sg.send(message)
     print(email, status, msg)
 
+def send_generic_template_email(to, subject, body):
+    message = sendgrid.Mail()
+    message.add_to(to)
+    message.set_from("contact@hackbca.com")
+    message.set_subject(subject)
+    message.set_html(body)
+
+    message.add_filter("templates", "enable", "1")
+    message.add_filter("templates", "template_id", CONFIG["SENDGRID_GENERIC_TEMPLATE"])
+
+    status, msg = sg.send(message)
+    return status, msg
+
+def rsvp_problem_notify():
+  users = UserEntry.objects(decision = "Accepted", rsvp = True, attending = None)
+  for u in users:
+    u.rsvp = False
+    u.save()
+    print(u['email'], send_generic_template_email(u['email'], "hackBCA III - Technical Error (Please read!)", CONFIG["RSVP_PROBLEM_BODY"]))
+
 def allowed_file(filename, allowed_extensions):
     return '.' in filename and filename.rsplit(".", 1)[1] in allowed_extensions
 

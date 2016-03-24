@@ -12,6 +12,7 @@ import json, os, time
 @login_required
 @sentinel.board.require(http_exception = 403)
 def send_mass_email():
+    #controller.rsvp_problem_notify()
     #controller.send_unconfirmed_email()
     #controller.send_not_started_email()
     #controller.send_in_progress_email()
