@@ -80,3 +80,5 @@ ez_setup.py
 
 # Temporary Uploads
 uploads/
+
+ignore/
