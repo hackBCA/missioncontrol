@@ -113,7 +113,7 @@
               </select>
             </th>
             <th>
-              <select class="m-filter-field" id="filter-decision">
+              <select class="filter-field" id="filter-decision">
                 <option value=""></option>
                 <option value="N">NS</option>
                 <option value="A">A</option>
@@ -122,7 +122,7 @@
               </select>
             </th>
             <th>
-              <select class="m-filter-field" id="filter-rsvp">
+              <select class="filter-field" id="filter-rsvp">
                 <option value=""></option>
                 <option value="U">U</option>
                 <option value="A">A</option>
@@ -130,7 +130,7 @@
               </select>
             </th>
             <th>
-              <select class="m-filter-field" id="filter-checkedin">
+              <select class="filter-field" id="filter-checkedin">
                 <option value=""></option>
                 <option value="Y">Y</option>
                 <option value="N">N</option>
@@ -163,7 +163,7 @@
       participants.push(chunk[i]);
       var row = document.createElement("tr");
       row.id = chunk[i].id;
-      row.onclick = function() { window.location.href = "/applicant/" + this.id; }
+      row.onclick = function() { window.open("/applicant/" + this.id, "_blank"); }
       for (var j = 0; j < participantFields.length; j++) {
         var col = document.createElement("td");
         col.dataset.label = fieldTitles[j];
@@ -173,6 +173,7 @@
       table.appendChild(row);
     }
     document.getElementById("row_count").innerHTML = participants.length + " Row" + (participants.length === 1 ? "" : "s") + " loaded.";
+    triggerFilter();
   }
 
   filter = function(filterVals) {
@@ -248,6 +249,16 @@
       mFilterFields[i].onchange = function() {
         filter(mGetFilterVals());
       }
+    }
+  }
+
+  triggerFilter = function() {
+    var mfilterboxDisplay = window.getComputedStyle(document.getElementsByClassName("m-filters")[0]).getPropertyValue("display");
+    if(mfilterboxDisplay === "none"){
+      filter(getFilterVals());
+    }
+    else{
+      filter(mGetFilterVals());
     }
   }
 
