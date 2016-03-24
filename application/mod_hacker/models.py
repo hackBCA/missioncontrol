@@ -2,8 +2,6 @@ from mongoengine import *
 
 #Mongo Object
 class UserEntry(Document):
-  meta = {"strict" : False }
-
   email = StringField(required = True)
   hashed = StringField(required = True)
 
@@ -52,7 +50,12 @@ class UserEntry(Document):
   review3 = IntField()
   reviewer3 = StringField()
 
+  decision = StringField()
+  accepted_time = IntField()
   attending = StringField()
+  rsvp = BooleanField(default = False) #Has the user submitted their rsvp form?
+
+  address = StringField()
   phone = StringField()
   t_shirt_size = StringField()
 
@@ -69,23 +72,11 @@ class UserEntry(Document):
   hackbca_rules = StringField()
 
   checked_in = BooleanField(default = False)
-
-  decision = StringField()
-  accepted_time = IntField()
-  attending = StringField()
-  rsvp = BooleanField(default = False) #Has the user submitted their rsvp form?
-
-  waiver = BooleanField(default = False)
-<<<<<<< .merge_file_PfxtSg
-  
-  smsblast_optin = BooleanField(default = False)
-
-=======
-  checked_in = BooleanField(default = False) 
   check_in_log = ListField()
 
-  meta = {"strict" : False }
->>>>>>> .merge_file_tHeLTB
+  waiver = BooleanField(default = False)
+
+  smsblast_optin = BooleanField(default = False)
 
 class ServerSSEEvent(object):
     """Object wrapper for Server-Sent Event communication with clients.
