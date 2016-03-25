@@ -291,6 +291,11 @@ def rsvp_problem_notify():
     u.save()
     print(u['email'], send_generic_template_email(u['email'], "hackBCA III - Technical Error (Please read!)", CONFIG["RSVP_PROBLEM_BODY"]))
 
+def rsvp_final_reminder():
+    users = UserEntry.objects(decision = "Accepted", rsvp__ne = True)
+    for u in users:
+        print(u['email'], send_generic_template_email(u['email'], "hackBCA III - You still need to rsvp!", CONFIG["RSVP_FOLLOW_UP_BODY"]))
+
 def allowed_file(filename, allowed_extensions):
     return '.' in filename and filename.rsplit(".", 1)[1] in allowed_extensions
 
