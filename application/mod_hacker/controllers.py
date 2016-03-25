@@ -16,6 +16,8 @@ import random
 sg = sendgrid.SendGridClient(CONFIG["SENDGRID_API_KEY"])
 ts = URLSafeTimedSerializer(CONFIG["SECRET_KEY"])
 
+UserDoesNotExistError = Exception("UserDoesNotExistError", "Account with given email does not exist.")
+
 def sse_load_participants():
     SSE_BUFFER = 50
     page = 0
@@ -81,6 +83,10 @@ def get_participant(email):
     if entries.count() == 1:
         return entries[0]
     return None   
+
+def set_user_attr(user, attr, value):
+    setattr(user, attr, value)
+    user.save()
 
 def get_next_application(reviewer_email):
     users = UserEntry.objects(status = "Submitted", type_account = "hacker", decision = None, review1 = None)

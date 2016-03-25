@@ -22,6 +22,11 @@
           {% else %}
             <button class="btn" type="submit" name="check-out">Check Out</button>
           {% endif %}
+          {% if applicant.smsblast_optin != True %}
+            <button class="btn" type="submit" name="smsblast-optin">SMS Blast Opt In</button>
+          {% else %}
+            <button class="btn" type="submit" name="smsblast-optout">SMS Blast Opt Out</button>
+          {% endif %}
         </form>
         <button class="btn{{' hide' if applicant.check_in_log|length == 0}}" onclick="toggleCheckInLog(); return false;"><span id="button-action-text">Show</span> Check In/Out Log</button>
         <div id="check_in_log" class="hide">

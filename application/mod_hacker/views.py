@@ -41,6 +41,10 @@ def applicant_view(uid):
         flash("User is already checked out.", "error")
       else:
         controller.check_in_status_user(user, False)
+    if 'smsblast-optin' in request.form:
+      controller.set_user_attr(user, 'smsblast_optin', True)
+    elif 'smsblast-optout' in request.form:
+      controller.set_user_attr(user, 'smsblast_optin', False)
     elif 'manual-accept' in request.form:
       if sentinel.board.can():
         controller.accept_applicant(user)
