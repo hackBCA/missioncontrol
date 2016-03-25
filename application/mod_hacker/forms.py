@@ -17,9 +17,15 @@ class AcceptForm(Form):
 sms_blast_account_type_choices = [
     ("hacker", "Hackers"),
     ("scholarship", "Scholarship"),
-    ("mentor", "Mentors")
+    ("mentor", "Mentors"),
+    ("staff", "Staff")
 ]
 
 class SmsBlastForm(Form):
   type_accounts = SelectMultipleField("Account Type", [validators.Required(message = "Please select at least one group to text.")], choices = sms_blast_account_type_choices, description = "Account Type")
   message = TextAreaField("Message", [validators.Required(message = "Enter a message."), validators.Length(max = 160, message = "Your message may be no more than 160 characters.")], description = "Message")
+
+  def validate_type_accounts(form, field):
+      types = field.data
+      if "staff" in types and len(types) != 1:
+          raise ValidationError("Staff cannot be selected in combination with any other groups.")

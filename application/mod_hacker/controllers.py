@@ -329,11 +329,17 @@ def sendTextMessage(body, to):
     msg = twilio_client.messages.create(body = body, to = to, from_ = "+12012214142")
 
 def sms_blast(type_accounts, message):
-    users = UserEntry.objects(checked_in = True, type_account__in = type_accounts, smsblast_optin = True)
+    phoneNums = []
+    if len(type_accounts) == 1 and type_accounts[0] == "staff":
+        phoneNums = get_staff_phone_nums()
+    else:
+        users = UserEntry.objects(checked_in = True, type_account__in = type_accounts, smsblast_optin = True)
+        for u in users:
+            phoneNums.append(u['phone'])
+        
     sent, failed = 0, 0
-    for u in users:
+    for phone in phoneNums:
         try:
-            phone = u['phone']
             sendTextMessage(message, phone)  
             sent += 1
         except Exception as e:
@@ -342,3 +348,20 @@ def sms_blast(type_accounts, message):
             failed += 1
             pass
     return (sent, failed)
+
+def get_staff_phone_nums():
+    try:
+        csv = open(os.path.join("ignore/", CONFIG["STAFF_CONTACT_INFO_FILE"]), "r")
+        fields = csv.readline().split(",")
+        data = [d.split(",") for d in csv.read().split("\n")]    
+        csv.close()
+
+        phonePos = fields.index("Phone") 
+    except Exception as e:
+        raise Exception("CsvException", "Missing CSV File")
+    phoneNums = []
+    for d in data:
+        if phonePos < len(d):
+            print(d)
+            phoneNums.append(d[phonePos])
+    return phoneNums
