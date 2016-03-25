@@ -1,6 +1,6 @@
 from application import CONFIG, app
 from .models import *
-
+from flask.ext.login import current_user
 import sendgrid
 
 import twilio
@@ -331,7 +331,7 @@ def check_in_status_user(user, checked_in):
     if user.attending != "Attending":
         return
     user.checked_in = checked_in
-    user.check_in_log.append([checked_in, int(time.time())])
+    user.check_in_log.append([checked_in, int(time.time()), current_user.email])
     user.save()
     
 twilio_client = twilio.rest.TwilioRestClient(CONFIG["TWILIO_SID"], CONFIG["TWILIO_AUTH_TOKEN"])
