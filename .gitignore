@@ -81,4 +81,6 @@ ez_setup.py
 # Temporary Uploads
 uploads/
 
+# Miscellaneous Ignore Folder
 ignore/
+staff_info.csv

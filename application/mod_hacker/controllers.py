@@ -1,6 +1,6 @@
 from application import CONFIG, app
 from .models import *
-
+from flask.ext.login import current_user
 import sendgrid
 
 import twilio
@@ -15,6 +15,8 @@ import random
 
 sg = sendgrid.SendGridClient(CONFIG["SENDGRID_API_KEY"])
 ts = URLSafeTimedSerializer(CONFIG["SECRET_KEY"])
+
+UserDoesNotExistError = Exception("UserDoesNotExistError", "Account with given email does not exist.")
 
 def sse_load_participants():
     SSE_BUFFER = 50
@@ -48,6 +50,17 @@ def summarize_participants(participants):
     "In Progress": "IP",
     "Submitted": "S"
     }
+    decision_map = {
+        None: "&nbsp;",
+        "Accepted": "A",
+        "Waitlisted": "W",
+        "Expired": "E"
+    }    
+    rsvp_map = {
+        "Undecided": "U",
+        "Attending": "A",
+        "Not Attending": "NA"
+    }
 
     summary = [{
     "id":           str(person.id),
@@ -55,7 +68,10 @@ def summarize_participants(participants):
     "email":        person.email,
     "type_account": person.type_account[0].upper(),
     "status":       status_map[person.status],
-    "school":       person.school if not person.school in ("", None) else "&nbsp;"
+    "school":       person.school if not person.school in ("", None) else "&nbsp;",
+    "decision":     decision_map[person.decision],
+    "rsvp":         "&nbsp;" if person.decision != "Accepted" else rsvp_map["Undecided" if not person.rsvp else person.attending],
+    "checkedin":    "&nbsp;" if not person.rsvp or person.attending != "Attending" else ("Y" if person.checked_in else "N")
       }
     for person in participants]
 
@@ -81,6 +97,10 @@ def get_participant(email):
     if entries.count() == 1:
         return entries[0]
     return None   
+
+def set_user_attr(user, attr, value):
+    setattr(user, attr, value)
+    user.save()
 
 def get_next_application(reviewer_email):
     users = UserEntry.objects(status = "Submitted", type_account = "hacker", decision = None, review1 = None)
@@ -271,6 +291,31 @@ def send_in_progress_email():
     #status, msg = sg.send(message)
     print(email, status, msg)
 
+def send_generic_template_email(to, subject, body):
+    message = sendgrid.Mail()
+    message.add_to(to)
+    message.set_from("contact@hackbca.com")
+    message.set_subject(subject)
+    message.set_html(body)
+
+    message.add_filter("templates", "enable", "1")
+    message.add_filter("templates", "template_id", CONFIG["SENDGRID_GENERIC_TEMPLATE"])
+
+    status, msg = sg.send(message)
+    return status, msg
+
+def rsvp_problem_notify():
+  users = UserEntry.objects(decision = "Accepted", rsvp = True, attending = None)
+  for u in users:
+    u.rsvp = False
+    u.save()
+    print(u['email'], send_generic_template_email(u['email'], "hackBCA III - Technical Error (Please read!)", CONFIG["RSVP_PROBLEM_BODY"]))
+
+def rsvp_final_reminder():
+    users = UserEntry.objects(decision = "Accepted", rsvp__ne = True)
+    for u in users:
+        print(u['email'], send_generic_template_email(u['email'], "hackBCA III - You still need to rsvp!", CONFIG["RSVP_FOLLOW_UP_BODY"]))
+
 def allowed_file(filename, allowed_extensions):
     return '.' in filename and filename.rsplit(".", 1)[1] in allowed_extensions
 
@@ -300,7 +345,7 @@ def check_in_status_user(user, checked_in):
     if user.attending != "Attending":
         return
     user.checked_in = checked_in
-    user.check_in_log.append([checked_in, int(time.time())])
+    user.check_in_log.append([checked_in, int(time.time()), current_user.email])
     user.save()
     
 twilio_client = twilio.rest.TwilioRestClient(CONFIG["TWILIO_SID"], CONFIG["TWILIO_AUTH_TOKEN"])
@@ -309,11 +354,17 @@ def sendTextMessage(body, to):
     msg = twilio_client.messages.create(body = body, to = to, from_ = "+12012214142")
 
 def sms_blast(type_accounts, message):
-    users = UserEntry.objects(checked_in = True, type_account__in = type_accounts, smsblast_optin = True)
+    phoneNums = []
+    if len(type_accounts) == 1 and type_accounts[0] == "staff":
+        phoneNums = get_staff_phone_nums()
+    else:
+        users = UserEntry.objects(checked_in = True, type_account__in = type_accounts, smsblast_optin = True)
+        for u in users:
+            phoneNums.append(u['phone'])
+        
     sent, failed = 0, 0
-    for u in users:
+    for phone in phoneNums:
         try:
-            phone = u['phone']
             sendTextMessage(message, phone)  
             sent += 1
         except Exception as e:
@@ -322,3 +373,20 @@ def sms_blast(type_accounts, message):
             failed += 1
             pass
     return (sent, failed)
+
+def get_staff_phone_nums():
+    try:
+        csv = open(os.path.join("ignore/", CONFIG["STAFF_CONTACT_INFO_FILE"]), "r")
+        fields = csv.readline().split(",")
+        data = [d.split(",") for d in csv.read().split("\n")]    
+        csv.close()
+
+        phonePos = fields.index("Phone") 
+    except Exception as e:
+        raise Exception("CsvException", "Missing CSV File")
+    phoneNums = []
+    for d in data:
+        if phonePos < len(d):
+            print(d)
+            phoneNums.append(d[phonePos])
+    return phoneNums

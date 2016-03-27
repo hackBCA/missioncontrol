@@ -5,10 +5,10 @@ roles = [
     "director",
     "board", 
     "review_apps",
-    "read_data",
-    "organizer", 
-    "volunteer",
-    "sms_blast"
+    "read_data", 
+    "staff",
+    "sms_blast",
+    "check_in"
 ]
 
 class permissions:
