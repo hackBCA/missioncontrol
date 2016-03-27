@@ -1,6 +1,6 @@
 from application import CONFIG, app
 from .models import *
-
+from flask.ext.login import current_user
 import sendgrid
 
 import twilio
@@ -15,6 +15,8 @@ import random
 
 sg = sendgrid.SendGridClient(CONFIG["SENDGRID_API_KEY"])
 ts = URLSafeTimedSerializer(CONFIG["SECRET_KEY"])
+
+UserDoesNotExistError = Exception("UserDoesNotExistError", "Account with given email does not exist.")
 
 def sse_load_participants():
     SSE_BUFFER = 50
@@ -95,6 +97,10 @@ def get_participant(email):
     if entries.count() == 1:
         return entries[0]
     return None   
+
+def set_user_attr(user, attr, value):
+    setattr(user, attr, value)
+    user.save()
 
 def get_next_application(reviewer_email):
     users = UserEntry.objects(status = "Submitted", type_account = "hacker", decision = None, review1 = None)
@@ -339,7 +345,7 @@ def check_in_status_user(user, checked_in):
     if user.attending != "Attending":
         return
     user.checked_in = checked_in
-    user.check_in_log.append([checked_in, int(time.time())])
+    user.check_in_log.append([checked_in, int(time.time()), current_user.email])
     user.save()
     
 twilio_client = twilio.rest.TwilioRestClient(CONFIG["TWILIO_SID"], CONFIG["TWILIO_AUTH_TOKEN"])
