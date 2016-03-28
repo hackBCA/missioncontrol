@@ -296,6 +296,23 @@ def rsvp_final_reminder():
     for u in users:
         print(u['email'], send_generic_template_email(u['email'], "hackBCA III - You still need to rsvp!", CONFIG["RSVP_FOLLOW_UP_BODY"]))
 
+def send_participant_info_emails():
+    users = UserEntry.objects(decision = "Accepted", rsvp = True, attending = "Attending", type_account__in = ["hacker", "scholarship"])
+    for u in users:
+        print(u['email'], u['type_account'])
+        message = sendgrid.Mail()
+        message.add_to(u.email)
+        message.set_from("contact@hackbca.com")
+        message.set_subject("hackBCA III - Important information")
+        message.set_html("<p></p>")
+
+        message.add_substitution("[[name]]", u.firstname)
+        message.add_filter("templates", "enable", "1")
+        message.add_filter("templates", "template_id", CONFIG["SENDGRID_HACKER_INFORMATION_TEMPLATE"])
+
+        #status, msg = sg.send(message)
+        print(u.email, status, msg)
+
 def allowed_file(filename, allowed_extensions):
     return '.' in filename and filename.rsplit(".", 1)[1] in allowed_extensions
 
