@@ -57,6 +57,7 @@ def summarize_participants(participants):
         "Expired": "E"
     }    
     rsvp_map = {
+        None: "Error",
         "Undecided": "U",
         "Attending": "A",
         "Not Attending": "NA"
@@ -189,6 +190,7 @@ def accept_applicants(type_account, block_size):
 def accept_applicant(user):
     user.decision = "Accepted"
     user.accepted_time = int(time.time())
+    user.rsvp = False
     if not CONFIG["DEBUG"]:
         user.save()
         send_accepted_email(user['email'], user['type_account'])
