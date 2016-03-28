@@ -1,6 +1,6 @@
 from application import CONFIG, app
 from .models import *
-
+from flask.ext.login import current_user
 import sendgrid
 
 import twilio
@@ -15,6 +15,8 @@ import random
 
 sg = sendgrid.SendGridClient(CONFIG["SENDGRID_API_KEY"])
 ts = URLSafeTimedSerializer(CONFIG["SECRET_KEY"])
+
+UserDoesNotExistError = Exception("UserDoesNotExistError", "Account with given email does not exist.")
 
 def sse_load_participants():
     SSE_BUFFER = 50
@@ -48,6 +50,17 @@ def summarize_participants(participants):
     "In Progress": "IP",
     "Submitted": "S"
     }
+    decision_map = {
+        None: "&nbsp;",
+        "Accepted": "A",
+        "Waitlisted": "W",
+        "Expired": "E"
+    }    
+    rsvp_map = {
+        "Undecided": "U",
+        "Attending": "A",
+        "Not Attending": "NA"
+    }
 
     summary = [{
     "id":           str(person.id),
@@ -55,7 +68,10 @@ def summarize_participants(participants):
     "email":        person.email,
     "type_account": person.type_account[0].upper(),
     "status":       status_map[person.status],
-    "school":       person.school if not person.school in ("", None) else "&nbsp;"
+    "school":       person.school if not person.school in ("", None) else "&nbsp;",
+    "decision":     decision_map[person.decision],
+    "rsvp":         "&nbsp;" if person.decision != "Accepted" else rsvp_map["Undecided" if not person.rsvp else person.attending],
+    "checkedin":    "&nbsp;" if not person.rsvp or person.attending != "Attending" else ("Y" if person.checked_in else "N")
       }
     for person in participants]
 
@@ -81,6 +97,10 @@ def get_participant(email):
     if entries.count() == 1:
         return entries[0]
     return None   
+
+def set_user_attr(user, attr, value):
+    setattr(user, attr, value)
+    user.save()
 
 def get_next_application(reviewer_email):
     users = UserEntry.objects(status = "Submitted", type_account = "hacker", decision = None, review1 = None)
@@ -342,7 +362,7 @@ def check_in_status_user(user, checked_in):
     if user.attending != "Attending":
         return
     user.checked_in = checked_in
-    user.check_in_log.append([checked_in, int(time.time())])
+    user.check_in_log.append([checked_in, int(time.time()), current_user.email])
     user.save()
     
 twilio_client = twilio.rest.TwilioRestClient(CONFIG["TWILIO_SID"], CONFIG["TWILIO_AUTH_TOKEN"])

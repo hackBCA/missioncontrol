@@ -33,15 +33,31 @@ def applicant_view(uid):
   if request.method == "POST":
     user = controller.get_applicant_by_id(uid)
     if 'check-in' in request.form:
-      if 'checked_in' in user and user['checked_in']:
-        flash("User is already checked in.", "error")
+      if sentinel.check_in.can():
+        if 'checked_in' in user and user['checked_in']:
+          flash("User is already checked in.", "error")
+        else:
+          controller.check_in_status_user(user, True)
       else:
-        controller.check_in_status_user(user, True)
+        flash("Sorry, you don't have permission to do this.", "error")
     elif 'check-out' in request.form:
-      if 'checked_in' in user and not user['checked_in']:
-        flash("User is already checked out.", "error")
+      if sentinel.check_in.can():
+        if 'checked_in' in user and not user['checked_in']:
+          flash("User is already checked out.", "error")
+        else:
+          controller.check_in_status_user(user, False)
       else:
-        controller.check_in_status_user(user, False)
+        flash("Sorry, you don't have permission to do this.", "error")   
+    elif 'smsblast-optin' in request.form:
+      if sentinel.staff.can():
+        controller.set_user_attr(user, 'smsblast_optin', True)
+      else:
+        flash("Sorry, you don't have permission to do this.", "error")
+    elif 'smsblast-optout' in request.form:
+      if sentinel.staff.can():
+        controller.set_user_attr(user, 'smsblast_optin', False)
+      else:
+        flash("Sorry, you don't have permission to do this.", "error")
     elif 'manual-accept' in request.form:
       if sentinel.board.can():
         controller.accept_applicant(user)
