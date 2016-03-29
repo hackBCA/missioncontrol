@@ -8,7 +8,8 @@ roles = [
     "read_data",
     "organizer", 
     "volunteer",
-    "sms_blast"
+    "sms_blast",
+    "broadcast"
 ]
 
 class permissions:

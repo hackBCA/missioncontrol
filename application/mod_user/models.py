@@ -44,6 +44,8 @@ class User(UserMixin):
       navbar.append(("/accept", "Accept Applicants"))
     if "sms_blast" in self.roles:
       navbar.append(("/smsblast", "SMS Blast"))
+    if "broadcast" in self.roles:
+      navbar.append(("/broadcast", "Broadcast"))
     if "admin" in self.roles:
       navbar.append(("/admin", "Admin"))
 
