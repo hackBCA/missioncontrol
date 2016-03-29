@@ -14,10 +14,10 @@ def login():
   form = LoginForm(request.form)
   if request.method == "POST" and form.validate():
     try:
-      if controller.verify_user(request.form["email"], request.form["password"]) is None:
+      if controller.verify_user(request.form["email"].lower(), request.form["password"]) is None:
         flash("Invalid email and/or password.", "error")
       else:
-        controller.login(request.form["email"])
+        controller.login(request.form["email"].lower())
         return redirect("/account")
     except Exception as e:
       if(CONFIG["DEBUG"]):

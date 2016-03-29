@@ -5,10 +5,10 @@ roles = [
     "director",
     "board", 
     "review_apps",
-    "read_data",
-    "organizer", 
-    "volunteer",
+    "read_data", 
+    "staff",
     "sms_blast",
+    "check_in",
     "broadcast"
 ]
 
