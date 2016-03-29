@@ -179,6 +179,7 @@ def smsblast():
 
 @mod_hacker.route("/broadcast", methods = ["GET", "POST"])
 @login_required
+@sentinel.broadcast.require()
 def broadcast():
   return render_template("hacker.broadcast.html")
 
