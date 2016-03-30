@@ -181,7 +181,7 @@ def smsblast():
 @login_required
 @sentinel.broadcast.require()
 def broadcast():
-  return render_template("hacker.broadcast.html", broadcast_url = CONFIG["BROADCAST_URL"])
+  return render_template("hacker.broadcast.html", broadcast_url = CONFIG["BROADCAST_URL"], session = request.cookies.get("session"))
 
 @mod_hacker.route("/api/get_participants_sse", methods = ["GET"])
 def api_get_participants_sse():
