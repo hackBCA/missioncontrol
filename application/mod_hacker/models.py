@@ -78,6 +78,8 @@ class UserEntry(Document):
 
   smsblast_optin = BooleanField(default = False)
 
+  path = StringField()
+
 class ServerSSEEvent(object):
     """Object wrapper for Server-Sent Event communication with clients.
     Arguments:

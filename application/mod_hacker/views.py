@@ -177,6 +177,13 @@ def smsblast():
       
   return render_template("hacker.sms_blast.html", form = form)
 
+@mod_hacker.route("/paths", methods = ["GET", "POST"])
+@login_required
+@sentinel.paths.require()
+def paths():
+  path_participants = controller.get_path_participants()
+  return render_template("hacker.paths.html", participants = json.dumps(path_participants))
+
 @mod_hacker.route("/api/get_participants_sse", methods = ["GET"])
 def api_get_participants_sse():
   return Response(

@@ -430,3 +430,21 @@ def get_staff_phone_nums():
             print(d)
             phoneNums.append(d[phonePos])
     return phoneNums
+
+def get_path_participants():
+    path_dict = {
+        "code-for-good": "Code for Good",
+        "ios": "iOS",
+        "web-dev": "Web Development"
+    }
+
+    users = UserEntry.objects(path__ne = None)
+    participants = [{
+        'id':           str(u.id),
+        'name':         u.firstname + ' ' + u.lastname,
+        'email':        u.email,
+        'path':         path_dict[u.path],
+        'checkedin':    "Y" if u.checked_in else "N"
+    } for u in users]
+
+    return participants
