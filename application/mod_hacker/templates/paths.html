@@ -101,6 +101,7 @@
       participants.push(chunk[i]);
       var row = document.createElement("tr");
       row.id = chunk[i].id;
+      row.onclick = function() { selectRow(row.id); }
       for (var j = 0; j < participantFields.length; j++) {
         var col = document.createElement("td");
         col.dataset.label = fieldTitles[j];
@@ -110,6 +111,11 @@
       table.appendChild(row);
     }
     triggerFilter();
+  }
+
+  selectRow = function(id){ //May use this to delete users' paths
+    var row = document.getElementById('id');
+    
   }
 
   filter = function(filterVals) {
