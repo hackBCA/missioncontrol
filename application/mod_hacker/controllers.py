@@ -448,3 +448,12 @@ def get_path_participants():
     } for u in users]
 
     return participants
+
+def get_app_setting(setting):
+    settings = AppSettings.objects()[0]
+    return getattr(settings, setting)
+
+def set_app_setting(setting, value):
+    settings = AppSettings.objects()[0]
+    setattr(settings, setting, value)
+    settings.save()

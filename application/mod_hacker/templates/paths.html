@@ -8,6 +8,14 @@
   <div class="page-section" id="search">
     <div class="container">
       <h2>Paths</h2>
+      <form method="POST" action="">
+        {% if not registration_open %}
+          <button class="btn" name="open-registration">Open Path Registration</button>
+        {% else %}
+          <button class="btn" name="close-registration">Close Path Registration</button>
+        {% endif %}
+      </form>
+
       <div class="m-filters">
         <div>
           <input type="text" class="m-filter-field" id="m-filter-name" placeholder="Name"/>

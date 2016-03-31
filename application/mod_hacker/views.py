@@ -181,8 +181,25 @@ def smsblast():
 @login_required
 @sentinel.paths.require()
 def paths():
+  registration_open = controller.get_app_setting("path_registration_open")
+  if request.method == "POST":
+    if "open-registration" in request.form:
+      if registration_open:
+        flash("Path registration is already open!", "error")
+      else:
+        registration_open = True
+        controller.set_app_setting("path_registration_open", True)
+        flash("Path registration opened.", "success")
+    elif "close-registration" in request.form:
+      if not registration_open:
+        flash("Path registration is already closed!", "error")
+      else:
+        registration_open = False
+        controller.set_app_setting("path_registration_open", False)
+        flash("Path registration closed.", "success")
+
   path_participants = controller.get_path_participants()
-  return render_template("hacker.paths.html", participants = json.dumps(path_participants))
+  return render_template("hacker.paths.html", participants = json.dumps(path_participants), registration_open = registration_open)
 
 @mod_hacker.route("/api/get_participants_sse", methods = ["GET"])
 def api_get_participants_sse():
