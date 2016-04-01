@@ -1,0 +1,42 @@
+#broadcast {
+  .container {
+    .header {
+      #messages_container {
+        text-align: left;
+        max-height: 600px;
+        overflow: scroll;
+        border: 1px solid #eee;
+        margin-right: 20px;
+
+        &> div {
+          margin: 15px 0;
+
+          span {
+            font-size: 1.25em;
+            display: inline-block;
+            margin-left: 5px;
+
+            &.sender {
+              font-weight: 800;
+            }
+
+            &.message {
+              background-color: #2B93C9;
+              color: #fff;
+              padding: 2.5px 5px;
+            }
+
+            &.datestamp {
+              font-size: 1em;
+              display: none;
+            }
+
+            &.timestamp {
+              font-size: 1em;
+            }
+          }
+        }
+      }
+    }
+  }
+}
