@@ -1,0 +1,37 @@
+{% extends "hacker.base.html" %}
+
+{% block content %}
+{% with nav_bar = nav_bar %}
+  {% include "navbar.html" %}
+{% endwith %}
+
+<div class="page-container">
+  <div class="page-section" id="broadcast">
+    <div class="container">
+      <div class="header">
+        <div class="head-cover">
+          <h2>Broadcast</h2>
+          <div id="messages_container"></div>
+          <input type="text" name="broadcast_message" id="broadcast_message">
+          <button class="btn" id="broadcast_submit">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+  <script src="/static/js/broadcast-client.min.js"></script>
+  <script type="text/javascript">
+    BroadcastClient.init(
+      "{{ broadcast_url }}",
+      "#messages_container",
+      null,
+      "{{ session }}",
+      "#broadcast_message", 
+      "#broadcast_submit"
+    );
+  </script>
+{% endblock %}
