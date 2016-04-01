@@ -7,8 +7,15 @@
 <div class="page-container">
   <div class="page-section" id="search">
     <div class="container">
-      <h2>Search</h2>
-      <h6 id="row_count">0 Rows loaded.</h6>
+      <h2>Paths</h2>
+      <form method="POST" action="">
+        {% if not registration_open %}
+          <button class="btn" name="open-registration">Open Path Registration</button>
+        {% else %}
+          <button class="btn" name="close-registration">Close Path Registration</button>
+        {% endif %}
+      </form>
+
       <div class="m-filters">
         <div>
           <input type="text" class="m-filter-field" id="m-filter-name" placeholder="Name"/>
@@ -16,51 +23,15 @@
         <div>
           <input type="text" class="m-filter-field" id="m-filter-email" placeholder="Email"/>
         </div>
+        
         <div>
-          <input type="text" class="m-filter-field" id="m-filter-school" placeholder="School"/>
-        </div>
-        <div>
-          <label for="m-filter-type_account">
-            <p>Account Type</p>
-            <select class="m-filter-field" id="m-filter-type_account">
+          <label for="m-filter-path">
+            <p>Path</p>
+            <select class="m-filter-field" id="m-filter-path">
               <option value=""></option>
-              <option value="H">H</option>
-              <option value="M">M</option>
-              <option value="S">S</option>
-            </select>
-          </label>
-        </div>
-        <div class="hide">
-          <label for="m-filter-status">
-            <p>Account Status</p>
-            <select class="m-filter-field" id="m-filter-status">
-              <option value=""></option>
-              <option value="NS">NS</option>
-              <option value="IP">IP</option>
-              <option value="S">S</option>
-            </select>
-          </label>
-        </div>
-        <div>
-          <label for="m-filter-status">
-            <p>Decision</p>
-            <select class="m-filter-field" id="m-filter-decision">
-              <option value=""></option>
-              <option value="N">NS</option>
-              <option value="A">A</option>
-              <option value="W">W</option>
-              <option value="E">E</option>
-            </select>
-          </label>
-        </div>
-        <div>
-          <label for="m-filter-status">
-            <p>RSVP</p>
-            <select class="m-filter-field" id="m-filter-rsvp">
-              <option value=""></option>
-              <option value="U">U</option>
-              <option value="A">A</option>
-              <option value="NA">NA</option>
+              <option value="Code For Good">Code For Good</option>
+              <option value="iOS">iOS</option>
+              <option value="Web Development">Web Development</option>
             </select>
           </label>
         </div>
@@ -74,16 +45,14 @@
             </select>
           </label>
         </div>
+
       </div>
       <table id="participant-table" class="pure-table pure-table-horizontal">
         <thead>
           <tr>
             <th>Name</th>
             <th>Email</th> 
-            <th>School</th>
-            <th>Account Type</th>
-            <th>Decision</th>
-            <th>RSVP</th>
+            <th>Path</th>
             <th>Checked In</th>
           </tr>
           <tr>
@@ -94,39 +63,11 @@
               <input type="text" class="filter-field" id="filter-email"/>
             </th>
             <th>
-              <input type="text" class="filter-field" id="filter-school"/>
-            </th>
-            <th>
-              <select class="filter-field" id="filter-type_account">
+              <select class="filter-field" id="filter-path">
                 <option value=""></option>
-                <option value="H">H</option>
-                <option value="M">M</option>
-                <option value="S">S</option>
-              </select>
-            </th>
-            <th class="hide">
-              <select class="filter-field" id="filter-status">
-                <option value=""></option>
-                <option value="NS">NS</option>
-                <option value="IP">IP</option>
-                <option value="S">S</option>
-              </select>
-            </th>
-            <th>
-              <select class="filter-field" id="filter-decision">
-                <option value=""></option>
-                <option value="N">NS</option>
-                <option value="A">A</option>
-                <option value="W">W</option>
-                <option value="E">E</option>
-              </select>
-            </th>
-            <th>
-              <select class="filter-field" id="filter-rsvp">
-                <option value=""></option>
-                <option value="U">U</option>
-                <option value="A">A</option>
-                <option value="NA">NA</option>
+                <option value="Code For Good">Code For Good</option>
+                <option value="iOS">iOS</option>
+                <option value="Web Development">Web Development</option>
               </select>
             </th>
             <th>
@@ -141,7 +82,6 @@
         <tbody>
         </tbody>
       </table>
-      <i id="load_icon" class="fa fa-refresh fa-spin fa-3x"></i>
     </div>
   </div>
 </div>
@@ -149,13 +89,11 @@
 
 {% block scripts %}
 <script type="text/javascript">
-  var participants = [];
-  
+  var participants = [];  
   var participantTable = document.getElementById("participant-table");
-  var pageSize = 50;
 
-  var participantFields = ["name", "email", "school", "type_account", "decision", "rsvp", "checkedin"];
-  var fieldTitles = ["Name", "Email", "School", "Account Type", "Decision", "RSVP", "Checked In"];
+  var participantFields = ["name", "email", "path", "checkedin"];
+  var fieldTitles = ["Name", "Email", "Path", "Checked In"];
 
   loadChunk = function(chunk) {
     var table = document.querySelector("#participant-table tbody");
@@ -163,7 +101,7 @@
       participants.push(chunk[i]);
       var row = document.createElement("tr");
       row.id = chunk[i].id;
-      row.onclick = function() { window.open("/applicant/" + this.id, "_blank"); }
+      row.onclick = function() { selectRow(row.id); }
       for (var j = 0; j < participantFields.length; j++) {
         var col = document.createElement("td");
         col.dataset.label = fieldTitles[j];
@@ -172,7 +110,6 @@
       }
       table.appendChild(row);
     }
-    document.getElementById("row_count").innerHTML = participants.length + " Row" + (participants.length === 1 ? "" : "s") + " loaded.";
     triggerFilter();
   }
 
@@ -184,7 +121,7 @@
         var field = criteria[0];
         var partialVal = criteria[1].toLowerCase();
         if(partialVal.length > 0){
-          if(field === "type_account" || field === "status" || field === "decision" || field === "rsvp" || field === "checkedin") {
+          if(field === "path" || field === "checkedin") {
             if (participants[i][field].toLowerCase() != partialVal) {
               show = false;
             }
@@ -263,30 +200,6 @@
   }
 
   filterInit();
-
-  if (!!window.EventSource) {
-    var source = new EventSource("/api/get_participants_sse");
-    source.addEventListener("chunk", function(e) {
-      chunk = JSON.parse(e.data);
-      loadChunk(chunk);
-    }, false);
-    source.addEventListener("stop", function(e) {
-      document.getElementById("load_icon").classList.add("hide");
-      e.target.close();
-    }, false);
-  } else {
-    // Fall back to AJAX :(
-    var request = new XMLHttpRequest();
-    request.open("GET", "/api/get_participants_ajax", true);
-    request.onload = function() {
-      if (request.status >= 200 && request.status < 400) {
-        var chunk = JSON.parse(request.responseText);
-        loadChunk(chunk);
-        document.getElementById("load_icon").classList.add("hide");
-      } else {}
-    };
-    request.onerror = function() {};
-    request.send();
-  }
+  loadChunk({{ participants|safe }})
 </script>
 {% endblock %}

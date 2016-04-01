@@ -9,6 +9,7 @@ roles = [
     "staff",
     "sms_blast",
     "check_in",
+    "paths",
     "broadcast"
 ]
 
