@@ -335,6 +335,23 @@ def send_participant_info_emails():
         #status, msg = sg.send(message)
         print(u.email, status, msg)
 
+def send_participant_final_info_emails():
+    users = UserEntry.objects(decision = "Accepted", rsvp = True, attending = "Attending", type_account__in = ["hacker", "scholarship"])
+    for u in users:
+        print(u['email'], u['type_account'])
+        message = sendgrid.Mail()
+        message.add_to(u.email)
+        message.set_from("contact@hackbca.com")
+        message.set_subject("hackBCA III - Important information!")
+        message.set_html("<p></p>")
+
+        message.add_substitution("[[name]]", u.firstname)
+        message.add_filter("templates", "enable", "1")
+        message.add_filter("templates", "template_id", CONFIG["SENDGRID_HACKER_FINAL_INFORMATION_TEMPLATE"])
+
+        #status, msg = sg.send(message)
+        print(u.email, status, msg)
+
 def send_mentor_info_emails():
     users = UserEntry.objects(decision = "Accepted", rsvp = True, attending = "Attending", type_account = "mentor")
     for u in users:
