@@ -335,6 +335,27 @@ def send_participant_info_emails():
         #status, msg = sg.send(message)
         print(u.email, status, msg)
 
+def send_mentor_info_emails():
+    users = UserEntry.objects(decision = "Accepted", rsvp = True, attending = "Attending", type_account = "mentor")
+    for u in users:
+        r = send_mentor_info_email(u)
+        print(u['email'], r)
+
+def send_mentor_info_email(u):        
+    message = sendgrid.Mail()
+    message.add_to(u.email)
+    message.set_from("contact@hackbca.com")
+    message.set_subject("hackBCA III - Important information")
+    message.set_html("<p></p>")
+
+    message.add_substitution("[[name]]", u.firstname)
+    message.add_filter("templates", "enable", "1")
+    message.add_filter("templates", "template_id", CONFIG["SENDGRID_MENTOR_INFORMATION_TEMPLATE"])
+
+    status, msg = sg.send(message)
+    return (status, msg)
+
+
 def allowed_file(filename, allowed_extensions):
     return '.' in filename and filename.rsplit(".", 1)[1] in allowed_extensions
 
@@ -409,3 +430,30 @@ def get_staff_phone_nums():
             print(d)
             phoneNums.append(d[phonePos])
     return phoneNums
+
+def get_path_participants():
+    path_dict = {
+        "code-for-good": "Code for Good",
+        "ios": "iOS",
+        "web-dev": "Web Development"
+    }
+
+    users = UserEntry.objects(path__ne = None)
+    participants = [{
+        'id':           str(u.id),
+        'name':         u.firstname + ' ' + u.lastname,
+        'email':        u.email,
+        'path':         path_dict[u.path],
+        'checkedin':    "Y" if u.checked_in else "N"
+    } for u in users]
+
+    return participants
+
+def get_app_setting(setting):
+    settings = AppSettings.objects()[0]
+    return getattr(settings, setting)
+
+def set_app_setting(setting, value):
+    settings = AppSettings.objects()[0]
+    setattr(settings, setting, value)
+    settings.save()

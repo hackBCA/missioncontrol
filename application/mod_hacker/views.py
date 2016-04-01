@@ -12,7 +12,7 @@ import json, os, time
 @login_required
 @sentinel.board.require(http_exception = 403)
 def send_mass_email():
-    #controller.send_participant_info_email()
+    #controller.send_mentor_info_emails()
     #controller.rsvp_final_reminder()
     #controller.rsvp_problem_notify()
     #controller.send_unconfirmed_email()
@@ -176,6 +176,36 @@ def smsblast():
       flash("Something went wrong.", "error")
       
   return render_template("hacker.sms_blast.html", form = form)
+
+@mod_hacker.route("/paths", methods = ["GET", "POST"])
+@login_required
+@sentinel.paths.require()
+def paths():
+  registration_open = controller.get_app_setting("path_registration_open")
+  if request.method == "POST":
+    if "open-registration" in request.form:
+      if registration_open:
+        flash("Path registration is already open!", "error")
+      else:
+        registration_open = True
+        controller.set_app_setting("path_registration_open", True)
+        flash("Path registration opened.", "success")
+    elif "close-registration" in request.form:
+      if not registration_open:
+        flash("Path registration is already closed!", "error")
+      else:
+        registration_open = False
+        controller.set_app_setting("path_registration_open", False)
+        flash("Path registration closed.", "success")
+
+  path_participants = controller.get_path_participants()
+  return render_template("hacker.paths.html", participants = json.dumps(path_participants), registration_open = registration_open)
+
+@mod_hacker.route("/broadcast", methods = ["GET", "POST"])
+@login_required
+@sentinel.broadcast.require()
+def broadcast():
+  return render_template("hacker.broadcast.html", broadcast_url = CONFIG["BROADCAST_URL"], session = request.cookies.get("session"))
 
 @mod_hacker.route("/api/get_participants_sse", methods = ["GET"])
 def api_get_participants_sse():
