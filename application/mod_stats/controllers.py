@@ -144,3 +144,20 @@ def get_rsvp_stats():
       type_account_stats.append("%d%% Non Beginner (%d)" % (percent_nonbeginner_attending, num_nonbeginner_attending))
     stats[account_types[type_account]] = type_account_stats
   return stats
+
+def get_checkedin_stats():
+  stats = []
+  num_hackers_attending = UserEntry.objects(type_account = "hacker", attending = "Attending").count()
+  num_hackers_here = UserEntry.objects(type_account = "hacker", attending = "Attending", checked_in = True).count()
+  stats.append("%d Hackers Attending" % num_hackers_attending)
+  stats.append("%d Hackers Checked In" % num_hackers_here)
+  num_mentors_attending = UserEntry.objects(type_account = "mentor", attending = "Attending").count()
+  num_mentors_here = UserEntry.objects(type_account = "mentor", attending = "Attending", checked_in = True).count()
+  stats.append("%d Mentors Attending" % num_mentors_attending)
+  stats.append("%d Mentors Checked In" % num_mentors_here)
+  num_scholarships_attending = UserEntry.objects(type_account = "scholarship", attending = "Attending").count()
+  num_scholarships_here = UserEntry.objects(type_account = "scholarship", attending = "Attending", checked_in = True).count()
+  stats.append("%d Scholarships Attending" % num_scholarships_attending)
+  stats.append("%d Scholarships Checked In" % num_scholarships_here)
+  return stats
+  

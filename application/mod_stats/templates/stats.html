@@ -11,7 +11,13 @@
   <div class="page-section" id="settings">
     <div class="container">
       <h2>Statistics</h2>
-      <h4>Hey, {{ current_user.firstname }}!</h4>
+      <h4>Hey, {{ current_user.firstname }}!</h4>      
+      <div id="live">
+        <h5>Live Stats</h5>
+        {% for field in live_stats %}
+          <p>{{field}}</p>
+        {% endfor %}
+      </div>
       <div id="application">
         <h5>Application Stats</h5>
         {% for field in application_stats %}
